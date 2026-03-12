@@ -14,7 +14,6 @@ const nextConfig = {
       { protocol: "https", hostname: "tempfile.aiquickdraw.com" },
     ],
     formats: ["image/avif", "image/webp"],
-    // 30-day browser cache for optimized images
     minimumCacheTTL: 60 * 60 * 24 * 30,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -23,7 +22,6 @@ const nextConfig = {
   // ─── HTTP Cache-Control headers ───────────────────
   async headers() {
     return [
-      // Static assets — 1 year cache (immutable because Next adds content hashes)
       {
         source: "/_next/static/(.*)",
         headers: [
@@ -33,7 +31,6 @@ const nextConfig = {
           },
         ],
       },
-      // Images served by Next Image optimizer
       {
         source: "/_next/image(.*)",
         headers: [
@@ -43,7 +40,6 @@ const nextConfig = {
           },
         ],
       },
-      // All pages — stale-while-revalidate for snappy repeat visits
       {
         source: "/(.*)",
         headers: [
@@ -60,12 +56,9 @@ const nextConfig = {
     ];
   },
 
-  // ─── Experimental optimizations ───────────────────
+  // ─── Experimental — only flags valid in Next 14.2.x ──
   experimental: {
-    // Optimize CSS output (removes unused Tailwind classes at build time)
     optimizeCss: true,
-    // Faster client-side navigation
-    optimisticClientCache: true,
   },
 };
 
