@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains } from "@/lib/strains";
 import { strainMetadata, strainJsonLd } from "@/lib/seo";
 import StrainCard from "@/components/StrainCard";
+import StrainReviews, { ReviewSummary } from "@/components/StrainReviews";
 
 export async function generateStaticParams() {
   const slugs = await getAllStrainSlugs();
@@ -276,52 +277,11 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           <span className="text-brand">{strain.name}</span>
         </nav>
 
-        {/* Top bar: Back + Share */}
-        <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
+        {/* Top bar: Back only */}
+        <div className="flex items-center mb-8">
           <Link href="/strains" className="inline-flex items-center gap-2 bg-white border-2 border-black px-4 py-2 rounded-xl text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all">
             ← Back to Strains
           </Link>
-
-          {/* GREEN #3 — Share Buttons */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Share:</span>
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-black text-white rounded-xl border-2 border-black hover:bg-gray-800 transition-all"
-              aria-label="Share on X"
-            >
-              𝕏 Twitter
-            </a>
-            <a
-              href={`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-orange-500 text-white rounded-xl border-2 border-orange-600 hover:bg-orange-600 transition-all"
-              aria-label="Share on Reddit"
-            >
-              🟠 Reddit
-            </a>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-blue-600 text-white rounded-xl border-2 border-blue-700 hover:bg-blue-700 transition-all"
-              aria-label="Share on Facebook"
-            >
-              📘 Facebook
-            </a>
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-green-500 text-white rounded-xl border-2 border-green-600 hover:bg-green-600 transition-all"
-              aria-label="Share on WhatsApp"
-            >
-              💬 WhatsApp
-            </a>
-          </div>
         </div>
 
         {/* Main Grid */}
@@ -412,12 +372,18 @@ export default async function StrainPage({ params }: { params: { slug: string } 
 
           {/* RIGHT — Full Info */}
           <div>
-            <h1 className="text-5xl font-black tracking-tight leading-tight mb-2">{strain.name}</h1>
+            <h1 className="text-5xl font-black tracking-tight leading-tight mb-3">{strain.name}</h1>
 
-            {/* GREEN #2 — Experience level inline banner */}
-            <div className={`inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-lg border-2 mb-3 ${experienceLevel.color}`}>
-              {experienceLevel.emoji} {experienceLevel.label} — {experienceLevel.desc}
+            {/* Star rating summary inline with title */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <ReviewSummary strainSlug={strain.slug} strainName={strain.name} />
+              <span className="text-xs text-gray-400 font-semibold">·</span>
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border-2 ${typeColor}`}>
+                {strain.type === "Indica" ? "🍇" : strain.type === "Sativa" ? "☀️" : "⚡"} {strain.type}
+              </span>
             </div>
+
+
 
             {/* GREEN #4 — Breeder / Seed Bank */}
             {strain.breeder && (
@@ -754,6 +720,43 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           </div>
         </div>
 
+        {/* ── Reviews Section ──────────────────────────── */}
+        <div className="max-w-5xl mx-auto px-6 mb-4">
+          <StrainReviews strainSlug={strain.slug} strainName={strain.name} />
+        </div>
+
+        {/* ── Share Buttons (bottom) ───────────────────── */}
+        <div className="max-w-5xl mx-auto px-6 mb-10">
+          <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm flex flex-col sm:flex-row items-center gap-4">
+            <div>
+              <div className="font-black text-sm mb-0.5">Enjoyed {strain.name}?</div>
+              <div className="text-xs text-gray-500">Share it with your community</div>
+            </div>
+            <div className="flex items-center gap-2 sm:ml-auto flex-wrap">
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-black text-white rounded-xl border-2 border-black hover:bg-gray-800 transition-all"
+              >𝕏 Twitter</a>
+              <a
+                href={`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-orange-500 text-white rounded-xl border-2 border-orange-600 hover:bg-orange-600 transition-all"
+              >🟠 Reddit</a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-blue-600 text-white rounded-xl border-2 border-blue-700 hover:bg-blue-700 transition-all"
+              >📘 Facebook</a>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-green-500 text-white rounded-xl border-2 border-green-600 hover:bg-green-600 transition-all"
+              >💬 WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
         {/* Similar Strains */}
         {similar.length > 0 && (
           <div>
@@ -769,5 +772,6 @@ export default async function StrainPage({ params }: { params: { slug: string } 
     </>
   );
 }
+
 
 
