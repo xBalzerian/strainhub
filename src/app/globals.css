@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-* {
+/* ─── Base ────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -12,13 +11,35 @@ body {
   background: #F4F4F0;
   font-family: 'Inter', sans-serif;
   color: #0D0D0D;
+  /* Prevent horizontal scroll bounce on mobile */
+  overscroll-behavior-x: none;
+  /* Smoother text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
   scroll-behavior: smooth;
+  /* Push anchor targets below fixed nav (64px height) */
+  scroll-padding-top: 4rem;
+  /* Prevent pull-to-refresh jank on mobile */
+  overscroll-behavior-y: none;
 }
 
-/* Line clamp utility */
+/* ─── GPU-accelerated interactive elements ───────────── */
+/* Cards, links, any hover-animated elements */
+a, button, [data-motion] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Images ──────────────────────────────────────────── */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ─── Utility ─────────────────────────────────────────── */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -26,14 +47,47 @@ html {
   overflow: hidden;
 }
 
-/* Ticker animation */
+/* ─── Ticker animation (homepage) ────────────────────── */
 @keyframes ticker {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to   { transform: translateX(-50%); }
 }
+
 .ticker-animate {
   animation: ticker 35s linear infinite;
+  /* Keep animation on GPU layer */
+  will-change: transform;
 }
+
 .ticker-animate:hover {
   animation-play-state: paused;
+}
+
+/* ─── Smooth card hover ───────────────────────────────── */
+/* Promote cards to their own GPU layer before hover */
+.strain-card-gpu {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ─── Scrollbar styling (subtle, WebKit) ─────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+/* ─── Focus visible (accessibility) ──────────────────── */
+:focus-visible {
+  outline: 2px solid #AAFF00;
+  outline-offset: 2px;
 }
