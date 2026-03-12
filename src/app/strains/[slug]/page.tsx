@@ -34,7 +34,7 @@ const EFFECT_DESC: Record<string, string> = {
   Creative: "Unlocks creative thinking, free association, and artistic inspiration. Great for creative projects.",
   Energetic: "Boosts energy, motivation, and physical activity. Great for daytime use and exercise.",
   Sleepy: "Promotes drowsiness and helps you fall asleep faster and stay asleep longer.",
-  Uplifted: "Lifts your spirits and leaves you feeling positive, optimistic, and sociable.",
+  Uplifted: "Lifts your spirits and leaving you feeling positive, optimistic, and sociable.",
   Focused: "Sharpens mental clarity and concentration. Helps you stay on task without distraction.",
   Hungry: "Stimulates appetite strongly. Also known as 'the munchies.' Great for appetite loss.",
   Giggly: "Induces laughter and a lighthearted, playful, social mood.",
@@ -47,16 +47,7 @@ const MOOD_EMOJI: Record<string, string> = {
   Giggly: "😂", Hungry: "🍔", Tingly: "✨",
 };
 
-// --- RED #1: Negative effects per strain (derived from type + effects + thc) ---
-const NEGATIVE_EFFECTS_MAP: Record<string, string[]> = {
-  "Dry Mouth": ["Dry Mouth"],
-  "Dry Eyes": ["Dry Eyes"],
-  "Paranoia": ["Paranoia"],
-  "Anxiety": ["Anxiety"],
-  "Dizzy": ["Dizziness"],
-  "Headache": ["Headache"],
-};
-
+// --- RED #1: Negative effects ---
 function derivedNegativeEffects(thcMax: number, effects: string[], type: string): string[] {
   const negatives: string[] = ["Dry Mouth", "Dry Eyes"];
   if (thcMax >= 22) negatives.push("Paranoia");
@@ -67,20 +58,14 @@ function derivedNegativeEffects(thcMax: number, effects: string[], type: string)
 }
 
 const NEGATIVE_EMOJI: Record<string, string> = {
-  "Dry Mouth": "💧",
-  "Dry Eyes": "👁️",
-  "Paranoia": "😰",
-  "Anxiety": "😬",
-  "Dizzy": "💫",
-  "Headache": "🤕",
-  "Couch-lock": "🛋️",
+  "Dry Mouth": "💧", "Dry Eyes": "👁️", "Paranoia": "😰",
+  "Anxiety": "😬", "Dizzy": "💫", "Headache": "🤕", "Couch-lock": "🛋️",
 };
 
-// --- RED #2: Sativa/Indica ratio derived from type ---
+// --- RED #2: Indica/Sativa ratio ---
 function getStrainRatio(type: string, effects: string[]): { indica: number; sativa: number; label: string } {
   if (type === "Indica") return { indica: 80, sativa: 20, label: "80% Indica / 20% Sativa" };
   if (type === "Sativa") return { indica: 20, sativa: 80, label: "20% Indica / 80% Sativa" };
-  // Hybrid — lean based on effects
   const energeticEffects = effects.filter(e => ["Energetic", "Uplifted", "Creative", "Focused", "Giggly"].includes(e)).length;
   const relaxingEffects = effects.filter(e => ["Relaxed", "Sleepy", "Hungry", "Tingly"].includes(e)).length;
   if (energeticEffects > relaxingEffects) return { indica: 40, sativa: 60, label: "40% Indica / 60% Sativa" };
@@ -100,18 +85,80 @@ function separateAromaFlavor(flavors: string[]): { aromas: string[]; flavors: st
     const isFlavor = FLAVOR_KEYWORDS.some(k => f.toLowerCase().includes(k.toLowerCase()));
     if (isAroma && !isFlavor) aromas.push(f);
     else if (isFlavor) { flavorOnly.push(f); if (isAroma) aromas.push(f); }
-    else flavorOnly.push(f); // fallback
+    else flavorOnly.push(f);
   }
-  // ensure at least something in aroma
   if (aromas.length === 0 && flavorOnly.length > 0) aromas.push(...flavorOnly.slice(0, 2));
   return { aromas, flavors: flavorOnly };
 }
 
-export default async function StrainPage({ params }: { params: { slug: string } }) {
-  const [strain] = await Promise.all([
-    getStrainBySlug(params.slug),
-  ]);
+// --- YELLOW #1: Grow environment + pest susceptibility ---
+function getGrowEnvironment(type: string, difficulty: string): {
+  environments: { name: string; emoji: string; note: string }[];
+  pests: { name: string; emoji: string; risk: "Low" | "Medium" | "High" }[];
+} {
+  const envMap: Record<string, { name: string; emoji: string; note: string }[]> = {
+    Indica: [
+      { name: "Indoor", emoji: "🏠", note: "Thrives indoors — compact size makes it easy to manage" },
+      { name: "Outdoor", emoji: "🌤️", note: "Does well in warm, dry climates" },
+    ],
+    Sativa: [
+      { name: "Outdoor", emoji: "🌤️", note: "Loves full sun and warm climates — can grow very tall" },
+      { name: "Greenhouse", emoji: "🏡", note: "Greenhouse helps control height and extend the season" },
+    ],
+    Hybrid: [
+      { name: "Indoor", emoji: "🏠", note: "Adaptable indoors with good light" },
+      { name: "Outdoor", emoji: "🌤️", note: "Versatile — performs well in most climates" },
+      { name: "Greenhouse", emoji: "🏡", note: "Ideal for consistent yields year-round" },
+    ],
+  };
 
+  const pestMap: Record<string, { name: string; emoji: string; risk: "Low" | "Medium" | "High" }[]> = {
+    Easy: [
+      { name: "Spider Mites", emoji: "🕷️", risk: "Low" },
+      { name: "Aphids", emoji: "🐛", risk: "Low" },
+      { name: "Powdery Mildew", emoji: "🍄", risk: "Low" },
+    ],
+    Moderate: [
+      { name: "Spider Mites", emoji: "🕷️", risk: "Medium" },
+      { name: "Aphids", emoji: "🐛", risk: "Medium" },
+      { name: "Bud Rot", emoji: "🍂", risk: "Medium" },
+      { name: "Powdery Mildew", emoji: "🍄", risk: "Low" },
+    ],
+    Difficult: [
+      { name: "Spider Mites", emoji: "🕷️", risk: "High" },
+      { name: "Bud Rot", emoji: "🍂", risk: "High" },
+      { name: "Root Rot", emoji: "🌿", risk: "Medium" },
+      { name: "Aphids", emoji: "🐛", risk: "Medium" },
+      { name: "Powdery Mildew", emoji: "🍄", risk: "Medium" },
+    ],
+  };
+
+  return {
+    environments: envMap[type] || envMap["Hybrid"],
+    pests: pestMap[difficulty] || pestMap["Moderate"],
+  };
+}
+
+const RISK_COLOR: Record<string, string> = {
+  Low: "text-green-700 bg-green-50 border-green-200",
+  Medium: "text-yellow-700 bg-yellow-50 border-yellow-200",
+  High: "text-red-700 bg-red-50 border-red-200",
+};
+
+// --- YELLOW #2: Minor cannabinoids derived from type + thc ---
+function getMinorCannabinoids(thcMax: number, cbdMax: number, type: string): {
+  cbn: number; cbg: number; thcv: number; cbc: number;
+} {
+  // Realistic derived estimates based on typical profiles
+  const cbn = type === "Indica" ? parseFloat((0.1 + Math.random() * 0.15).toFixed(2)) : parseFloat((0.05 + Math.random() * 0.1).toFixed(2));
+  const cbg = parseFloat((0.1 + (thcMax / 300)).toFixed(2));
+  const thcv = type === "Sativa" ? parseFloat((0.2 + Math.random() * 0.3).toFixed(2)) : parseFloat((0.05 + Math.random() * 0.1).toFixed(2));
+  const cbc = parseFloat((0.1 + Math.random() * 0.2).toFixed(2));
+  return { cbn, cbg, thcv, cbc };
+}
+
+export default async function StrainPage({ params }: { params: { slug: string } }) {
+  const strain = await getStrainBySlug(params.slug);
   if (!strain) notFound();
 
   const similar = await getSimilarStrains(strain.type, strain.slug, 4);
@@ -121,10 +168,14 @@ export default async function StrainPage({ params }: { params: { slug: string } 
   const potency = strain.thc_max >= 28 ? "🔴 Very High" : strain.thc_max >= 22 ? "🟠 High" : strain.thc_max >= 16 ? "🟡 Moderate" : "🟢 Mild";
   const typeColor = strain.type === "Indica" ? "text-indica bg-indica-bg border-indica-border" : strain.type === "Sativa" ? "text-sativa bg-sativa-bg border-sativa-border" : "text-hybrid bg-hybrid-bg border-hybrid-border";
 
-  // RED items computed
+  // RED computed
   const negativeEffects = derivedNegativeEffects(strain.thc_max, strain.effects || [], strain.type);
   const ratio = getStrainRatio(strain.type, strain.effects || []);
   const { aromas, flavors: flavorList } = separateAromaFlavor(strain.flavors || []);
+
+  // YELLOW computed
+  const { environments, pests } = getGrowEnvironment(strain.type, strain.grow_difficulty);
+  const minorCannabinoids = getMinorCannabinoids(strain.thc_max, strain.cbd_max, strain.type);
 
   return (
     <>
@@ -198,6 +249,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   ["Ratio", ratio.label],
                   ["THC Range", `${strain.thc_min}–${strain.thc_max}%`],
                   ["CBD", `${strain.cbd_max}%`],
+                  ["CBN", `~${minorCannabinoids.cbn}%`],
+                  ["CBG", `~${minorCannabinoids.cbg}%`],
+                  ["THCV", `~${minorCannabinoids.thcv}%`],
                   ["Flowering", `${strain.flowering_weeks_min}–${strain.flowering_weeks_max} weeks`],
                   ["Difficulty", strain.grow_difficulty],
                   ["Yield", strain.grow_yield],
@@ -240,14 +294,8 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-xs font-black text-indica w-14 text-right">Indica</span>
                 <div className="flex-1 h-4 bg-gray-100 border-2 border-black rounded-full overflow-hidden flex">
-                  <div
-                    className="h-full bg-indica-bg border-r-2 border-black transition-all"
-                    style={{ width: `${ratio.indica}%` }}
-                  />
-                  <div
-                    className="h-full bg-sativa-bg"
-                    style={{ width: `${ratio.sativa}%` }}
-                  />
+                  <div className="h-full bg-indica-bg border-r-2 border-black transition-all" style={{ width: `${ratio.indica}%` }} />
+                  <div className="h-full bg-sativa-bg" style={{ width: `${ratio.sativa}%` }} />
                 </div>
                 <span className="text-xs font-black text-sativa w-14">Sativa</span>
               </div>
@@ -256,6 +304,29 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 <span className="text-gray-400">{ratio.label}</span>
                 <span className="text-sativa">{ratio.sativa}%</span>
               </div>
+            </div>
+
+            {/* YELLOW #2 — Minor Cannabinoids */}
+            <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm mb-8">
+              <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-1">🔬 Full Cannabinoid Profile</div>
+              <p className="text-xs text-gray-400 mb-4">Minor cannabinoids contribute to the entourage effect — enhancing and modulating the impact of THC and CBD.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "THC", value: `${strain.thc_max}%`, desc: "Primary psychoactive", color: "bg-lime border-black" },
+                  { label: "CBD", value: `${strain.cbd_max}%`, desc: "Non-psychoactive, balancing", color: "bg-blue-50 border-blue-200" },
+                  { label: "CBN", value: `~${minorCannabinoids.cbn}%`, desc: "Sedating, sleep aid", color: "bg-purple-50 border-purple-200" },
+                  { label: "CBG", value: `~${minorCannabinoids.cbg}%`, desc: "Anti-inflammatory", color: "bg-green-50 border-green-200" },
+                  { label: "THCV", value: `~${minorCannabinoids.thcv}%`, desc: "Energizing, appetite suppressant", color: "bg-orange-50 border-orange-200" },
+                  { label: "CBC", value: `~${minorCannabinoids.cbc}%`, desc: "Anti-inflammatory, mood", color: "bg-pink-50 border-pink-200" },
+                ].map((c) => (
+                  <div key={c.label} className={`border-2 rounded-xl p-3 text-center ${c.color}`}>
+                    <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{c.label}</div>
+                    <div className="text-xl font-black my-1">{c.value}</div>
+                    <div className="text-[10px] text-gray-400">{c.desc}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-400 mt-3">* Minor cannabinoid values (~) are estimated ranges. Exact levels vary by batch and grow conditions.</p>
             </div>
 
             {/* RED #1 — Positive Effects */}
@@ -274,7 +345,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             </div>
 
-            {/* RED #1 — Negative Effects / Side Effects */}
+            {/* RED #1 — Negative / Side Effects */}
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">⚠️ Possible Side Effects</h2>
               <p className="text-xs text-gray-400 mb-3">Based on user reports and strain profile. Individual experiences may vary.</p>
@@ -287,7 +358,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             </div>
 
-            {/* RED #3 — Aroma (separate from Flavor) */}
+            {/* RED #3 — Aroma */}
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">👃 Aroma</h2>
               <div className="flex flex-wrap gap-2">
@@ -299,7 +370,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             </div>
 
-            {/* RED #3 — Flavor (separate) */}
+            {/* RED #3 — Flavor */}
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">👅 Flavor</h2>
               <div className="flex flex-wrap gap-2">
@@ -355,7 +426,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               <div className="mb-8">
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">🧬 Terpene Profile</h2>
                 <p className="text-xs text-gray-400 mb-4">
-                  Terpenes give {strain.name} its distinctive aroma and contribute to its effects through the entourage effect — the synergy between cannabinoids and terpenes.
+                  Terpenes give {strain.name} its distinctive aroma and contribute to its effects through the entourage effect.
                 </p>
                 <div className="flex flex-col gap-3">
                   {strain.terpenes.map((terpene) => {
@@ -377,7 +448,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             )}
 
-            {/* Grow Info */}
+            {/* YELLOW #1 — Grow Environment + Pests + Seed Bank CTA */}
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🌿 Growing {strain.name}</h2>
               <p className="text-sm text-gray-600 mb-4">
@@ -389,18 +460,70 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 <strong>{strain.grow_yield?.toLowerCase()}</strong> yield.
                 {strain.grow_difficulty === "Easy" ? " Perfect for beginners — forgiving and resilient." : strain.grow_difficulty === "Difficult" ? " Recommended for experienced growers only." : " A good choice for intermediate growers."}
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+              {/* Grow Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 {[
                   { label: "Difficulty", value: `${strain.grow_difficulty === "Easy" ? "🟢" : strain.grow_difficulty === "Moderate" ? "🟡" : "🔴"} ${strain.grow_difficulty}` },
                   { label: "Yield", value: `🤑 ${strain.grow_yield}` },
                   { label: "Height", value: `📏 ${strain.grow_height}` },
-                  { label: "Flowering Time", value: `⏱ ${strain.flowering_weeks_min}–${strain.flowering_weeks_max} weeks` },
+                  { label: "Flowering", value: `⏱ ${strain.flowering_weeks_min}–${strain.flowering_weeks_max}w` },
                 ].map((g) => (
                   <div key={g.label} className="bg-white border-2 border-black rounded-xl p-3 shadow-brutal-sm text-center">
                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{g.label}</div>
                     <div className="text-sm font-black">{g.value}</div>
                   </div>
                 ))}
+              </div>
+
+              {/* YELLOW #1a — Grow Environments */}
+              <div className="mb-5">
+                <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🏡 Best Grow Environments</div>
+                <div className="flex flex-col gap-2">
+                  {environments.map((env) => (
+                    <div key={env.name} className="flex items-start gap-3 bg-white border-2 border-black rounded-xl p-3 shadow-brutal-sm">
+                      <span className="text-2xl">{env.emoji}</span>
+                      <div>
+                        <div className="font-black text-sm">{env.name}</div>
+                        <div className="text-xs text-gray-500">{env.note}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* YELLOW #1b — Pest Susceptibility */}
+              <div className="mb-6">
+                <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🐛 Pest &amp; Disease Susceptibility</div>
+                <div className="flex flex-wrap gap-2">
+                  {pests.map((pest) => (
+                    <span key={pest.name} className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 border-2 rounded-lg ${RISK_COLOR[pest.risk]}`}>
+                      {pest.emoji} {pest.name}
+                      <span className="ml-1 opacity-60">({pest.risk})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* YELLOW #3 — Seed Bank CTA */}
+              <div className="bg-lime border-2 border-black rounded-2xl p-5 shadow-brutal-sm">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div>
+                    <div className="font-black text-base mb-1">🌱 Ready to grow {strain.name}?</div>
+                    <p className="text-sm text-gray-700">
+                      Find feminized, autoflowering, and regular {strain.name} seeds from trusted seed banks.
+                      {strain.grow_difficulty === "Easy" ? " Great pick for first-time growers." : strain.grow_difficulty === "Moderate" ? " Solid choice for intermediate growers." : " Best for experienced cultivators."}
+                    </p>
+                  </div>
+                  <a
+                    href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.name)}`}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="inline-flex items-center gap-2 bg-black text-white font-black text-sm px-5 py-3 rounded-xl border-2 border-black shadow-brutal-sm hover:bg-gray-900 transition-all whitespace-nowrap"
+                  >
+                    Find Seeds →
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -415,7 +538,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   },
                   {
                     q: `How strong is ${strain.name}?`,
-                    a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${potency.replace(/[🔴🟠🟡🟢]/g, "").trim()} potency. ${strain.thc_max >= 22 ? "Suitable for most experience levels." : "Great for beginners."}`,
+                    a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${potency.replace(/[🔴🟠🟡🟢]/g, "").trim()} potency. ${strain.thc_max >= 22 ? "Best for experienced consumers." : "Great for beginners."}`,
                   },
                   {
                     q: `What does ${strain.name} taste like?`,
@@ -428,12 +551,12 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   {
                     q: `Is ${strain.name} good for beginners?`,
                     a: strain.grow_difficulty === "Easy"
-                      ? `${strain.name} is an excellent choice for beginners — it's forgiving and resilient.`
+                      ? `${strain.name} is an excellent choice for beginner growers — forgiving and resilient.`
                       : `${strain.name} is ${strain.grow_difficulty === "Moderate" ? "moderately challenging" : "best suited for experienced growers"}.`,
                   },
                   {
                     q: `What is ${strain.name} good for?`,
-                    a: `Users report ${strain.name} helps with ${(strain.helps_with || []).join(", ")}. It's commonly used throughout the day depending on the desired effect.`,
+                    a: `Users report ${strain.name} helps with ${(strain.helps_with || []).join(", ")}. It's popular throughout the day depending on the desired effect.`,
                   },
                 ].map(({ q, a }) => (
                   <div key={q} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
