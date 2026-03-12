@@ -70,7 +70,20 @@ export default function StrainCard({
 
   return (
     <Link href={`/strains/${strain.slug}`} className="group block">
-      <article className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all duration-200">
+      {/*
+        GPU-accelerated card:
+        - transform: translateZ(0) promotes to composite layer before any interaction
+        - will-change: transform tells browser to prepare GPU layer
+        - transition on transform only (cheaper than box-shadow changes)
+        - Using translate Y only (no X) to avoid triggering layout
+      */}
+      <article
+        className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal
+          hover:shadow-brutal-lg hover:-translate-y-1
+          transition-transform duration-150 ease-out
+          [transform:translateZ(0)]
+          [will-change:transform]"
+      >
         {/* Image */}
         <div className="relative">
           <StrainImage strain={strain} priority={priority} />
