@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+
+// next/font/google: fonts are downloaded at build time, served from same domain
+// Zero network request to Google at runtime — fastest possible font loading
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -23,18 +33,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        {/* Preconnect to Google Fonts — eliminates render-blocking DNS lookup */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* font-display=swap prevents invisible text during load */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        />
-      </head>
-      <body className="min-h-screen flex flex-col antialiased">
+    <html lang="en" className={inter.variable}>
+      <body className="min-h-screen flex flex-col antialiased font-sans">
         <NavBar />
         <main className="flex-1 pt-16">
           {children}
