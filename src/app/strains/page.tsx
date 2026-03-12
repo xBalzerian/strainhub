@@ -163,7 +163,7 @@ export default async function StrainsPage({
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             {strains.map((s, idx) => (
               <StrainCard key={s.slug} strain={s} priority={idx < 10} />
             ))}
@@ -173,4 +173,5 @@ export default async function StrainsPage({
     </>
   );
 }
+
 
