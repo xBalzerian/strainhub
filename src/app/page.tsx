@@ -128,20 +128,59 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* AD BANNER */}
-      <div className="max-w-7xl mx-auto px-6 mb-2">
-        <div className="bg-white border-2 border-black rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap shadow-brutal">
-          <div>
-            <strong className="text-base font-black block mb-1">
-              🌱 ILGM Seed Bank
-              <span className="text-[9px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded ml-2 font-normal">AD</span>
-            </strong>
-            <span className="text-sm text-gray-500">Premium cannabis seeds · Guaranteed germination · Ships worldwide discreetly</span>
+      {/* AD BANNERS */}
+      <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Crop King Seeds */}
+        <a
+          href="https://www.cropkingseeds.com"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="bg-white border-2 border-black rounded-2xl p-5 flex items-center justify-between gap-4 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
+        >
+          <div className="flex items-center gap-4">
+            <img
+              src="/cropking-logo.png"
+              alt="Crop King Seeds"
+              className="h-10 w-auto object-contain"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black">Crop King Seeds</span>
+                <span className="text-[9px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded font-normal">AD</span>
+              </div>
+              <span className="text-xs text-gray-500">80% germination guarantee · Ships worldwide</span>
+            </div>
           </div>
-          <button className="bg-lime border-2 border-black font-black text-sm px-5 py-2.5 rounded-xl shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all whitespace-nowrap">
+          <span className="bg-lime border-2 border-black font-black text-xs px-4 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap shrink-0">
             Shop Seeds →
-          </button>
-        </div>
+          </span>
+        </a>
+
+        {/* Rocket Seeds */}
+        <a
+          href="https://www.rocketseeds.com"
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="bg-white border-2 border-black rounded-2xl p-5 flex items-center justify-between gap-4 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
+        >
+          <div className="flex items-center gap-4">
+            <img
+              src="/rocket-logo.svg"
+              alt="Rocket Seeds"
+              className="h-10 w-auto object-contain"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black">Rocket Seeds</span>
+                <span className="text-[9px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded font-normal">AD</span>
+              </div>
+              <span className="text-xs text-gray-500">Free shipping over $200 · 10 free seeds on $420+</span>
+            </div>
+          </div>
+          <span className="bg-lime border-2 border-black font-black text-xs px-4 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap shrink-0">
+            Shop Seeds →
+          </span>
+        </a>
       </div>
 
       {/* TOP STRAINS */}
