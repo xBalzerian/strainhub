@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 // Revalidate every 1 hour (ISR) — keeps data fresh without full SSR on every request
-export const revalidate = 3600;
+export const revalidate = 60;
 
 const EFFECTS = ["Happy", "Relaxed", "Euphoric", "Creative", "Energetic", "Sleepy"];
 const SORT_OPTIONS = [
