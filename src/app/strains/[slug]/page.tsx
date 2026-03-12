@@ -760,7 +760,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             <h2 className="text-xl font-black mb-6">🌿 Similar {strain.type} Strains</h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {similar.map((s) => (
-                <StrainCard key={s.id} strain={s} rank={s.rank_popularity} />
+                <StrainCard key={s.id} strain={s} />
               ))}
             </div>
           </div>
@@ -769,4 +769,5 @@ export default async function StrainPage({ params }: { params: { slug: string } 
     </>
   );
 }
+
 
