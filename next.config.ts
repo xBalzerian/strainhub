@@ -1,2 +1,2 @@
-// next.config.mjs is the active config — this file is unused but kept for reference
+// Active config is next.config.mjs — this file intentionally left empty
 export {};
