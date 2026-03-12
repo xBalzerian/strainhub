@@ -38,7 +38,7 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-black h-16 flex items-center px-6 gap-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-black h-16 flex items-center px-6 gap-4 [transform:translateZ(0)]">
       {/* Logo */}
       <Link href="/" className="text-xl font-black tracking-tight text-brand">
         Strain<span className="bg-lime text-brand px-1.5 py-0.5 rounded-md">Hub</span>
@@ -107,3 +107,4 @@ export default function NavBar() {
     </nav>
   );
 }
+
