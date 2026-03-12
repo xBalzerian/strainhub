@@ -5,7 +5,6 @@ import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains } from "@/lib/str
 import { strainMetadata, strainJsonLd } from "@/lib/seo";
 import StrainCard from "@/components/StrainCard";
 
-// Pre-generate all strain pages at build time (SSG = fast + SEO)
 export async function generateStaticParams() {
   const slugs = await getAllStrainSlugs();
   return slugs.map((s) => ({ slug: s.slug }));
@@ -48,10 +47,69 @@ const MOOD_EMOJI: Record<string, string> = {
   Giggly: "😂", Hungry: "🍔", Tingly: "✨",
 };
 
+// --- RED #1: Negative effects per strain (derived from type + effects + thc) ---
+const NEGATIVE_EFFECTS_MAP: Record<string, string[]> = {
+  "Dry Mouth": ["Dry Mouth"],
+  "Dry Eyes": ["Dry Eyes"],
+  "Paranoia": ["Paranoia"],
+  "Anxiety": ["Anxiety"],
+  "Dizzy": ["Dizziness"],
+  "Headache": ["Headache"],
+};
+
+function derivedNegativeEffects(thcMax: number, effects: string[], type: string): string[] {
+  const negatives: string[] = ["Dry Mouth", "Dry Eyes"];
+  if (thcMax >= 22) negatives.push("Paranoia");
+  if (thcMax >= 20 && type === "Sativa") negatives.push("Anxiety");
+  if (thcMax >= 25) negatives.push("Dizzy");
+  if (effects.includes("Sleepy") || type === "Indica") negatives.push("Couch-lock");
+  return negatives;
+}
+
+const NEGATIVE_EMOJI: Record<string, string> = {
+  "Dry Mouth": "💧",
+  "Dry Eyes": "👁️",
+  "Paranoia": "😰",
+  "Anxiety": "😬",
+  "Dizzy": "💫",
+  "Headache": "🤕",
+  "Couch-lock": "🛋️",
+};
+
+// --- RED #2: Sativa/Indica ratio derived from type ---
+function getStrainRatio(type: string, effects: string[]): { indica: number; sativa: number; label: string } {
+  if (type === "Indica") return { indica: 80, sativa: 20, label: "80% Indica / 20% Sativa" };
+  if (type === "Sativa") return { indica: 20, sativa: 80, label: "20% Indica / 80% Sativa" };
+  // Hybrid — lean based on effects
+  const energeticEffects = effects.filter(e => ["Energetic", "Uplifted", "Creative", "Focused", "Giggly"].includes(e)).length;
+  const relaxingEffects = effects.filter(e => ["Relaxed", "Sleepy", "Hungry", "Tingly"].includes(e)).length;
+  if (energeticEffects > relaxingEffects) return { indica: 40, sativa: 60, label: "40% Indica / 60% Sativa" };
+  if (relaxingEffects > energeticEffects) return { indica: 60, sativa: 40, label: "60% Indica / 40% Sativa" };
+  return { indica: 50, sativa: 50, label: "50% Indica / 50% Sativa" };
+}
+
+// --- RED #3: Separate aroma vs flavor ---
+const AROMA_KEYWORDS = ["Earthy", "Piney", "Pine", "Diesel", "Skunk", "Herbal", "Woody", "Spicy", "Pungent", "Chemical", "Ammonia", "Cheese", "Musky", "Floral", "Lavender", "Vanilla", "Coffee"];
+const FLAVOR_KEYWORDS = ["Sweet", "Berry", "Blueberry", "Citrus", "Lemon", "Orange", "Grape", "Mango", "Tropical", "Mint", "Chocolate", "Caramel", "Fruity", "Candy", "Creamy", "Butter"];
+
+function separateAromaFlavor(flavors: string[]): { aromas: string[]; flavors: string[] } {
+  const aromas: string[] = [];
+  const flavorOnly: string[] = [];
+  for (const f of flavors) {
+    const isAroma = AROMA_KEYWORDS.some(k => f.toLowerCase().includes(k.toLowerCase()));
+    const isFlavor = FLAVOR_KEYWORDS.some(k => f.toLowerCase().includes(k.toLowerCase()));
+    if (isAroma && !isFlavor) aromas.push(f);
+    else if (isFlavor) { flavorOnly.push(f); if (isAroma) aromas.push(f); }
+    else flavorOnly.push(f); // fallback
+  }
+  // ensure at least something in aroma
+  if (aromas.length === 0 && flavorOnly.length > 0) aromas.push(...flavorOnly.slice(0, 2));
+  return { aromas, flavors: flavorOnly };
+}
+
 export default async function StrainPage({ params }: { params: { slug: string } }) {
-  const [strain, similarStrains] = await Promise.all([
+  const [strain] = await Promise.all([
     getStrainBySlug(params.slug),
-    getSimilarStrains("", params.slug, 4),
   ]);
 
   if (!strain) notFound();
@@ -63,9 +121,13 @@ export default async function StrainPage({ params }: { params: { slug: string } 
   const potency = strain.thc_max >= 28 ? "🔴 Very High" : strain.thc_max >= 22 ? "🟠 High" : strain.thc_max >= 16 ? "🟡 Moderate" : "🟢 Mild";
   const typeColor = strain.type === "Indica" ? "text-indica bg-indica-bg border-indica-border" : strain.type === "Sativa" ? "text-sativa bg-sativa-bg border-sativa-border" : "text-hybrid bg-hybrid-bg border-hybrid-border";
 
+  // RED items computed
+  const negativeEffects = derivedNegativeEffects(strain.thc_max, strain.effects || [], strain.type);
+  const ratio = getStrainRatio(strain.type, strain.effects || []);
+  const { aromas, flavors: flavorList } = separateAromaFlavor(strain.flavors || []);
+
   return (
     <>
-      {/* JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="max-w-5xl mx-auto px-6 py-10">
@@ -78,7 +140,6 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           <span className="text-brand">{strain.name}</span>
         </nav>
 
-        {/* Back button */}
         <Link href="/strains" className="inline-flex items-center gap-2 bg-white border-2 border-black px-4 py-2 rounded-xl text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all mb-8">
           ← Back to Strains
         </Link>
@@ -134,6 +195,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               <div className="flex flex-col gap-2 text-sm">
                 {[
                   ["Type", strain.type],
+                  ["Ratio", ratio.label],
                   ["THC Range", `${strain.thc_min}–${strain.thc_max}%`],
                   ["CBD", `${strain.cbd_max}%`],
                   ["Flowering", `${strain.flowering_weeks_min}–${strain.flowering_weeks_max} weeks`],
@@ -172,28 +234,77 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               ))}
             </div>
 
-            {/* Effects */}
+            {/* RED #2 — Indica/Sativa Ratio Visual */}
+            <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm mb-8">
+              <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🧬 Indica / Sativa Ratio</div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-xs font-black text-indica w-14 text-right">Indica</span>
+                <div className="flex-1 h-4 bg-gray-100 border-2 border-black rounded-full overflow-hidden flex">
+                  <div
+                    className="h-full bg-indica-bg border-r-2 border-black transition-all"
+                    style={{ width: `${ratio.indica}%` }}
+                  />
+                  <div
+                    className="h-full bg-sativa-bg"
+                    style={{ width: `${ratio.sativa}%` }}
+                  />
+                </div>
+                <span className="text-xs font-black text-sativa w-14">Sativa</span>
+              </div>
+              <div className="flex justify-between text-xs font-black mt-1 px-14">
+                <span className="text-indica">{ratio.indica}%</span>
+                <span className="text-gray-400">{ratio.label}</span>
+                <span className="text-sativa">{ratio.sativa}%</span>
+              </div>
+            </div>
+
+            {/* RED #1 — Positive Effects */}
             <div className="mb-8">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3 after:content-[''] after:flex-1 after:h-0.5 after:bg-gray-200">✨ Effects</h2>
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">✨ Positive Effects</h2>
               <div className="flex flex-col gap-3">
-                {strain.effects?.map((e) => (
-                  <div key={e} className="flex items-center gap-4 bg-lime-pale border-2 border-black rounded-xl px-4 py-3">
-                    <span className="text-2xl">{MOOD_EMOJI[e] || "✨"}</span>
+                {(strain.effects || []).map((effect) => (
+                  <div key={effect} className="flex items-start gap-4 bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
+                    <span className="text-2xl">{MOOD_EMOJI[effect] || "🌿"}</span>
                     <div>
-                      <div className="font-black text-sm">{e}</div>
-                      <div className="text-xs text-gray-500 leading-relaxed">{EFFECT_DESC[e] || "A commonly reported effect of this strain."}</div>
+                      <div className="font-black text-sm">{effect}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">{EFFECT_DESC[effect] || ""}</div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Flavors */}
+            {/* RED #1 — Negative Effects / Side Effects */}
             <div className="mb-8">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3 after:content-[''] after:flex-1 after:h-0.5 after:bg-gray-200">👅 Flavor & Aroma</h2>
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">⚠️ Possible Side Effects</h2>
+              <p className="text-xs text-gray-400 mb-3">Based on user reports and strain profile. Individual experiences may vary.</p>
               <div className="flex flex-wrap gap-2">
-                {strain.flavors?.map((f) => (
-                  <span key={f} className="font-bold text-sm px-4 py-2 rounded-full border-2 border-black shadow-brutal-sm bg-amber-50 text-amber-700 border-amber-200">
+                {negativeEffects.map((effect) => (
+                  <span key={effect} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-red-50 border-2 border-red-200 rounded-lg text-red-700">
+                    {NEGATIVE_EMOJI[effect] || "⚠️"} {effect}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* RED #3 — Aroma (separate from Flavor) */}
+            <div className="mb-8">
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">👃 Aroma</h2>
+              <div className="flex flex-wrap gap-2">
+                {aromas.map((a) => (
+                  <span key={a} className="text-xs font-bold px-3 py-1.5 bg-purple-50 border-2 border-purple-200 rounded-lg text-purple-700">
+                    🌫️ {a}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* RED #3 — Flavor (separate) */}
+            <div className="mb-8">
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">👅 Flavor</h2>
+              <div className="flex flex-wrap gap-2">
+                {flavorList.map((f) => (
+                  <span key={f} className="text-xs font-bold px-3 py-1.5 bg-orange-50 border-2 border-orange-200 rounded-lg text-orange-700">
                     🍋 {f}
                   </span>
                 ))}
@@ -201,113 +312,147 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             </div>
 
             {/* Helps With */}
-            <div className="mb-8">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3 after:content-[''] after:flex-1 after:h-0.5 after:bg-gray-200">💊 Reported to Help With</h2>
-              <div className="grid grid-cols-2 gap-2">
-                {strain.helps_with?.map((h) => (
-                  <div key={h} className="bg-sativa-bg border border-sativa-border rounded-xl px-4 py-2.5 text-sm font-bold text-sativa">
-                    ✅ {h}
-                  </div>
-                ))}
+            {strain.helps_with?.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">💊 Reported to Help With</h2>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {strain.helps_with.map((h) => (
+                    <span key={h} className="text-xs font-bold px-3 py-1.5 bg-green-50 border-2 border-green-200 rounded-lg text-green-700">
+                      ✅ {h}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[11px] text-gray-400">⚠️ These are user-reported effects, not medical advice. Always consult a healthcare provider.</p>
               </div>
-              <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-                ⚠️ These are user-reported effects, not medical advice. Always consult a healthcare provider.
-              </p>
-            </div>
+            )}
 
             {/* Genetics */}
             {strain.parents?.length > 0 && (
               <div className="mb-8">
-                <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3 after:content-[''] after:flex-1 after:h-0.5 after:bg-gray-200">🌱 Genetics & Lineage</h2>
-                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-brutal-sm">
-                  <p className="text-sm text-gray-500 mb-4 leading-relaxed">
-                    {strain.name} was created by crossing {strain.parents.join(" and ")}, combining the best traits of both parent strains.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {strain.parents.map((p) => (
-                      <Link key={p} href={`/strains/${p.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                        className="font-bold text-sm px-4 py-2 rounded-xl border-2 border-black shadow-brutal-sm bg-white hover:bg-lime transition-all">
-                        {p} →
-                      </Link>
-                    ))}
-                  </div>
+                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🌱 Genetics &amp; Lineage</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  {strain.name} was created by crossing{" "}
+                  {strain.parents.map((p, i) => (
+                    <span key={p}>
+                      <strong>{p}</strong>
+                      {i < strain.parents.length - 2 ? ", " : i === strain.parents.length - 2 ? " and " : ""}
+                    </span>
+                  ))}, combining the best traits of both parent strains.
+                </p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  {strain.parents.map((parent, i) => (
+                    <span key={parent} className="flex items-center gap-2">
+                      <span className="bg-lime-pale border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm">{parent}</span>
+                      {i < strain.parents.length - 1 && <span className="text-gray-400 font-black">→</span>}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Terpene Deep Dive */}
-        <div className="bg-white border-2 border-black rounded-2xl p-7 shadow-brutal mb-6">
-          <h2 className="text-xl font-black mb-2">🧬 Terpene Profile</h2>
-          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-            Terpenes give {strain.name} its distinctive aroma and contribute to its effects through the entourage effect — the synergy between cannabinoids and terpenes.
-          </p>
-          <div className="flex flex-col gap-4">
-            {strain.terpenes?.map((t) => {
-              const info = TERPENE_INFO[t] || { emoji: "🌿", desc: "A terpene contributing to this strain's unique aroma and effect profile." };
-              return (
-                <div key={t} className="flex gap-4 bg-indica-bg border border-indica-border rounded-xl px-5 py-4">
-                  <span className="text-2xl mt-0.5">{info.emoji}</span>
-                  <div>
-                    <div className="font-black text-indica mb-1">{t}</div>
-                    <div className="text-sm text-gray-500 leading-relaxed">{info.desc}</div>
-                  </div>
+            {/* Terpenes */}
+            {strain.terpenes?.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">🧬 Terpene Profile</h2>
+                <p className="text-xs text-gray-400 mb-4">
+                  Terpenes give {strain.name} its distinctive aroma and contribute to its effects through the entourage effect — the synergy between cannabinoids and terpenes.
+                </p>
+                <div className="flex flex-col gap-3">
+                  {strain.terpenes.map((terpene) => {
+                    const info = TERPENE_INFO[terpene];
+                    return (
+                      <div key={terpene} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xl">{info?.emoji || "🌿"}</span>
+                          <span className="font-black text-sm">{terpene}</span>
+                          <span className="ml-auto text-[10px] font-bold bg-lime px-2 py-0.5 rounded-full border border-black">
+                            {strain.terpenes[0] === terpene ? "Dominant" : "Secondary"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500">{info?.desc || ""}</p>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Grow Guide */}
-        <div className="bg-white border-2 border-black rounded-2xl p-7 shadow-brutal mb-6">
-          <h2 className="text-xl font-black mb-2">🌿 Growing {strain.name}</h2>
-          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-            {strain.name} is a <strong>{strain.grow_difficulty.toLowerCase()}</strong>-to-grow {strain.type.toLowerCase()} that flowers in {strain.flowering_weeks_min}–{strain.flowering_weeks_max} weeks.
-            Plants reach a <strong>{strain.grow_height.toLowerCase()}</strong> height with a <strong>{strain.grow_yield.toLowerCase()}</strong> yield.
-            {strain.grow_difficulty === "Easy" ? " Perfect for beginners — forgiving and resilient." : strain.grow_difficulty === "Moderate" ? " Best for intermediate growers." : " Recommended for experienced cultivators only."}
-          </p>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Difficulty", val: strain.grow_difficulty, icon: strain.grow_difficulty === "Easy" ? "🟢" : strain.grow_difficulty === "Moderate" ? "🟡" : "🔴" },
-              { label: "Yield", val: strain.grow_yield, icon: strain.grow_yield === "High" ? "🤑" : "💰" },
-              { label: "Height", val: strain.grow_height, icon: "📏" },
-              { label: "Flowering Time", val: `${strain.flowering_weeks_min}–${strain.flowering_weeks_max} weeks`, icon: "⏱" },
-            ].map((item) => (
-              <div key={item.label} className="bg-off-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">{item.label}</div>
-                <div className="text-lg font-black">{item.icon} {item.val}</div>
               </div>
-            ))}
-          </div>
-        </div>
+            )}
 
-        {/* FAQ — SEO Gold */}
-        <div className="bg-lime-pale border-2 border-black rounded-2xl p-7 shadow-brutal mb-10">
-          <h2 className="text-xl font-black mb-6">❓ People Also Ask About {strain.name}</h2>
-          <div className="flex flex-col gap-0 divide-y-2 divide-gray-200">
-            {[
-              { q: `What are the effects of ${strain.name}?`, a: `${strain.name} is commonly reported to produce ${strain.effects?.join(", ")} effects. As a ${strain.type} strain, it's ${strain.type === "Indica" ? "best used in the evening for relaxation" : strain.type === "Sativa" ? "popular for daytime use and creativity" : "versatile for day or evening use"}.` },
-              { q: `How strong is ${strain.name}?`, a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${strain.thc_max >= 28 ? "very high" : strain.thc_max >= 22 ? "high" : "moderate"} potency. ${strain.thc_max >= 25 ? "Beginners should start with a very small amount and wait." : "Suitable for most experience levels."}` },
-              { q: `What does ${strain.name} taste like?`, a: `${strain.name} features a ${strain.flavors?.join(", ")} flavor profile. The dominant terpene ${strain.terpenes?.[0]} contributes its signature aroma, alongside ${strain.terpenes?.slice(1).join(" and ")}.` },
-              { q: `Is ${strain.name} good for beginners?`, a: `${strain.name} is ${strain.grow_difficulty === "Easy" ? "an excellent choice for beginners — it's forgiving and resilient." : strain.grow_difficulty === "Moderate" ? "suitable for growers with some basic experience." : "better suited for experienced growers who can handle its demanding requirements."}` },
-              { q: `What is ${strain.name} good for?`, a: `Users report ${strain.name} helps with ${strain.helps_with?.join(", ")}. It's commonly used ${strain.type === "Indica" ? "in the evening for relaxation and sleep" : strain.type === "Sativa" ? "during the day for energy and focus" : "throughout the day depending on the desired effect"}.` },
-            ].map((faq, i) => (
-              <div key={i} className="py-5">
-                <h3 className="font-black text-sm mb-2">🔍 {faq.q}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{faq.a}</p>
+            {/* Grow Info */}
+            <div className="mb-8">
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🌿 Growing {strain.name}</h2>
+              <p className="text-sm text-gray-600 mb-4">
+                {strain.name} is a{" "}
+                <strong>{strain.grow_difficulty?.toLowerCase()}</strong>-to-grow{" "}
+                {strain.type.toLowerCase()} that flowers in{" "}
+                <strong>{strain.flowering_weeks_min}–{strain.flowering_weeks_max} weeks</strong>. Plants reach a{" "}
+                <strong>{strain.grow_height?.toLowerCase()}</strong> height with a{" "}
+                <strong>{strain.grow_yield?.toLowerCase()}</strong> yield.
+                {strain.grow_difficulty === "Easy" ? " Perfect for beginners — forgiving and resilient." : strain.grow_difficulty === "Difficult" ? " Recommended for experienced growers only." : " A good choice for intermediate growers."}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "Difficulty", value: `${strain.grow_difficulty === "Easy" ? "🟢" : strain.grow_difficulty === "Moderate" ? "🟡" : "🔴"} ${strain.grow_difficulty}` },
+                  { label: "Yield", value: `🤑 ${strain.grow_yield}` },
+                  { label: "Height", value: `📏 ${strain.grow_height}` },
+                  { label: "Flowering Time", value: `⏱ ${strain.flowering_weeks_min}–${strain.flowering_weeks_max} weeks` },
+                ].map((g) => (
+                  <div key={g.label} className="bg-white border-2 border-black rounded-xl p-3 shadow-brutal-sm text-center">
+                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{g.label}</div>
+                    <div className="text-sm font-black">{g.value}</div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* FAQ */}
+            <div className="mb-8">
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">❓ People Also Ask About {strain.name}</h2>
+              <div className="flex flex-col gap-3">
+                {[
+                  {
+                    q: `What are the effects of ${strain.name}?`,
+                    a: `${strain.name} is commonly reported to produce ${(strain.effects || []).join(", ")} effects. As a ${strain.type} strain, it's versatile for day or evening use.`,
+                  },
+                  {
+                    q: `How strong is ${strain.name}?`,
+                    a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${potency.replace(/[🔴🟠🟡🟢]/g, "").trim()} potency. ${strain.thc_max >= 22 ? "Suitable for most experience levels." : "Great for beginners."}`,
+                  },
+                  {
+                    q: `What does ${strain.name} taste like?`,
+                    a: `${strain.name} features a ${flavorList.join(", ")} flavor profile. The dominant terpene ${strain.terpenes?.[0]} contributes its signature aroma${strain.terpenes?.length > 1 ? `, alongside ${strain.terpenes.slice(1).join(" and ")}` : ""}.`,
+                  },
+                  {
+                    q: `What are the side effects of ${strain.name}?`,
+                    a: `Like most cannabis strains, ${strain.name} may cause ${negativeEffects.join(", ")} especially in higher doses. Start low and go slow if you're new to this strain.`,
+                  },
+                  {
+                    q: `Is ${strain.name} good for beginners?`,
+                    a: strain.grow_difficulty === "Easy"
+                      ? `${strain.name} is an excellent choice for beginners — it's forgiving and resilient.`
+                      : `${strain.name} is ${strain.grow_difficulty === "Moderate" ? "moderately challenging" : "best suited for experienced growers"}.`,
+                  },
+                  {
+                    q: `What is ${strain.name} good for?`,
+                    a: `Users report ${strain.name} helps with ${(strain.helps_with || []).join(", ")}. It's commonly used throughout the day depending on the desired effect.`,
+                  },
+                ].map(({ q, a }) => (
+                  <div key={q} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
+                    <div className="font-black text-sm mb-1.5">🔍 {q}</div>
+                    <div className="text-gray-600 text-xs leading-relaxed">{a}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Similar Strains */}
         {similar.length > 0 && (
           <div>
-            <h2 className="text-2xl font-black tracking-tight mb-6">🌿 Similar {strain.type} Strains</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <h2 className="text-xl font-black mb-6">🌿 Similar {strain.type} Strains</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {similar.map((s) => (
-                <StrainCard key={s.slug} strain={s} />
+                <StrainCard key={s.id} strain={s} rank={s.rank_popularity} />
               ))}
             </div>
           </div>
