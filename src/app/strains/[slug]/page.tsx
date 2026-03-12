@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains } from "@/lib/strains";
 import { strainMetadata, strainJsonLd } from "@/lib/seo";
@@ -143,14 +144,23 @@ const RISK_COLOR: Record<string, string> = {
   High: "text-red-700 bg-red-50 border-red-200",
 };
 
-// --- YELLOW #2: Minor cannabinoids ---
+// --- YELLOW #2: Minor cannabinoids — fully deterministic, no Math.random() ---
+// Uses a simple integer hash so SSR and client always get the same values
+function hashInt(n: number): number {
+  let h = n ^ (n >>> 16);
+  h = Math.imul(h, 0x45d9f3b);
+  h = h ^ (h >>> 16);
+  return Math.abs(h);
+}
 function getMinorCannabinoids(thcMax: number, cbdMax: number, type: string) {
-  const seed = thcMax * 7 + cbdMax * 3;
-  const pseudo = (n: number) => ((seed * n) % 97) / 100;
-  const cbn = type === "Indica" ? +(0.08 + pseudo(3) * 0.15).toFixed(2) : +(0.04 + pseudo(5) * 0.08).toFixed(2);
-  const cbg = +(0.1 + (thcMax / 300)).toFixed(2);
-  const thcv = type === "Sativa" ? +(0.15 + pseudo(7) * 0.25).toFixed(2) : +(0.04 + pseudo(11) * 0.08).toFixed(2);
-  const cbc = +(0.08 + pseudo(13) * 0.18).toFixed(2);
+  const seed = thcMax * 31 + cbdMax * 17;
+  const p = (salt: number, lo: number, range: number) =>
+    +(lo + (hashInt(seed + salt) % 1000) / 1000 * range).toFixed(2);
+
+  const cbn  = type === "Indica" ? p(1, 0.08, 0.15) : p(2, 0.04, 0.08);
+  const cbg  = +(0.10 + thcMax / 300).toFixed(2);
+  const thcv = type === "Sativa" ? p(3, 0.15, 0.25) : p(4, 0.04, 0.08);
+  const cbc  = p(5, 0.08, 0.18);
   return { cbn, cbg, thcv, cbc };
 }
 
@@ -319,7 +329,16 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           {/* LEFT — Image + Quick Info */}
           <div className="lg:sticky lg:top-24 self-start">
             {strain.image_url ? (
-              <img src={strain.image_url} alt={`${strain.name} cannabis strain`} className="w-full aspect-square object-cover rounded-2xl border-2 border-black shadow-brutal-lg mb-4" />
+              <div className="relative w-full aspect-square rounded-2xl border-2 border-black shadow-brutal-lg overflow-hidden mb-4">
+                <Image
+                  src={strain.image_url}
+                  alt={`${strain.name} cannabis strain`}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 380px"
+                  className="object-cover"
+                />
+              </div>
             ) : (
               <div className="w-full aspect-square bg-gray-100 rounded-2xl border-2 border-black flex items-center justify-center text-8xl mb-4">🌿</div>
             )}
@@ -750,3 +769,4 @@ export default async function StrainPage({ params }: { params: { slug: string } 
     </>
   );
 }
+
