@@ -34,7 +34,7 @@ const EFFECT_DESC: Record<string, string> = {
   Creative: "Unlocks creative thinking, free association, and artistic inspiration. Great for creative projects.",
   Energetic: "Boosts energy, motivation, and physical activity. Great for daytime use and exercise.",
   Sleepy: "Promotes drowsiness and helps you fall asleep faster and stay asleep longer.",
-  Uplifted: "Lifts your spirits and leaving you feeling positive, optimistic, and sociable.",
+  Uplifted: "Lifts your spirits and leaves you feeling positive, optimistic, and sociable.",
   Focused: "Sharpens mental clarity and concentration. Helps you stay on task without distraction.",
   Hungry: "Stimulates appetite strongly. Also known as 'the munchies.' Great for appetite loss.",
   Giggly: "Induces laughter and a lighthearted, playful, social mood.",
@@ -111,7 +111,6 @@ function getGrowEnvironment(type: string, difficulty: string): {
       { name: "Greenhouse", emoji: "🏡", note: "Ideal for consistent yields year-round" },
     ],
   };
-
   const pestMap: Record<string, { name: string; emoji: string; risk: "Low" | "Medium" | "High" }[]> = {
     Easy: [
       { name: "Spider Mites", emoji: "🕷️", risk: "Low" },
@@ -132,7 +131,6 @@ function getGrowEnvironment(type: string, difficulty: string): {
       { name: "Powdery Mildew", emoji: "🍄", risk: "Medium" },
     ],
   };
-
   return {
     environments: envMap[type] || envMap["Hybrid"],
     pests: pestMap[difficulty] || pestMap["Moderate"],
@@ -145,16 +143,86 @@ const RISK_COLOR: Record<string, string> = {
   High: "text-red-700 bg-red-50 border-red-200",
 };
 
-// --- YELLOW #2: Minor cannabinoids derived from type + thc ---
-function getMinorCannabinoids(thcMax: number, cbdMax: number, type: string): {
-  cbn: number; cbg: number; thcv: number; cbc: number;
-} {
-  // Realistic derived estimates based on typical profiles
-  const cbn = type === "Indica" ? parseFloat((0.1 + Math.random() * 0.15).toFixed(2)) : parseFloat((0.05 + Math.random() * 0.1).toFixed(2));
-  const cbg = parseFloat((0.1 + (thcMax / 300)).toFixed(2));
-  const thcv = type === "Sativa" ? parseFloat((0.2 + Math.random() * 0.3).toFixed(2)) : parseFloat((0.05 + Math.random() * 0.1).toFixed(2));
-  const cbc = parseFloat((0.1 + Math.random() * 0.2).toFixed(2));
+// --- YELLOW #2: Minor cannabinoids ---
+function getMinorCannabinoids(thcMax: number, cbdMax: number, type: string) {
+  const seed = thcMax * 7 + cbdMax * 3;
+  const pseudo = (n: number) => ((seed * n) % 97) / 100;
+  const cbn = type === "Indica" ? +(0.08 + pseudo(3) * 0.15).toFixed(2) : +(0.04 + pseudo(5) * 0.08).toFixed(2);
+  const cbg = +(0.1 + (thcMax / 300)).toFixed(2);
+  const thcv = type === "Sativa" ? +(0.15 + pseudo(7) * 0.25).toFixed(2) : +(0.04 + pseudo(11) * 0.08).toFixed(2);
+  const cbc = +(0.08 + pseudo(13) * 0.18).toFixed(2);
   return { cbn, cbg, thcv, cbc };
+}
+
+// --- GREEN #1: Consumption methods ---
+function getConsumptionMethods(type: string, thcMax: number, effects: string[]): {
+  method: string; emoji: string; rating: "Recommended" | "Great" | "Works"; note: string;
+}[] {
+  const isRelaxing = effects.some(e => ["Relaxed", "Sleepy"].includes(e));
+  const isEnergetic = effects.some(e => ["Energetic", "Creative", "Focused"].includes(e));
+  const isHighTHC = thcMax >= 22;
+
+  return [
+    {
+      method: "Smoking",
+      emoji: "🚬",
+      rating: "Recommended",
+      note: "Classic and fast-acting. Effects hit within minutes. Great for precise dosing.",
+    },
+    {
+      method: "Vaporizing",
+      emoji: "💨",
+      rating: "Great",
+      note: `Cleaner than smoking, preserves terpenes better. ${isEnergetic ? "Ideal for daytime use with this strain." : "Smoother experience with full flavor profile."}`,
+    },
+    {
+      method: "Edibles",
+      emoji: "🍪",
+      rating: isHighTHC ? "Works" : "Great",
+      note: isHighTHC
+        ? `Strong THC — go very slow with edibles. Effects can be intense and last 4–8 hours.`
+        : `Works well in edibles. Effects take 30–90 min to kick in but last longer.`,
+    },
+    {
+      method: "Joints / Blunts",
+      emoji: "🌿",
+      rating: "Recommended",
+      note: `Social and smooth. ${type === "Sativa" ? "Great for a sesh with friends." : type === "Indica" ? "Perfect for a relaxing evening smoke." : "Versatile — fits any occasion."}`,
+    },
+    {
+      method: "Bong / Pipe",
+      emoji: "🫧",
+      rating: isHighTHC ? "Works" : "Great",
+      note: isHighTHC
+        ? "Delivers a potent hit — recommended for experienced users only."
+        : "Efficient and direct. Cool smoke with good flavor.",
+    },
+    {
+      method: "Concentrate / Dab",
+      emoji: "💎",
+      rating: "Works",
+      note: "Highly concentrated — only for experienced consumers. Intense and immediate effects.",
+    },
+  ];
+}
+
+const RATING_STYLE: Record<string, string> = {
+  Recommended: "bg-lime border-black text-black",
+  Great: "bg-blue-50 border-blue-300 text-blue-700",
+  Works: "bg-gray-100 border-gray-300 text-gray-600",
+};
+
+// --- GREEN #2: Experience level badge ---
+function getExperienceLevel(thcMax: number, difficulty: string): {
+  label: string; emoji: string; color: string; desc: string;
+} {
+  if (thcMax >= 25 || difficulty === "Difficult") {
+    return { label: "Experienced", emoji: "🔴", color: "bg-red-50 border-red-300 text-red-700", desc: "High THC / complex grow — best for seasoned consumers and growers" };
+  }
+  if (thcMax >= 18 || difficulty === "Moderate") {
+    return { label: "Intermediate", emoji: "🟡", color: "bg-yellow-50 border-yellow-300 text-yellow-700", desc: "Moderate potency and grow complexity — some experience recommended" };
+  }
+  return { label: "Beginner Friendly", emoji: "🟢", color: "bg-green-50 border-green-300 text-green-700", desc: "Lower THC and easy to grow — perfect for first-timers" };
 }
 
 export default async function StrainPage({ params }: { params: { slug: string } }) {
@@ -166,16 +234,23 @@ export default async function StrainPage({ params }: { params: { slug: string } 
   const thcPct = Math.min(100, (strain.thc_max / 35) * 100);
   const cbdPct = Math.min(100, (strain.cbd_max / 25) * 100);
   const potency = strain.thc_max >= 28 ? "🔴 Very High" : strain.thc_max >= 22 ? "🟠 High" : strain.thc_max >= 16 ? "🟡 Moderate" : "🟢 Mild";
-  const typeColor = strain.type === "Indica" ? "text-indica bg-indica-bg border-indica-border" : strain.type === "Sativa" ? "text-sativa bg-sativa-bg border-sativa-border" : "text-hybrid bg-hybrid-bg border-hybrid-border";
+  const typeColor = strain.type === "Indica"
+    ? "text-indica bg-indica-bg border-indica-border"
+    : strain.type === "Sativa"
+    ? "text-sativa bg-sativa-bg border-sativa-border"
+    : "text-hybrid bg-hybrid-bg border-hybrid-border";
 
-  // RED computed
   const negativeEffects = derivedNegativeEffects(strain.thc_max, strain.effects || [], strain.type);
   const ratio = getStrainRatio(strain.type, strain.effects || []);
   const { aromas, flavors: flavorList } = separateAromaFlavor(strain.flavors || []);
-
-  // YELLOW computed
   const { environments, pests } = getGrowEnvironment(strain.type, strain.grow_difficulty);
   const minorCannabinoids = getMinorCannabinoids(strain.thc_max, strain.cbd_max, strain.type);
+  const consumptionMethods = getConsumptionMethods(strain.type, strain.thc_max, strain.effects || []);
+  const experienceLevel = getExperienceLevel(strain.thc_max, strain.grow_difficulty);
+
+  // Share URL (built server-side, no window needed)
+  const shareUrl = `https://strainhub.vercel.app/strains/${strain.slug}`;
+  const shareText = `Check out ${strain.name} on StrainHub — ${strain.type}, ${strain.thc_max}% THC`;
 
   return (
     <>
@@ -191,9 +266,53 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           <span className="text-brand">{strain.name}</span>
         </nav>
 
-        <Link href="/strains" className="inline-flex items-center gap-2 bg-white border-2 border-black px-4 py-2 rounded-xl text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all mb-8">
-          ← Back to Strains
-        </Link>
+        {/* Top bar: Back + Share */}
+        <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
+          <Link href="/strains" className="inline-flex items-center gap-2 bg-white border-2 border-black px-4 py-2 rounded-xl text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all">
+            ← Back to Strains
+          </Link>
+
+          {/* GREEN #3 — Share Buttons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Share:</span>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-black text-white rounded-xl border-2 border-black hover:bg-gray-800 transition-all"
+              aria-label="Share on X"
+            >
+              𝕏 Twitter
+            </a>
+            <a
+              href={`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-orange-500 text-white rounded-xl border-2 border-orange-600 hover:bg-orange-600 transition-all"
+              aria-label="Share on Reddit"
+            >
+              🟠 Reddit
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-blue-600 text-white rounded-xl border-2 border-blue-700 hover:bg-blue-700 transition-all"
+              aria-label="Share on Facebook"
+            >
+              📘 Facebook
+            </a>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-green-500 text-white rounded-xl border-2 border-green-600 hover:bg-green-600 transition-all"
+              aria-label="Share on WhatsApp"
+            >
+              💬 WhatsApp
+            </a>
+          </div>
+        </div>
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-12 mb-12">
@@ -205,7 +324,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               <div className="w-full aspect-square bg-gray-100 rounded-2xl border-2 border-black flex items-center justify-center text-8xl mb-4">🌿</div>
             )}
 
-            {/* Badges */}
+            {/* Badges row */}
             <div className="flex flex-wrap gap-2 mb-4">
               <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-black shadow-brutal-sm ${typeColor}`}>
                 {strain.type === "Indica" ? "🍇" : strain.type === "Sativa" ? "☀️" : "⚡"} {strain.type}
@@ -215,6 +334,10 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </span>
               <span className="text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-black shadow-brutal-sm bg-white">
                 {potency} Potency
+              </span>
+              {/* GREEN #2 — Experience level badge */}
+              <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border-2 shadow-brutal-sm ${experienceLevel.color}`}>
+                {experienceLevel.emoji} {experienceLevel.label}
               </span>
             </div>
 
@@ -244,7 +367,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             <div className="bg-lime-pale border-2 border-black rounded-xl p-4 shadow-brutal-sm">
               <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">Quick Facts</div>
               <div className="flex flex-col gap-2 text-sm">
-                {[
+                {([
                   ["Type", strain.type],
                   ["Ratio", ratio.label],
                   ["THC Range", `${strain.thc_min}–${strain.thc_max}%`],
@@ -256,11 +379,12 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   ["Difficulty", strain.grow_difficulty],
                   ["Yield", strain.grow_yield],
                   ["Height", strain.grow_height],
+                  ...(strain.breeder ? [["Breeder", strain.breeder]] : []),
                   ...(strain.parents?.length ? [["Parents", strain.parents.slice(0, 2).join(" × ")]] : []),
-                ].map(([label, value]) => (
+                ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between">
                     <span className="text-gray-500 font-medium">{label}</span>
-                    <strong className="font-black">{value}</strong>
+                    <strong className="font-black text-right max-w-[60%]">{value}</strong>
                   </div>
                 ))}
               </div>
@@ -269,7 +393,28 @@ export default async function StrainPage({ params }: { params: { slug: string } 
 
           {/* RIGHT — Full Info */}
           <div>
-            <h1 className="text-5xl font-black tracking-tight leading-tight mb-3">{strain.name}</h1>
+            <h1 className="text-5xl font-black tracking-tight leading-tight mb-2">{strain.name}</h1>
+
+            {/* GREEN #2 — Experience level inline banner */}
+            <div className={`inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-lg border-2 mb-3 ${experienceLevel.color}`}>
+              {experienceLevel.emoji} {experienceLevel.label} — {experienceLevel.desc}
+            </div>
+
+            {/* GREEN #4 — Breeder / Seed Bank */}
+            {strain.breeder && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Breeder:</span>
+                <a
+                  href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.breeder)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-lime border-2 border-black rounded-lg shadow-brutal-sm hover:bg-lime/80 transition-all"
+                >
+                  🌱 {strain.breeder} ↗
+                </a>
+              </div>
+            )}
+
             <p className="text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
               {strain.description}
             </p>
@@ -310,7 +455,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm mb-8">
               <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-1">🔬 Full Cannabinoid Profile</div>
               <p className="text-xs text-gray-400 mb-4">Minor cannabinoids contribute to the entourage effect — enhancing and modulating the impact of THC and CBD.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
                   { label: "THC", value: `${strain.thc_max}%`, desc: "Primary psychoactive", color: "bg-lime border-black" },
                   { label: "CBD", value: `${strain.cbd_max}%`, desc: "Non-psychoactive, balancing", color: "bg-blue-50 border-blue-200" },
@@ -354,6 +499,27 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   <span key={effect} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-red-50 border-2 border-red-200 rounded-lg text-red-700">
                     {NEGATIVE_EMOJI[effect] || "⚠️"} {effect}
                   </span>
+                ))}
+              </div>
+            </div>
+
+            {/* GREEN #1 — Consumption Methods */}
+            <div className="mb-8">
+              <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🔥 How to Consume {strain.name}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {consumptionMethods.map((m) => (
+                  <div key={m.method} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm flex items-start gap-3">
+                    <span className="text-2xl">{m.emoji}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-black text-sm">{m.method}</span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${RATING_STYLE[m.rating]}`}>
+                          {m.rating}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-500">{m.note}</div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -448,7 +614,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             )}
 
-            {/* YELLOW #1 — Grow Environment + Pests + Seed Bank CTA */}
+            {/* Grow Section */}
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🌿 Growing {strain.name}</h2>
               <p className="text-sm text-gray-600 mb-4">
@@ -461,7 +627,6 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 {strain.grow_difficulty === "Easy" ? " Perfect for beginners — forgiving and resilient." : strain.grow_difficulty === "Difficult" ? " Recommended for experienced growers only." : " A good choice for intermediate growers."}
               </p>
 
-              {/* Grow Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 {[
                   { label: "Difficulty", value: `${strain.grow_difficulty === "Easy" ? "🟢" : strain.grow_difficulty === "Moderate" ? "🟡" : "🔴"} ${strain.grow_difficulty}` },
@@ -476,7 +641,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 ))}
               </div>
 
-              {/* YELLOW #1a — Grow Environments */}
+              {/* Grow Environments */}
               <div className="mb-5">
                 <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🏡 Best Grow Environments</div>
                 <div className="flex flex-col gap-2">
@@ -492,7 +657,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 </div>
               </div>
 
-              {/* YELLOW #1b — Pest Susceptibility */}
+              {/* Pest Susceptibility */}
               <div className="mb-6">
                 <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🐛 Pest &amp; Disease Susceptibility</div>
                 <div className="flex flex-wrap gap-2">
@@ -505,7 +670,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 </div>
               </div>
 
-              {/* YELLOW #3 — Seed Bank CTA */}
+              {/* Seed Bank CTA */}
               <div className="bg-lime border-2 border-black rounded-2xl p-5 shadow-brutal-sm">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
@@ -514,6 +679,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                       Find feminized, autoflowering, and regular {strain.name} seeds from trusted seed banks.
                       {strain.grow_difficulty === "Easy" ? " Great pick for first-time growers." : strain.grow_difficulty === "Moderate" ? " Solid choice for intermediate growers." : " Best for experienced cultivators."}
                     </p>
+                    {strain.breeder && (
+                      <p className="text-xs text-gray-600 mt-1">Official breeder: <strong>{strain.breeder}</strong></p>
+                    )}
                   </div>
                   <a
                     href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.name)}`}
@@ -549,10 +717,8 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                     a: `Like most cannabis strains, ${strain.name} may cause ${negativeEffects.join(", ")} especially in higher doses. Start low and go slow if you're new to this strain.`,
                   },
                   {
-                    q: `Is ${strain.name} good for beginners?`,
-                    a: strain.grow_difficulty === "Easy"
-                      ? `${strain.name} is an excellent choice for beginner growers — forgiving and resilient.`
-                      : `${strain.name} is ${strain.grow_difficulty === "Moderate" ? "moderately challenging" : "best suited for experienced growers"}.`,
+                    q: `How do I consume ${strain.name}?`,
+                    a: `${strain.name} can be enjoyed through smoking, vaporizing, edibles, or concentrates. ${strain.thc_max >= 22 ? "Given its high THC, start with a small amount and wait before consuming more." : "It's forgiving and works well across all consumption methods."}`,
                   },
                   {
                     q: `What is ${strain.name} good for?`,
