@@ -26,7 +26,8 @@ const config: Config = {
         "hybrid-border": "#FDE68A",
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
+        // Uses the CSS variable injected by next/font/google in layout.tsx
+        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
         brutal: "4px 4px 0px #0D0D0D",
