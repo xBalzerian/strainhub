@@ -403,15 +403,15 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             </p>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5 sm:mb-8">
               {[
                 { label: "THC Range", value: `${strain.thc_min}–${strain.thc_max}%`, color: "text-lime-dark" },
                 { label: "CBD", value: `${strain.cbd_max}%`, color: "" },
                 { label: "Flowering", value: `${strain.flowering_weeks_min}–${strain.flowering_weeks_max}w`, color: "" },
               ].map((s) => (
-                <div key={s.label} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm text-center">
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{s.label}</div>
-                  <div className={`text-2xl font-black ${s.color}`}>{s.value}</div>
+                <div key={s.label} className="bg-white border-2 border-black rounded-xl p-2.5 sm:p-4 shadow-brutal-sm text-center">
+                  <div className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5 sm:mb-1">{s.label}</div>
+                  <div className={`text-base sm:text-2xl font-black leading-tight ${s.color}`}>{s.value}</div>
                 </div>
               ))}
             </div>
