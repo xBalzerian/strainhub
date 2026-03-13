@@ -387,6 +387,10 @@ export default function ChatPage() {
                 {chatsRemaining} left ·{" "}
                 <Link href="/account?tab=subscription" className="text-brand underline font-bold">Go Pro</Link>
               </span>
+            ) : messages.length > 0 ? (
+              <Link href="/login?redirect=/chat" className="text-xs font-medium text-gray-400 hover:text-brand transition-all">
+                <span className="underline">Sign in</span> to save history
+              </Link>
             ) : (
               <Link href="/login?redirect=/chat"
                 className="text-xs font-black bg-lime border-2 border-black px-3 py-1.5 rounded-lg shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all">
@@ -497,7 +501,7 @@ export default function ChatPage() {
               value={input}
               onChange={handleTextareaInput}
               onKeyDown={handleKeyDown}
-              placeholder={canChat ? "Ask about strains, growing, terpenes…" : "Upgrade to Pro for unlimited messages"}
+              placeholder="Ask about strains, growing, terpenes…"
               disabled={loading}
               rows={1}
               className="flex-1 px-4 py-3 bg-gray-100 border-2 border-gray-200 focus:border-black focus:bg-white rounded-2xl text-sm font-medium resize-none outline-none transition-all placeholder:text-gray-400 disabled:opacity-50"

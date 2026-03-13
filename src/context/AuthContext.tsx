@@ -170,16 +170,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const canView = isPro || getViewsToday() < FREE_VIEW_LIMIT;
-  const canChat = isPro || getChatsToday() < FREE_CHAT_LIMIT;
+  // Guests (not logged in) also get free chats — tracked via API/localStorage
+  const canChat = !user ? true : isPro || getChatsToday() < FREE_CHAT_LIMIT;
   const viewsRemaining = isPro
     ? Infinity
     : Math.max(0, FREE_VIEW_LIMIT - getViewsToday());
   const chatsRemaining = isPro
     ? Infinity
+    : !user
+    ? FREE_CHAT_LIMIT
     : Math.max(0, FREE_CHAT_LIMIT - getChatsToday());
 
   const trackView = async (): Promise<boolean> => {
-    if (!user) return false;
+    if (!user) return true; // Guests can view freely
     const { data: fresh } = await supabase
       .from("profiles")
       .select("*")
@@ -206,7 +209,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const trackChat = async (): Promise<boolean> => {
-    if (!user) return false;
+    // Guests get free chat — no DB tracking needed, API handles session limits
+    if (!user) return true;
     // Always fetch fresh from DB to avoid stale cache bugs
     const { data: fresh } = await supabase
       .from("profiles")
