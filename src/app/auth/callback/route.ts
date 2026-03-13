@@ -8,28 +8,38 @@ export async function GET(request: NextRequest) {
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
 
-  // Handle OAuth errors returned from provider
   if (error) {
     console.error("OAuth error:", error, errorDescription);
-    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(errorDescription || error)}`);
+    return NextResponse.redirect(
+      `${origin}/login?error=${encodeURIComponent(errorDescription || error)}`
+    );
   }
 
   if (code) {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          flowType: "pkce",
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+          persistSession: false,
+        },
+      }
     );
 
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!exchangeError) {
-      // Redirect to intended destination or home
-      const redirectUrl = new URL(next, origin);
-      return NextResponse.redirect(redirectUrl.toString());
+      return NextResponse.redirect(`${origin}${next}`);
     }
 
-    console.error("Code exchange error:", exchangeError);
+    console.error("Code exchange error:", exchangeError.message);
+    return NextResponse.redirect(
+      `${origin}/login?error=${encodeURIComponent(exchangeError.message)}`
+    );
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  return NextResponse.redirect(`${origin}/login?error=no_code`);
 }

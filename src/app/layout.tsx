@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import AuthCodeHandler from "@/components/AuthCodeHandler";
 import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col antialiased font-sans">
         <AuthProvider>
+        <AuthCodeHandler />
           <NavBar />
           <main className="flex-1 pt-16">
             {children}
