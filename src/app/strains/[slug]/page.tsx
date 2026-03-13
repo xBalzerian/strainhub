@@ -726,7 +726,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
         </div>
 
         {/* ── Share Buttons (bottom) ───────────────────── */}
-        <div className="max-w-5xl mx-auto px-6 mb-10">
+        <div className="mb-10">
           <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm flex flex-col sm:flex-row items-center gap-4">
             <div>
               <div className="font-black text-sm mb-0.5">Enjoyed {strain.name}?</div>
