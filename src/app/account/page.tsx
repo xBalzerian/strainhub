@@ -77,9 +77,9 @@ export default function AccountPage() {
         <div className="bg-white border-2 border-black rounded-3xl shadow-brutal p-6 mb-6">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl border-2 border-black overflow-hidden bg-lime flex items-center justify-center flex-shrink-0">
-              {profile.avatar_url ? (
+              {(user?.user_metadata?.avatar_url || profile.avatar_url) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={user?.user_metadata?.avatar_url || profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               ) : (
                 <span className="text-2xl font-black">{(profile.full_name || profile.email)[0].toUpperCase()}</span>
               )}
