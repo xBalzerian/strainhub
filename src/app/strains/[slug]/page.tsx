@@ -721,7 +721,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
         </div>
 
         {/* ── Reviews Section ──────────────────────────── */}
-        <div className="max-w-5xl mx-auto px-6 mb-4">
+        <div className="mb-4">
           <StrainReviews strainSlug={strain.slug} strainName={strain.name} />
         </div>
 
