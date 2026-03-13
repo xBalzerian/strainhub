@@ -63,12 +63,39 @@ export default function AccountPage() {
     paypalRendered.current = false;
   }, [billing]);
 
-  if (loading || !user || !profile) {
+  // Show spinner only while auth is loading or user is confirmed but profile hasn't loaded yet
+  // After 5s with user but no profile, show page anyway to avoid infinite spinner
+  const [profileTimeout, setProfileTimeout] = useState(false);
+  useEffect(() => {
+    if (user && !profile) {
+      const t = setTimeout(() => setProfileTimeout(true), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [user, profile]);
+
+  if (loading || (!user && !profileTimeout)) {
     return <div className="min-h-screen bg-[#F8F8F0] flex items-center justify-center"><div className="text-2xl animate-pulse">🌿</div></div>;
   }
 
-  const planLabel = isPro ? (profile.plan === "annual" ? "Pro Annual" : "Pro Monthly") : "Free";
-  const planExpiry = profile.plan_expires_at ? new Date(profile.plan_expires_at).toLocaleDateString() : null;
+  if (!user) return null; // redirect handled by useEffect above
+
+  // Fallback profile built from user auth data if DB row missing
+  const safeProfile = profile ?? {
+    id: user.id,
+    email: user.email ?? "",
+    full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+    avatar_url: user.user_metadata?.avatar_url || null,
+    plan: "free" as const,
+    plan_expires_at: null,
+    views_today: 0,
+    views_date: null,
+    chats_today: 0,
+    chats_date: null,
+    created_at: user.created_at ?? new Date().toISOString(),
+  };
+
+  const planLabel = isPro ? (safeProfile.plan === "annual" ? "Pro Annual" : "Pro Monthly") : "Free";
+  const planExpiry = safeProfile.plan_expires_at ? new Date(safeProfile.plan_expires_at).toLocaleDateString() : null;
 
   return (
     <div className="min-h-screen bg-[#F8F8F0] px-4 py-10">
@@ -77,16 +104,16 @@ export default function AccountPage() {
         <div className="bg-white border-2 border-black rounded-3xl shadow-brutal p-6 mb-6">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl border-2 border-black overflow-hidden bg-lime flex items-center justify-center flex-shrink-0">
-              {(user?.user_metadata?.avatar_url || profile.avatar_url) ? (
+              {(user?.user_metadata?.avatar_url || safeProfile.avatar_url) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={user?.user_metadata?.avatar_url || profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={user?.user_metadata?.avatar_url || safeProfile.avatar_url} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               ) : (
-                <span className="text-2xl font-black">{(profile.full_name || profile.email)[0].toUpperCase()}</span>
+                <span className="text-2xl font-black">{(safeProfile.full_name || safeProfile.email)[0].toUpperCase()}</span>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-black text-xl truncate">{profile.full_name || "Anonymous"}</div>
-              <div className="text-sm text-gray-400 truncate">{profile.email}</div>
+              <div className="font-black text-xl truncate">{safeProfile.full_name || "Anonymous"}</div>
+              <div className="text-sm text-gray-400 truncate">{safeProfile.email}</div>
               <div className="flex items-center gap-2 mt-1">
                 <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${isPro ? "bg-lime border-black" : "bg-gray-100 border-gray-200 text-gray-500"}`}>
                   {isPro ? "✨ " : ""}{ planLabel}
@@ -122,16 +149,16 @@ export default function AccountPage() {
             <h2 className="font-black text-lg">Account Details</h2>
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Full Name</label>
-              <div className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium">{profile.full_name || "—"}</div>
+              <div className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium">{safeProfile.full_name || "—"}</div>
             </div>
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Email</label>
-              <div className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium">{profile.email}</div>
+              <div className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium">{safeProfile.email}</div>
             </div>
             <div>
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 block">Member Since</label>
               <div className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-medium">
-                {new Date(profile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                {new Date(safeProfile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
               </div>
             </div>
             <div className="flex gap-3 pt-2">
@@ -154,7 +181,7 @@ export default function AccountPage() {
                   <div className="w-12 h-12 bg-lime border-2 border-black rounded-xl flex items-center justify-center text-2xl">✨</div>
                   <div>
                     <div className="font-black text-lg">StrainHub Pro Active</div>
-                    <div className="text-sm text-gray-400">{profile.plan === "annual" ? "Annual Plan · $9.99/year" : "Monthly Plan · $2.99/month"}</div>
+                    <div className="text-sm text-gray-400">{safeProfile.plan === "annual" ? "Annual Plan · $9.99/year" : "Monthly Plan · $2.99/month"}</div>
                   </div>
                 </div>
                 <div className="space-y-3 mb-6">
@@ -244,13 +271,13 @@ export default function AccountPage() {
             <h2 className="font-black text-lg">Today&apos;s Usage</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-lime-pale border-2 border-black rounded-2xl p-4 text-center">
-                <div className="text-3xl font-black">{profile.views_today || 0}</div>
+                <div className="text-3xl font-black">{safeProfile.views_today || 0}</div>
                 <div className="text-xs font-bold text-gray-500 mt-1">Strains Viewed</div>
                 {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 10 free</div>}
                 {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
               </div>
               <div className="bg-lime-pale border-2 border-black rounded-2xl p-4 text-center">
-                <div className="text-3xl font-black">{profile.chats_today || 0}</div>
+                <div className="text-3xl font-black">{safeProfile.chats_today || 0}</div>
                 <div className="text-xs font-bold text-gray-500 mt-1">AI Chats</div>
                 {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 5 free</div>}
                 {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
