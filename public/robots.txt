@@ -1,14 +1,10 @@
-# *
 User-agent: *
 Allow: /
-
-# Googlebot
-User-agent: Googlebot
-Allow: /
-
-# Host
-Host: http://localhost:3001
+Disallow: /account
+Disallow: /account/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /login
 
 # Sitemaps
-Sitemap: http://localhost:3001/sitemap.xml
-Sitemap: http://localhost:3001/sitemap-strains.xml
+Sitemap: https://strainhub.vercel.app/sitemap.xml

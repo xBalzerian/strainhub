@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const KIE_API_KEY = process.env.KIE_API_KEY || process.env.KIE_API || process.env.GEMINI_API_KEY || "";
 const KIE_ENDPOINT = "https://api.kie.ai/gemini-2.5-flash/v1/chat/completions";
@@ -9,29 +10,33 @@ You have deep expertise in:
 - Cannabis strains: genetics, lineage, effects, flavors, terpene profiles, THC/CBD levels
 - Growing cannabis: indoor, outdoor, hydro, soil, nutrients, training techniques (LST, SCROG, topping), lighting schedules, VPD, pest & disease management
 - Cannabinoids: THC, CBD, CBN, CBG, THCV, CBC — their effects, synergies, and medical applications
-- Terpenes: Myrcene, Caryophyllene, Limonene, Linalool, Pinene, Ocimene, Terpinolene, Humulene — aromas, effects, synergies
-- The entourage effect and how compounds work together
+- Terpenes: Myrcene, Caryophyllene, Limonene, Linalool, Pinene, Ocimene, Terpinolene, Humulene
 - Medical uses: which strains/cannabinoids help with anxiety, pain, insomnia, PTSD, nausea, appetite
-- Strain finding: helping users find the perfect strain based on desired effects, flavor, grow difficulty, THC level, or medical need
 
-StrainHub Database Context:
-- We have 100+ premium strains fully catalogued with genetics, terpenes, cannabinoid profiles, grow info, and images
-- Strain types: Indica (relaxing, body), Sativa (energizing, cerebral), Hybrid (balanced)
-- Top strains include: OG Kush, Blue Dream, Girl Scout Cookies, Sour Diesel, Granddaddy Purple, Northern Lights, Jack Herer, White Widow, Pineapple Express, Gorilla Glue #4, Wedding Cake, Gelato, Zkittlez, and many more
+IMPORTANT — STRAIN CARD FEATURE:
+When the user asks you to recommend, list, or show specific strains, you MUST include a special JSON block at the END of your response using this exact format:
+
+[STRAIN_CARDS]
+{"slugs": ["slug-1", "slug-2", "slug-3"]}
+[/STRAIN_CARDS]
+
+Use the exact database slug (lowercase, hyphens). Example slugs: "og-kush", "blue-dream", "sour-diesel", "girl-scout-cookies", "granddaddy-purple", "northern-lights", "jack-herer", "white-widow", "pineapple-express", "gorilla-glue-4", "wedding-cake", "gelato", "zkittlez", "durban-poison", "amnesia-haze", "bruce-banner", "green-crack", "super-lemon-haze", "purple-haze", "ak-47", "trainwreck", "chemdawg"
 
 Rules:
 - Be conversational, warm, expert-level but approachable
-- Give specific, actionable advice — not vague generalities  
-- When recommending strains, explain WHY that strain fits the user's need
-- Keep responses concise but complete (2-4 paragraphs max unless asked for detail)
+- Give specific, actionable advice
+- When recommending strains, explain WHY — then include the STRAIN_CARDS block
+- Keep responses concise (2-4 paragraphs max unless asked for detail)
 - Never give medical diagnoses — frame as "many users report" or "this strain is known for"
-- If asked about a specific strain in our database, give rich detail about it
-- If asked to find a strain, ask 1-2 clarifying questions if needed (desired effect, grow experience, etc.)
-- You're enthusiastic about cannabis — this passion shows in your answers`;
+- Always include STRAIN_CARDS when recommending 1-5 specific strains`;
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json();
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const { messages, userId, sessionId } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
@@ -40,7 +45,7 @@ export async function POST(req: NextRequest) {
     const payload = {
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        ...messages.slice(-20), // keep last 20 messages for context
+        ...messages.slice(-20),
       ],
       stream: false,
     };
@@ -55,16 +60,54 @@ export async function POST(req: NextRequest) {
     });
 
     const raw = await resp.text();
-    // Kie sometimes prepends "{}" — handle that
     const cleaned = raw.replace(/^\{\}/, "").trim();
     const data = JSON.parse(cleaned);
 
-    const content = data?.choices?.[0]?.message?.content;
-    if (!content) {
+    const rawContent = data?.choices?.[0]?.message?.content;
+    if (!rawContent) {
       return NextResponse.json({ error: "No response from AI" }, { status: 500 });
     }
 
-    return NextResponse.json({ message: content });
+    // Extract strain slugs if present
+    let strainSlugs: string[] = [];
+    let content = rawContent;
+    const cardMatch = rawContent.match(/\[STRAIN_CARDS\]([\s\S]*?)\[\/STRAIN_CARDS\]/);
+    if (cardMatch) {
+      try {
+        const parsed = JSON.parse(cardMatch[1].trim());
+        strainSlugs = parsed.slugs || [];
+      } catch { /* ignore parse errors */ }
+      content = rawContent.replace(/\[STRAIN_CARDS\][\s\S]*?\[\/STRAIN_CARDS\]/, "").trim();
+    }
+
+    // Fetch strain data if slugs present
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let strains: any[] = [];
+    if (strainSlugs.length > 0) {
+      const { data: strainData } = await supabaseAdmin
+        .from("strains")
+        .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
+        .in("slug", strainSlugs);
+      strains = strainData || [];
+      // Sort by the order AI mentioned them
+      strains.sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
+    }
+
+    // Save to chat_sessions table if userId provided
+    if (userId && sessionId) {
+      const lastUserMsg = messages[messages.length - 1]?.content || "";
+      await supabaseAdmin
+        .from("chat_sessions")
+        .upsert({
+          id: sessionId,
+          user_id: userId,
+          messages: [...messages, { role: "assistant", content }],
+          updated_at: new Date().toISOString(),
+          preview: lastUserMsg.slice(0, 80),
+        }, { onConflict: "id" });
+    }
+
+    return NextResponse.json({ message: content, strains });
   } catch (err) {
     console.error("Chat API error:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
