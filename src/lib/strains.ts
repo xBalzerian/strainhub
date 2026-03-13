@@ -1,7 +1,10 @@
 import { supabase } from "./supabase";
 import type { Strain } from "./types";
 
-// Get all strains (for homepage, sitemaps, static generation)
+// ─── Lightweight type for homepage ticker/counts (no heavy fields) ─────────
+export type StrainMeta = Pick<Strain, "name" | "slug" | "type">;
+
+// Get all strains (for sitemaps, static generation — use sparingly)
 export async function getAllStrains(): Promise<Strain[]> {
   const { data, error } = await supabase
     .from("strains")
@@ -13,6 +16,20 @@ export async function getAllStrains(): Promise<Strain[]> {
     return [];
   }
   return data as Strain[];
+}
+
+// ── NEW: lightweight fetch — only name/slug/type for ticker + counts ────────
+export async function getAllStrainsMeta(): Promise<StrainMeta[]> {
+  const { data, error } = await supabase
+    .from("strains")
+    .select("name, slug, type")
+    .order("rank_popularity", { ascending: true });
+
+  if (error) {
+    console.error("getAllStrainsMeta error:", error);
+    return [];
+  }
+  return data as StrainMeta[];
 }
 
 // Get all slugs only (for generateStaticParams — fast)
@@ -38,25 +55,15 @@ export async function getStrainBySlug(slug: string): Promise<Strain | null> {
   return data as Strain;
 }
 
-// Get top N strains for homepage
+// Get top N strains for homepage — only fields StrainCard needs
 export async function getTopStrains(limit = 20): Promise<Strain[]> {
   const { data, error } = await supabase
     .from("strains")
-    .select("*")
+    .select(
+      "id, name, slug, type, thc_max, cbd_max, effects, terpenes, helps_with, flavors, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity"
+    )
     .order("rank_popularity", { ascending: true })
     .limit(limit);
-
-  if (error) return [];
-  return data as Strain[];
-}
-
-// Get strains by type (Indica / Sativa / Hybrid)
-export async function getStrainsByType(type: string): Promise<Strain[]> {
-  const { data, error } = await supabase
-    .from("strains")
-    .select("*")
-    .eq("type", type)
-    .order("rank_popularity", { ascending: true });
 
   if (error) return [];
   return data as Strain[];
@@ -70,7 +77,9 @@ export async function getSimilarStrains(
 ): Promise<Strain[]> {
   const { data, error } = await supabase
     .from("strains")
-    .select("*")
+    .select(
+      "id, name, slug, type, thc_max, cbd_max, effects, terpenes, helps_with, flavors, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity"
+    )
     .eq("type", type)
     .neq("slug", excludeSlug)
     .order("rank_popularity", { ascending: true })
@@ -84,7 +93,9 @@ export async function getSimilarStrains(
 export async function searchStrains(query: string): Promise<Strain[]> {
   const { data, error } = await supabase
     .from("strains")
-    .select("*")
+    .select(
+      "id, name, slug, type, thc_max, cbd_max, effects, terpenes, helps_with, flavors, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity"
+    )
     .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
     .order("rank_popularity", { ascending: true })
     .limit(20);
@@ -100,7 +111,12 @@ export async function getStrainsPaginated(
   type?: string,
   effect?: string
 ): Promise<{ strains: Strain[]; total: number }> {
-  let query = supabase.from("strains").select("*", { count: "exact" });
+  let query = supabase
+    .from("strains")
+    .select(
+      "id, name, slug, type, thc_max, cbd_max, effects, terpenes, helps_with, flavors, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity",
+      { count: "exact" }
+    );
 
   if (type) query = query.eq("type", type);
   if (effect) query = query.contains("effects", [effect]);
