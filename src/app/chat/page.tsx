@@ -34,14 +34,48 @@ const SUGGESTED = [
   "How do I fix yellow leaves on my cannabis plant?",
 ];
 
+// ─── Known strain slugs for auto-linking ─────────────────────────────────────
+const STRAIN_LINKS: Record<string, string> = {
+  "OG Kush": "og-kush", "Blue Dream": "blue-dream", "Sour Diesel": "sour-diesel",
+  "Girl Scout Cookies": "girl-scout-cookies", "GSC": "girl-scout-cookies",
+  "Granddaddy Purple": "granddaddy-purple", "GDP": "granddaddy-purple",
+  "Northern Lights": "northern-lights", "Jack Herer": "jack-herer",
+  "White Widow": "white-widow", "Pineapple Express": "pineapple-express",
+  "Gorilla Glue": "gorilla-glue-4", "Gorilla Glue #4": "gorilla-glue-4", "GG4": "gorilla-glue-4",
+  "Wedding Cake": "wedding-cake", "Gelato": "gelato", "Zkittlez": "zkittlez",
+  "Durban Poison": "durban-poison", "Amnesia Haze": "amnesia-haze",
+  "Bruce Banner": "bruce-banner", "Green Crack": "green-crack",
+  "Super Lemon Haze": "super-lemon-haze", "Purple Haze": "purple-haze",
+  "AK-47": "ak-47", "Trainwreck": "trainwreck", "Chemdawg": "chemdawg",
+  "Strawberry Cough": "strawberry-cough", "Bubba Kush": "bubba-kush",
+  "Purple Punch": "purple-punch", "Sunset Sherbet": "sunset-sherbet",
+  "Runtz": "runtz", "Cereal Milk": "cereal-milk", "Ice Cream Cake": "ice-cream-cake",
+  "Do-Si-Dos": "do-si-dos", "Mimosa": "mimosa", "MAC": "mac",
+  "Tropical Zkittlez": "tropical-zkittlez", "Banana Kush": "banana-kush",
+  "Lemon Haze": "lemon-haze", "Jack Flash": "jack-flash",
+  "Black Jack": "black-jack", "Super Silver Haze": "super-silver-haze",
+  "Candy Kush": "candy-kush", "Mango Kush": "mango-kush",
+};
+
+function linkifyStrains(html: string): string {
+  Object.entries(STRAIN_LINKS).forEach(([name, slug]) => {
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(?<![">])\\b${escaped}\\b(?![^<]*>)`, "g");
+    html = html.replace(regex, `<a href="/strains/${slug}" class="text-brand font-bold underline hover:text-lime-600 transition-colors" target="_self">${name}</a>`);
+  });
+  return html;
+}
+
 // ─── Markdown renderer ───────────────────────────────────────────────────────
 function MarkdownText({ text }: { text: string }) {
-  const html = text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-1 rounded text-xs font-mono">$1</code>')
-    .replace(/\n\n/g, "</p><p class='mt-2'>")
-    .replace(/\n/g, "<br/>");
+  const html = linkifyStrains(
+    text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-1 rounded text-xs font-mono">$1</code>')
+      .replace(/\n\n/g, "</p><p class='mt-2'>")
+      .replace(/\n/g, "<br/>")
+  );
   return <p className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
@@ -94,16 +128,30 @@ function newSessionId() {
 // ─── Main Chat Page ───────────────────────────────────────────────────────────
 export default function ChatPage() {
   const { isPro, canChat, chatsRemaining, trackChat, user } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("sh_chat_messages") || "[]"); } catch { return []; }
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [sessionId, setSessionId] = useState(() => newSessionId());
+  const [sessionId, setSessionId] = useState(() => {
+    if (typeof window === "undefined") return newSessionId();
+    return localStorage.getItem("sh_chat_session_id") || newSessionId();
+  });
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Persist messages + sessionId to localStorage whenever they change
+  useEffect(() => {
+    try { localStorage.setItem("sh_chat_messages", JSON.stringify(messages)); } catch { /* quota */ }
+  }, [messages]);
+  useEffect(() => {
+    try { localStorage.setItem("sh_chat_session_id", sessionId); } catch { /* quota */ }
+  }, [sessionId]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
 
@@ -122,17 +170,27 @@ export default function ChatPage() {
   }, [user, loadSessions]);
 
   function startNewChat() {
+    const newId = newSessionId();
     setMessages([]);
-    setSessionId(newSessionId());
+    setSessionId(newId);
     setError("");
     setSidebarOpen(false);
+    try {
+      localStorage.setItem("sh_chat_messages", "[]");
+      localStorage.setItem("sh_chat_session_id", newId);
+    } catch { /* quota */ }
   }
 
   function loadSession(session: ChatSession) {
-    setMessages(session.messages || []);
+    const msgs = session.messages || [];
+    setMessages(msgs);
     setSessionId(session.id);
     setError("");
     setSidebarOpen(false);
+    try {
+      localStorage.setItem("sh_chat_messages", JSON.stringify(msgs));
+      localStorage.setItem("sh_chat_session_id", session.id);
+    } catch { /* quota */ }
   }
 
   async function deleteSession(id: string, e: React.MouseEvent) {
