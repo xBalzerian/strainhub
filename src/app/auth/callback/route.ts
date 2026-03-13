@@ -1,4 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,22 +10,28 @@ export async function GET(request: NextRequest) {
   const errorDescription = searchParams.get("error_description");
 
   if (error) {
-    console.error("OAuth error:", error, errorDescription);
     return NextResponse.redirect(
       `${origin}/login?error=${encodeURIComponent(errorDescription || error)}`
     );
   }
 
   if (code) {
-    const supabase = createClient(
+    const cookieStore = cookies();
+    const response = NextResponse.redirect(`${origin}${next}`);
+
+    const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
-        auth: {
-          flowType: "pkce",
-          autoRefreshToken: false,
-          detectSessionInUrl: false,
-          persistSession: false,
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
         },
       }
     );
@@ -32,7 +39,7 @@ export async function GET(request: NextRequest) {
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!exchangeError) {
-      return NextResponse.redirect(`${origin}${next}`);
+      return response;
     }
 
     console.error("Code exchange error:", exchangeError.message);
