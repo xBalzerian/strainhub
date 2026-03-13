@@ -5,16 +5,30 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
+  const error = searchParams.get("error");
+  const errorDescription = searchParams.get("error_description");
+
+  // Handle OAuth errors returned from provider
+  if (error) {
+    console.error("OAuth error:", error, errorDescription);
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(errorDescription || error)}`);
+  }
 
   if (code) {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (!exchangeError) {
+      // Redirect to intended destination or home
+      const redirectUrl = new URL(next, origin);
+      return NextResponse.redirect(redirectUrl.toString());
     }
+
+    console.error("Code exchange error:", exchangeError);
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_failed`);

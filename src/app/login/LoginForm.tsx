@@ -16,10 +16,18 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const urlError = searchParams.get("error");
 
   useEffect(() => {
     if (user) router.push(redirect);
   }, [user, router, redirect]);
+
+  useEffect(() => {
+    if (urlError) {
+      if (urlError === "auth_failed") setError("Google sign-in failed. Please try again.");
+      else setError(decodeURIComponent(urlError));
+    }
+  }, [urlError]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
