@@ -128,3 +128,23 @@ export async function getStrainsPaginated(
   if (error) return { strains: [], total: 0 };
   return { strains: data as Strain[], total: count || 0 };
 }
+
+// Look up slugs for parent strains by name (for linking on strain detail page)
+export async function getParentSlugs(
+  parentNames: string[]
+): Promise<Record<string, string>> {
+  if (!parentNames || parentNames.length === 0) return {};
+
+  const { data, error } = await supabase
+    .from("strains")
+    .select("name, slug")
+    .in("name", parentNames);
+
+  if (error || !data) return {};
+
+  const map: Record<string, string> = {};
+  for (const row of data) {
+    map[row.name] = row.slug;
+  }
+  return map;
+}
