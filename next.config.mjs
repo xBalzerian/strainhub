@@ -72,9 +72,7 @@ const nextConfig = {
     ];
   },
 
-  experimental: {
-    optimizeCss: true,
-  },
+  // experimental.optimizeCss removed — caused Vercel build hangs
 };
 
 export default nextConfig;
