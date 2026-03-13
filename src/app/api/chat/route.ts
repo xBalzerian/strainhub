@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const KIE_API_KEY = process.env.KIE_API_KEY || "";
+const KIE_API_KEY = process.env.KIE_API_KEY || process.env.KIE_API || process.env.GEMINI_API_KEY || "";
 const KIE_ENDPOINT = "https://api.kie.ai/gemini-2.5-flash/v1/chat/completions";
 
 const SYSTEM_PROMPT = `You are StrainBot — the world's most knowledgeable cannabis expert and grow advisor, powering StrainHub.com.
