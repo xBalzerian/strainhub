@@ -320,8 +320,8 @@ function ReviewCard({ review }: { review: Review }) {
 
   return (
     <div className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal-sm">
-      <div className="p-4 pb-3">
-        <div className="flex items-start gap-3 mb-3">
+      <div className="p-3 sm:p-4 pb-2 sm:pb-3">
+        <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
           <ReviewerAvatar review={review} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -358,7 +358,7 @@ function ReviewCard({ review }: { review: Review }) {
       </div>
 
       {review.effect_tags.length > 0 && (
-        <div className="px-4 pb-3 flex flex-wrap gap-1.5">
+        <div className="px-3 sm:px-4 pb-2 sm:pb-3 flex flex-wrap gap-1.5">
           {review.effect_tags.map((tag) => (
             <span key={tag} className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-gray-600">
               {tag}
@@ -367,7 +367,7 @@ function ReviewCard({ review }: { review: Review }) {
         </div>
       )}
 
-      <div className="px-4 py-2.5 bg-gray-50 border-t-2 border-black flex items-center justify-between">
+      <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-50 border-t-2 border-black flex items-center justify-between">
         <span className="text-[10px] text-gray-400">Helpful?</span>
         <button
           onClick={() => { if (!voted) { setHelpful(h => h + 1); setVoted(true); } }}
@@ -434,8 +434,8 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
   };
 
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <div className="mb-4 sm:mb-8">
+      <div className="flex items-center justify-between mb-3 sm:mb-5 flex-wrap gap-3">
         <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest">⭐ User Reviews</h2>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -446,8 +446,8 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
       </div>
 
       {/* Summary card */}
-      <div className="bg-white border-2 border-black rounded-2xl p-4 shadow-brutal mb-5">
-        <div className="flex gap-4 items-start">
+      <div className="bg-white border-2 border-black rounded-2xl p-3 sm:p-4 shadow-brutal mb-3 sm:mb-5">
+        <div className="flex gap-3 sm:gap-4 items-start">
           <div className="flex-shrink-0 text-center">
             <div className="text-5xl font-black leading-none">{avgRounded.toFixed(1)}</div>
             <StarDisplay rating={Math.round(avg)} size="lg" />
@@ -468,7 +468,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
         </div>
 
         {/* Filter + sort tabs */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+        <div className="mt-3 sm:mt-4 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {(["all", "recreational", "medical", "grow"] as const).map((f) => (
             <button
               key={f}
@@ -498,7 +498,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
 
       {/* Write review form */}
       {showForm && !submitted && (
-        <div className="bg-white border-2 border-black rounded-2xl p-4 shadow-brutal mb-5">
+        <div className="bg-white border-2 border-black rounded-2xl p-3 sm:p-4 shadow-brutal mb-3 sm:mb-5">
           <h3 className="font-black text-sm mb-4">Share your experience with {strainName}</h3>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
@@ -556,7 +556,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
       )}
 
       {submitted && (
-        <div className="bg-lime border-2 border-black rounded-2xl p-4 shadow-brutal mb-5 text-center">
+        <div className="bg-lime border-2 border-black rounded-2xl p-3 sm:p-4 shadow-brutal mb-3 sm:mb-5 text-center">
           <div className="text-2xl mb-1">🎉</div>
           <div className="font-black text-sm">Thanks for your review!</div>
           <div className="text-xs text-gray-600 mt-1">It'll show up after moderation.</div>
@@ -564,7 +564,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
       )}
 
       {/* Review cards */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 sm:gap-3">
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}
@@ -572,3 +572,4 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
     </div>
   );
 }
+
