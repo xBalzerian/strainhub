@@ -49,28 +49,45 @@ const todayStr = () => new Date().toISOString().split("T")[0];
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Upsert profile — always syncs name/avatar from OAuth, never overwrites plan
+// Upsert profile — syncs name/avatar from OAuth, NEVER overwrites plan/usage fields
 async function upsertProfile(user: User) {
-  const { data } = await supabase
+  // First check if profile already exists
+  const { data: existing } = await supabase
     .from("profiles")
-    .upsert(
-      {
+    .select("id")
+    .eq("id", user.id)
+    .single();
+
+  if (existing) {
+    // Profile exists — only update name/avatar, leave plan/usage untouched
+    const { data } = await supabase
+      .from("profiles")
+      .update({
+        email: user.email,
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || undefined,
+        avatar_url: user.user_metadata?.avatar_url || undefined,
+      })
+      .eq("id", user.id)
+      .select()
+      .single();
+    return data as UserProfile | null;
+  } else {
+    // New user — create fresh profile with defaults
+    const { data } = await supabase
+      .from("profiles")
+      .insert({
         id: user.id,
         email: user.email,
-        full_name:
-          user.user_metadata?.full_name ||
-          user.user_metadata?.name ||
-          null,
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
         avatar_url: user.user_metadata?.avatar_url || null,
-      },
-      {
-        onConflict: "id",
-        ignoreDuplicates: false, // always update name/avatar from OAuth
-      }
-    )
-    .select()
-    .single();
-  return data as UserProfile | null;
+        plan: "free",
+        views_today: 0,
+        chats_today: 0,
+      })
+      .select()
+      .single();
+    return data as UserProfile | null;
+  }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -135,9 +152,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isPro =
     !!profile &&
-    profile.plan !== "free" &&
-    (!profile.plan_expires_at ||
-      new Date(profile.plan_expires_at) > new Date());
+    (
+      (profile as UserProfile & { is_admin?: boolean }).is_admin === true ||
+      (profile.plan !== "free" &&
+        (!profile.plan_expires_at ||
+          new Date(profile.plan_expires_at) > new Date()))
+    );
 
   const getViewsToday = () => {
     if (!profile || profile.views_date !== todayStr()) return 0;
@@ -158,13 +178,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     : Math.max(0, FREE_CHAT_LIMIT - getChatsToday());
 
   const trackView = async (): Promise<boolean> => {
-    if (isPro) return true;
-    if (!user || !profile) return false;
-    const viewsToday = getViewsToday();
-    if (viewsToday >= FREE_VIEW_LIMIT) return false;
+    if (!user) return false;
+    const { data: fresh } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    if (!fresh) return false;
+    if (fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()))) {
+      setProfile(fresh as UserProfile);
+      return true;
+    }
+    const freshViewsToday = fresh.views_date === todayStr() ? (fresh.views_today || 0) : 0;
+    if (freshViewsToday >= FREE_VIEW_LIMIT) {
+      setProfile(fresh as UserProfile);
+      return false;
+    }
     const { data } = await supabase
       .from("profiles")
-      .update({ views_today: viewsToday + 1, views_date: todayStr() })
+      .update({ views_today: freshViewsToday + 1, views_date: todayStr() })
       .eq("id", user.id)
       .select()
       .single();
@@ -173,13 +205,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const trackChat = async (): Promise<boolean> => {
-    if (isPro) return true;
-    if (!user || !profile) return false;
-    const chatsToday = getChatsToday();
-    if (chatsToday >= FREE_CHAT_LIMIT) return false;
+    if (!user) return false;
+    // Always fetch fresh from DB to avoid stale cache bugs
+    const { data: fresh } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    if (!fresh) return false;
+    // Admin or Pro — always allow, no tracking needed
+    if (fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()))) {
+      setProfile(fresh as UserProfile);
+      return true;
+    }
+    // Check fresh DB value for today's count
+    const freshChatsToday = fresh.chats_date === todayStr() ? (fresh.chats_today || 0) : 0;
+    if (freshChatsToday >= FREE_CHAT_LIMIT) {
+      setProfile(fresh as UserProfile);
+      return false;
+    }
     const { data } = await supabase
       .from("profiles")
-      .update({ chats_today: chatsToday + 1, chats_date: todayStr() })
+      .update({ chats_today: freshChatsToday + 1, chats_date: todayStr() })
       .eq("id", user.id)
       .select()
       .single();

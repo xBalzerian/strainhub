@@ -355,16 +355,23 @@ function AccountPageInner() {
         {tab === "activity" && (
           <div className="space-y-4">
             <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-6">
-              <h2 className="font-black text-lg mb-5">Today&apos;s Usage</h2>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="font-black text-lg">Today&apos;s Usage</h2>
+                <button onClick={refreshProfile} className="text-xs text-gray-400 hover:text-brand border border-gray-200 rounded-lg px-2.5 py-1 hover:border-gray-400 transition-all">↻ Refresh</button>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 text-center">
-                  <div className="text-3xl font-black">{safeProfile.views_today || 0}</div>
+                  <div className="text-3xl font-black">
+                    {isPro ? "∞" : (profile?.views_date === new Date().toISOString().split("T")[0] ? profile?.views_today || 0 : 0)}
+                  </div>
                   <div className="text-xs font-bold text-gray-500 mt-1">Strains Viewed</div>
                   {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 10 free</div>}
                   {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
                 </div>
                 <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 text-center">
-                  <div className="text-3xl font-black">{safeProfile.chats_today || 0}</div>
+                  <div className="text-3xl font-black">
+                    {isPro ? "∞" : (profile?.chats_date === new Date().toISOString().split("T")[0] ? profile?.chats_today || 0 : 0)}
+                  </div>
                   <div className="text-xs font-bold text-gray-500 mt-1">AI Chats</div>
                   {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 5 free</div>}
                   {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
