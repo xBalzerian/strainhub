@@ -19,7 +19,6 @@ interface ChatSession {
   id: string; preview: string; updated_at: string; messages: Message[];
 }
 
-// ─── Suggested prompts ────────────────────────────────────────────────────────
 const SUGGESTED = [
   "Best 3 Sativa strains for energy 🚀",
   "What strain helps with anxiety?",
@@ -33,7 +32,6 @@ const SUGGESTED = [
   "Recommend a hybrid under 20% THC",
 ];
 
-// ─── Strain name auto-link map ────────────────────────────────────────────────
 const STRAIN_LINKS: Record<string, string> = {
   "OG Kush": "og-kush", "Blue Dream": "blue-dream", "Sour Diesel": "sour-diesel",
   "Girl Scout Cookies": "girl-scout-cookies", "GSC": "girl-scout-cookies",
@@ -66,7 +64,6 @@ function linkifyStrains(html: string): string {
   return html;
 }
 
-// ─── Markdown renderer ────────────────────────────────────────────────────────
 function MarkdownText({ text }: { text: string }) {
   const html = linkifyStrains(
     text
@@ -79,7 +76,6 @@ function MarkdownText({ text }: { text: string }) {
   return <p className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-// ─── Strain Card ──────────────────────────────────────────────────────────────
 function StrainCardItem({ strain }: { strain: StrainCard }) {
   const typeColor = strain.type === "Sativa"
     ? "bg-yellow-100 text-yellow-700 border-yellow-300"
@@ -120,7 +116,6 @@ function StrainCardItem({ strain }: { strain: StrainCard }) {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function newSessionId() {
   return `cs_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -134,7 +129,6 @@ function timeAgo(iso: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ChatPage() {
   const { isPro, canChat, chatsRemaining, trackChat, user } = useAuth();
 
@@ -154,10 +148,11 @@ export default function ChatPage() {
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const bottomRef = useRef<HTMLDivElement>(null);
+  // ✅ Ref for the scrollable messages container — NOT bottomRef on a div
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Persist to localStorage on every change
+  // Persist to localStorage
   useEffect(() => {
     try { localStorage.setItem("sh_chat_messages", JSON.stringify(messages)); } catch { /**/ }
   }, [messages]);
@@ -165,8 +160,15 @@ export default function ChatPage() {
     try { localStorage.setItem("sh_chat_session_id", sessionId); } catch { /**/ }
   }, [sessionId]);
 
-  // Scroll to bottom
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
+  // ✅ Scroll only the messages container, not the whole page
+  const scrollToBottom = useCallback(() => {
+    const el = messagesContainerRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  }, []);
+
+  useEffect(() => { scrollToBottom(); }, [messages, loading, scrollToBottom]);
 
   // Load sidebar sessions
   const loadSessions = useCallback(async () => {
@@ -182,8 +184,28 @@ export default function ChatPage() {
 
   useEffect(() => { if (user) loadSessions(); }, [user, loadSessions]);
 
-  // ── New chat: clear state, refresh sidebar ──
-  function startNewChat() {
+  // ✅ Save current session to DB before clearing (so history persists on New Chat)
+  const saveCurrentSession = useCallback(async (msgs: Message[], sid: string) => {
+    if (!user || msgs.length === 0) return;
+    try {
+      await fetch("/api/chat/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: sid,
+          userId: user.id,
+          messages: msgs,
+          preview: msgs.find(m => m.role === "user")?.content?.slice(0, 80) || "Chat",
+        }),
+      });
+    } catch { /**/ }
+  }, [user]);
+
+  // ✅ New chat: save current first, THEN clear and reload sidebar
+  const startNewChat = useCallback(async () => {
+    if (user && messages.length > 0) {
+      await saveCurrentSession(messages, sessionId);
+    }
     const newId = newSessionId();
     setMessages([]);
     setSessionId(newId);
@@ -194,11 +216,12 @@ export default function ChatPage() {
       localStorage.setItem("sh_chat_messages", "[]");
       localStorage.setItem("sh_chat_session_id", newId);
     } catch { /**/ }
-    // Refresh sidebar so last chat appears immediately
-    if (user) loadSessions();
-  }
+    if (user) {
+      // Small delay so save completes before we reload
+      setTimeout(() => loadSessions(), 400);
+    }
+  }, [user, messages, sessionId, saveCurrentSession, loadSessions]);
 
-  // ── Load a past session ──
   function loadSession(session: ChatSession) {
     const msgs = session.messages || [];
     setMessages(msgs);
@@ -211,7 +234,6 @@ export default function ChatPage() {
     } catch { /**/ }
   }
 
-  // ── Delete a session ──
   async function deleteSession(id: string, e: React.MouseEvent) {
     e.stopPropagation();
     setDeletingId(id);
@@ -227,7 +249,6 @@ export default function ChatPage() {
     setDeletingId(null);
   }
 
-  // ── Send message ──
   async function sendMessage(text?: string) {
     const content = (text || input).trim();
     if (!content || loading) return;
@@ -260,8 +281,8 @@ export default function ChatPage() {
           strains: data.strains || [],
         };
         setMessages((prev) => [...prev, assistantMsg]);
-        // ✅ Refresh sidebar after every reply so new sessions appear immediately
-        if (user) setTimeout(() => loadSessions(), 600);
+        // Refresh sidebar after every reply
+        if (user) setTimeout(() => loadSessions(), 500);
       } else {
         setError("Something went wrong. Try again.");
       }
@@ -271,7 +292,6 @@ export default function ChatPage() {
     setLoading(false);
   }
 
-  // ── Textarea auto-resize ──
   function handleTextareaInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value);
     const el = e.target;
@@ -285,9 +305,8 @@ export default function ChatPage() {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50">
+    <div className="flex overflow-hidden bg-gray-50" style={{ height: "calc(100vh - 64px)" }}>
 
       {/* ── Sidebar ── */}
       {user && (
@@ -301,7 +320,6 @@ export default function ChatPage() {
             transition-transform duration-300
             ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}>
-            {/* Sidebar header */}
             <div className="p-4 border-b-2 border-black flex items-center justify-between gap-2">
               <span className="font-black text-sm">Chat History</span>
               <button onClick={startNewChat}
@@ -310,7 +328,6 @@ export default function ChatPage() {
               </button>
             </div>
 
-            {/* Session list */}
             <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {loadingSessions ? (
                 <div className="text-center py-8 text-xs text-gray-400 animate-pulse">Loading…</div>
@@ -332,16 +349,12 @@ export default function ChatPage() {
                       <div className="text-xs font-bold truncate leading-snug">{s.preview || "Chat session"}</div>
                       <div className="text-[10px] text-gray-400 mt-0.5">{timeAgo(s.updated_at)}</div>
                     </div>
-                    {/* Delete button — always visible, not hidden */}
                     <button
                       onClick={(e) => deleteSession(s.id, e)}
                       disabled={deletingId === s.id}
                       title="Delete chat"
                       className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg transition-all
-                        ${deletingId === s.id
-                          ? "opacity-40 cursor-not-allowed"
-                          : "text-gray-300 hover:text-red-400 hover:bg-red-50"
-                        }`}>
+                        ${deletingId === s.id ? "opacity-40 cursor-not-allowed" : "text-gray-300 hover:text-red-400 hover:bg-red-50"}`}>
                       {deletingId === s.id ? (
                         <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -362,7 +375,7 @@ export default function ChatPage() {
       )}
 
       {/* ── Main chat area ── */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
         {/* Header */}
         <div className="bg-white border-b-2 border-black px-4 py-3 flex items-center gap-3 flex-shrink-0">
@@ -406,10 +419,11 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
-
-          {/* Empty state */}
+        {/* ✅ Messages — scroll happens HERE only, not the page */}
+        <div
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto px-4 py-6 space-y-5"
+        >
           {messages.length === 0 && (
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-8">
@@ -433,7 +447,6 @@ export default function ChatPage() {
             </div>
           )}
 
-          {/* Message list */}
           {messages.map((msg, i) => (
             <div key={i} className="max-w-3xl mx-auto w-full">
               <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -448,7 +461,6 @@ export default function ChatPage() {
                   {msg.role === "assistant" ? <MarkdownText text={msg.content} /> : msg.content}
                 </div>
               </div>
-              {/* Strain cards */}
               {msg.role === "assistant" && msg.strains && msg.strains.length > 0 && (
                 <div className="mt-3 ml-9">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -461,7 +473,6 @@ export default function ChatPage() {
             </div>
           ))}
 
-          {/* Loading dots */}
           {loading && (
             <div className="flex justify-start max-w-3xl mx-auto w-full">
               <div className="w-7 h-7 bg-lime border-2 border-black rounded-lg flex items-center justify-center text-xs mr-2 flex-shrink-0">🤖</div>
@@ -475,7 +486,6 @@ export default function ChatPage() {
             </div>
           )}
 
-          {/* Error */}
           {error && (
             <div className="max-w-3xl mx-auto w-full">
               <div className="bg-red-50 border-2 border-red-200 rounded-2xl px-4 py-3 text-sm text-red-600 font-medium flex items-center justify-between gap-4">
@@ -489,8 +499,6 @@ export default function ChatPage() {
               </div>
             </div>
           )}
-
-          <div ref={bottomRef} />
         </div>
 
         {/* Input bar */}
