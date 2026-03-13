@@ -16,6 +16,7 @@ export interface UserProfile {
   plan: "free" | "monthly" | "annual";
   plan_expires_at: string | null;
   paypal_subscription_id?: string | null;
+  is_admin?: boolean;
   // usage tracking (matches DB columns)
   views_today: number;
   views_date: string | null;
@@ -153,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isPro =
     !!profile &&
     (
-      (profile as UserProfile & { is_admin?: boolean }).is_admin === true ||
+      profile.is_admin === true ||
       (profile.plan !== "free" &&
         (!profile.plan_expires_at ||
           new Date(profile.plan_expires_at) > new Date()))
