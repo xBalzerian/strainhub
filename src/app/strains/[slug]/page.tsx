@@ -437,38 +437,34 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             </div>
 
-            {/* 🌱 Genetics & Lineage — animated, placed after ratio */}
+            {/* 🌱 Genetics & Lineage — animated */}
             {strain.parents?.length > 0 && (
               <div className="mb-8 genetics-section">
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">🌱 Genetics &amp; Lineage</h2>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
                   {strain.parents.map((parent, i) => {
                     const parentSlug = parentSlugs[parent];
-                    const pill = (
-                      <span
-                        key={parent}
-                        className="genetics-parent bg-lime-pale border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm"
-                        style={{ animationDelay: `${i * 0.18}s` }}
-                      >
+                    const pillInner = (
+                      <span className="genetics-parent bg-lime-pale border-2 border-black px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-black shadow-brutal-sm inline-block">
                         {parent}
                       </span>
                     );
                     return (
-                      <span key={parent} className="flex items-center gap-2">
+                      <span key={parent} className="flex items-center gap-1.5 sm:gap-2">
                         {parentSlug ? (
-                          <a href={`/strains/${parentSlug}`} className="hover:opacity-80 transition-opacity">
-                            {pill}
+                          <a href={`/strains/${parentSlug}`} className="hover:scale-105 transition-transform">
+                            {pillInner}
                           </a>
-                        ) : pill}
+                        ) : pillInner}
                         {i < strain.parents.length - 1 && (
-                          <span className="genetics-plus text-gray-500 font-black text-lg" style={{ animationDelay: `${i * 0.18 + 0.12}s` }}>×</span>
+                          <span className="genetics-plus text-gray-400 font-black text-base sm:text-lg select-none">×</span>
                         )}
                       </span>
                     );
                   })}
-                  <span className="genetics-arrow text-gray-400 font-black text-lg">→</span>
-                  <span className="genetics-result bg-brand border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm">
-                    {strain.name}
+                  <span className="genetics-arrow text-gray-400 font-black text-base sm:text-lg select-none">→</span>
+                  <span className="genetics-result inline-block bg-lime border-2 border-black px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-black text-black shadow-brutal-sm">
+                    ✨ {strain.name}
                   </span>
                 </div>
                 <p className="text-xs text-gray-400 text-center mt-3">
