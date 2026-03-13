@@ -3,12 +3,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useProStatus } from "@/hooks/useProStatus";
 
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    paypal: any;
-  }
-}
 
 const MONTHLY_PLAN_ID = process.env.NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID || "";
 const ANNUAL_PLAN_ID = process.env.NEXT_PUBLIC_PAYPAL_ANNUAL_PLAN_ID || "";
