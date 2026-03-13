@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import type { Metadata } from "next";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface StrainCard {
@@ -20,28 +19,28 @@ interface ChatSession {
   id: string; preview: string; updated_at: string; messages: Message[];
 }
 
-// ─── Suggested prompts ───────────────────────────────────────────────────────
+// ─── Suggested prompts ────────────────────────────────────────────────────────
 const SUGGESTED = [
-  "Show me 3 best high Sativa strains",
-  "What's the best strain for anxiety and stress?",
-  "Give me top 3 Indica strains for deep sleep",
-  "What strains have the highest THC content?",
-  "Best strains for creative focus and productivity",
-  "Show me 3 beginner-friendly strains to grow",
-  "What terpenes are best for pain relief?",
-  "Recommend 3 CBD-dominant strains for daytime use",
-  "Best hybrid strains under 20% THC",
-  "How do I fix yellow leaves on my cannabis plant?",
+  "Best 3 Sativa strains for energy 🚀",
+  "What strain helps with anxiety?",
+  "Top Indica strains for deep sleep 😴",
+  "Highest THC strains right now?",
+  "Best strains for focus and creativity",
+  "Easy strains to grow for beginners 🌱",
+  "What terpenes help with pain?",
+  "Best CBD strains for daytime use",
+  "How do I fix yellow leaves on my plant?",
+  "Recommend a hybrid under 20% THC",
 ];
 
-// ─── Known strain slugs for auto-linking ─────────────────────────────────────
+// ─── Strain name auto-link map ────────────────────────────────────────────────
 const STRAIN_LINKS: Record<string, string> = {
   "OG Kush": "og-kush", "Blue Dream": "blue-dream", "Sour Diesel": "sour-diesel",
   "Girl Scout Cookies": "girl-scout-cookies", "GSC": "girl-scout-cookies",
   "Granddaddy Purple": "granddaddy-purple", "GDP": "granddaddy-purple",
   "Northern Lights": "northern-lights", "Jack Herer": "jack-herer",
   "White Widow": "white-widow", "Pineapple Express": "pineapple-express",
-  "Gorilla Glue": "gorilla-glue-4", "Gorilla Glue #4": "gorilla-glue-4", "GG4": "gorilla-glue-4",
+  "Gorilla Glue #4": "gorilla-glue-4", "Gorilla Glue": "gorilla-glue-4", "GG4": "gorilla-glue-4",
   "Wedding Cake": "wedding-cake", "Gelato": "gelato", "Zkittlez": "zkittlez",
   "Durban Poison": "durban-poison", "Amnesia Haze": "amnesia-haze",
   "Bruce Banner": "bruce-banner", "Green Crack": "green-crack",
@@ -49,24 +48,25 @@ const STRAIN_LINKS: Record<string, string> = {
   "AK-47": "ak-47", "Trainwreck": "trainwreck", "Chemdawg": "chemdawg",
   "Strawberry Cough": "strawberry-cough", "Bubba Kush": "bubba-kush",
   "Purple Punch": "purple-punch", "Sunset Sherbet": "sunset-sherbet",
-  "Runtz": "runtz", "Cereal Milk": "cereal-milk", "Ice Cream Cake": "ice-cream-cake",
-  "Do-Si-Dos": "do-si-dos", "Mimosa": "mimosa", "MAC": "mac",
-  "Tropical Zkittlez": "tropical-zkittlez", "Banana Kush": "banana-kush",
-  "Lemon Haze": "lemon-haze", "Jack Flash": "jack-flash",
-  "Black Jack": "black-jack", "Super Silver Haze": "super-silver-haze",
-  "Candy Kush": "candy-kush", "Mango Kush": "mango-kush",
+  "Runtz": "runtz", "Ice Cream Cake": "ice-cream-cake",
+  "Do-Si-Dos": "do-si-dos", "Mimosa": "mimosa",
+  "Banana Kush": "banana-kush", "Lemon Haze": "lemon-haze",
+  "Super Silver Haze": "super-silver-haze", "Candy Kush": "candy-kush",
+  "Mango Kush": "mango-kush",
 };
 
 function linkifyStrains(html: string): string {
   Object.entries(STRAIN_LINKS).forEach(([name, slug]) => {
     const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(?<![">])\\b${escaped}\\b(?![^<]*>)`, "g");
-    html = html.replace(regex, `<a href="/strains/${slug}" class="text-brand font-bold underline hover:text-lime-600 transition-colors" target="_self">${name}</a>`);
+    html = html.replace(regex,
+      `<a href="/strains/${slug}" class="text-brand font-bold underline hover:text-lime-600 transition-colors">${name}</a>`
+    );
   });
   return html;
 }
 
-// ─── Markdown renderer ───────────────────────────────────────────────────────
+// ─── Markdown renderer ────────────────────────────────────────────────────────
 function MarkdownText({ text }: { text: string }) {
   const html = linkifyStrains(
     text
@@ -79,16 +79,17 @@ function MarkdownText({ text }: { text: string }) {
   return <p className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-// ─── Strain Card component ────────────────────────────────────────────────────
+// ─── Strain Card ──────────────────────────────────────────────────────────────
 function StrainCardItem({ strain }: { strain: StrainCard }) {
-  const typeColor = strain.type === "Sativa" ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-    : strain.type === "Indica" ? "bg-purple-100 text-purple-700 border-purple-300"
+  const typeColor = strain.type === "Sativa"
+    ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+    : strain.type === "Indica"
+    ? "bg-purple-100 text-purple-700 border-purple-300"
     : "bg-green-100 text-green-700 border-green-300";
 
   return (
     <Link href={`/strains/${strain.slug}`}
-      className="group flex flex-col bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal-sm hover:shadow-brutal hover:-translate-y-1 transition-all duration-200 w-full">
-      {/* Image */}
+      className="group flex flex-col bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal-sm hover:shadow-brutal hover:-translate-y-1 transition-all duration-200">
       <div className="relative h-36 bg-gray-100 overflow-hidden flex-shrink-0">
         {strain.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -100,7 +101,6 @@ function StrainCardItem({ strain }: { strain: StrainCard }) {
           {strain.type}
         </span>
       </div>
-      {/* Info */}
       <div className="p-3 flex flex-col gap-1.5">
         <div className="font-black text-sm leading-tight">{strain.name}</div>
         <div className="flex gap-2 text-xs text-gray-500 font-medium">
@@ -120,14 +120,24 @@ function StrainCardItem({ strain }: { strain: StrainCard }) {
   );
 }
 
-// ─── New session ID ───────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 function newSessionId() {
   return `cs_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
 
-// ─── Main Chat Page ───────────────────────────────────────────────────────────
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ChatPage() {
   const { isPro, canChat, chatsRemaining, trackChat, user } = useAuth();
+
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") return [];
     try { return JSON.parse(localStorage.getItem("sh_chat_messages") || "[]"); } catch { return []; }
@@ -142,45 +152,53 @@ export default function ChatPage() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Persist messages + sessionId to localStorage whenever they change
+  // Persist to localStorage on every change
   useEffect(() => {
-    try { localStorage.setItem("sh_chat_messages", JSON.stringify(messages)); } catch { /* quota */ }
+    try { localStorage.setItem("sh_chat_messages", JSON.stringify(messages)); } catch { /**/ }
   }, [messages]);
   useEffect(() => {
-    try { localStorage.setItem("sh_chat_session_id", sessionId); } catch { /* quota */ }
+    try { localStorage.setItem("sh_chat_session_id", sessionId); } catch { /**/ }
   }, [sessionId]);
 
+  // Scroll to bottom
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
 
-  // Load history sidebar
+  // Load sidebar sessions
   const loadSessions = useCallback(async () => {
     if (!user) return;
     setLoadingSessions(true);
-    const res = await fetch(`/api/chat/sessions?userId=${user.id}`);
-    const data = await res.json();
-    setSessions(data.sessions || []);
+    try {
+      const res = await fetch(`/api/chat/sessions?userId=${user.id}`);
+      const data = await res.json();
+      setSessions(data.sessions || []);
+    } catch { /**/ }
     setLoadingSessions(false);
   }, [user]);
 
-  useEffect(() => {
-    if (user) loadSessions();
-  }, [user, loadSessions]);
+  useEffect(() => { if (user) loadSessions(); }, [user, loadSessions]);
 
+  // ── New chat: clear state, refresh sidebar ──
   function startNewChat() {
     const newId = newSessionId();
     setMessages([]);
     setSessionId(newId);
     setError("");
+    setInput("");
     setSidebarOpen(false);
     try {
       localStorage.setItem("sh_chat_messages", "[]");
       localStorage.setItem("sh_chat_session_id", newId);
-    } catch { /* quota */ }
+    } catch { /**/ }
+    // Refresh sidebar so last chat appears immediately
+    if (user) loadSessions();
   }
 
+  // ── Load a past session ──
   function loadSession(session: ChatSession) {
     const msgs = session.messages || [];
     setMessages(msgs);
@@ -190,27 +208,33 @@ export default function ChatPage() {
     try {
       localStorage.setItem("sh_chat_messages", JSON.stringify(msgs));
       localStorage.setItem("sh_chat_session_id", session.id);
-    } catch { /* quota */ }
+    } catch { /**/ }
   }
 
+  // ── Delete a session ──
   async function deleteSession(id: string, e: React.MouseEvent) {
     e.stopPropagation();
-    await fetch("/api/chat/sessions", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId: id, userId: user?.id }),
-    });
-    setSessions((prev) => prev.filter((s) => s.id !== id));
-    if (sessionId === id) startNewChat();
+    setDeletingId(id);
+    try {
+      await fetch("/api/chat/sessions", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: id, userId: user?.id }),
+      });
+      setSessions((prev) => prev.filter((s) => s.id !== id));
+      if (sessionId === id) startNewChat();
+    } catch { /**/ }
+    setDeletingId(null);
   }
 
+  // ── Send message ──
   async function sendMessage(text?: string) {
     const content = (text || input).trim();
     if (!content || loading) return;
 
     const allowed = await trackChat();
     if (!allowed) {
-      setError("You've used your 5 free messages today. Upgrade to Pro for unlimited chat.");
+      setError("You've used your free messages today. Upgrade to Pro for unlimited chat.");
       return;
     }
 
@@ -225,97 +249,111 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: newMessages,
-          userId: user?.id || null,
-          sessionId,
-        }),
+        body: JSON.stringify({ messages: newMessages, userId: user?.id || null, sessionId }),
       });
       const data = await res.json();
+
       if (data.message) {
         const assistantMsg: Message = {
           role: "assistant",
           content: data.message,
-          strains: data.strains?.length > 0 ? data.strains : undefined,
+          strains: data.strains || [],
         };
-        setMessages([...newMessages, assistantMsg]);
-        // Refresh sidebar sessions for logged-in users
-        if (user) setTimeout(loadSessions, 500);
+        setMessages((prev) => [...prev, assistantMsg]);
+        // ✅ Refresh sidebar after every reply so new sessions appear immediately
+        if (user) setTimeout(() => loadSessions(), 600);
       } else {
-        setError("Failed to get a response. Please try again.");
+        setError("Something went wrong. Try again.");
       }
     } catch {
-      setError("Network error. Please check your connection.");
-    } finally {
-      setLoading(false);
+      setError("Network error — please try again.");
+    }
+    setLoading(false);
+  }
+
+  // ── Textarea auto-resize ──
+  function handleTextareaInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setInput(e.target.value);
+    const el = e.target;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 160) + "px";
+  }
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  }
-
-  function handleTextareaInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setInput(e.target.value);
-    e.target.style.height = "auto";
-    e.target.style.height = Math.min(e.target.scrollHeight, 128) + "px";
-  }
-
-  const timeAgo = (iso: string) => {
-    const diff = Date.now() - new Date(iso).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return "just now";
-    if (m < 60) return `${m}m ago`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h}h ago`;
-    return `${Math.floor(h / 24)}d ago`;
-  };
-
+  // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-[#F8F8F0] relative">
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-gray-50">
 
-      {/* ── Sidebar: Chat History ── */}
+      {/* ── Sidebar ── */}
       {user && (
         <>
-          {/* Overlay for mobile */}
           {sidebarOpen && (
-            <div className="fixed inset-0 bg-black/30 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
+            <div className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
           )}
           <aside className={`
-            fixed lg:relative z-40 lg:z-auto top-0 lg:top-auto left-0 h-full lg:h-auto
-            w-72 bg-white border-r-2 border-black flex flex-col
-            transition-transform duration-300 ease-in-out
+            fixed lg:relative z-40 lg:z-auto top-0 left-0 h-full
+            w-72 lg:w-64 xl:w-72 bg-white border-r-2 border-black flex flex-col flex-shrink-0
+            transition-transform duration-300
             ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-            lg:w-64 xl:w-72 flex-shrink-0
-          `} style={{ marginTop: sidebarOpen ? "0" : undefined }}>
-            <div className="p-4 border-b-2 border-black flex items-center justify-between">
+          `}>
+            {/* Sidebar header */}
+            <div className="p-4 border-b-2 border-black flex items-center justify-between gap-2">
               <span className="font-black text-sm">Chat History</span>
               <button onClick={startNewChat}
-                className="text-xs font-black bg-lime border-2 border-black px-3 py-1.5 rounded-xl shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all">
+                className="text-xs font-black bg-lime border-2 border-black px-3 py-1.5 rounded-xl shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all whitespace-nowrap">
                 + New Chat
               </button>
             </div>
+
+            {/* Session list */}
             <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {loadingSessions ? (
-                <div className="text-center py-8 text-sm text-gray-400 animate-pulse">Loading…</div>
+                <div className="text-center py-8 text-xs text-gray-400 animate-pulse">Loading…</div>
               ) : sessions.length === 0 ? (
-                <div className="text-center py-8 text-xs text-gray-400 px-4">
-                  <div className="text-2xl mb-2">💬</div>
-                  No chats yet. Start a conversation!
+                <div className="text-center py-10 text-xs text-gray-400 px-4">
+                  <div className="text-3xl mb-2">💬</div>
+                  No chats yet.<br />Start a conversation!
                 </div>
               ) : (
                 sessions.map((s) => (
-                  <button key={s.id} onClick={() => loadSession(s)}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl group flex items-center justify-between gap-2 transition-all ${
-                      s.id === sessionId ? "bg-lime border-2 border-black shadow-brutal-sm" : "hover:bg-gray-50 border-2 border-transparent"
+                  <div key={s.id}
+                    onClick={() => loadSession(s)}
+                    className={`w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                      s.id === sessionId
+                        ? "bg-lime border-2 border-black shadow-brutal-sm"
+                        : "hover:bg-gray-50 border-2 border-transparent hover:border-gray-200"
                     }`}>
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-bold truncate">{s.preview || "Chat"}</div>
+                      <div className="text-xs font-bold truncate leading-snug">{s.preview || "Chat session"}</div>
                       <div className="text-[10px] text-gray-400 mt-0.5">{timeAgo(s.updated_at)}</div>
                     </div>
-                    <button onClick={(e) => deleteSession(s.id, e)}
-                      className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all text-xs px-1">✕</button>
-                  </button>
+                    {/* Delete button — always visible, not hidden */}
+                    <button
+                      onClick={(e) => deleteSession(s.id, e)}
+                      disabled={deletingId === s.id}
+                      title="Delete chat"
+                      className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg transition-all
+                        ${deletingId === s.id
+                          ? "opacity-40 cursor-not-allowed"
+                          : "text-gray-300 hover:text-red-400 hover:bg-red-50"
+                        }`}>
+                      {deletingId === s.id ? (
+                        <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 ))
               )}
             </div>
@@ -323,7 +361,7 @@ export default function ChatPage() {
         </>
       )}
 
-      {/* ── Main Chat Area ── */}
+      {/* ── Main chat area ── */}
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Header */}
@@ -339,15 +377,15 @@ export default function ChatPage() {
           <div className="w-9 h-9 bg-lime border-2 border-black rounded-xl flex items-center justify-center text-lg font-black shadow-brutal-sm flex-shrink-0">🤖</div>
           <div className="flex-1 min-w-0">
             <div className="font-black text-brand text-sm">StrainBot</div>
-            <div className="text-[10px] text-gray-400">Cannabis Expert AI · Powered by Gemini</div>
+            <div className="text-[10px] text-gray-400">Cannabis Expert · Powered by Gemini</div>
           </div>
           <div className="flex items-center gap-2">
             {isPro ? (
               <span className="text-xs font-bold bg-lime border border-black px-2.5 py-1 rounded-full">✨ Pro</span>
             ) : user ? (
-              <span className="text-xs font-bold text-gray-400">
+              <span className="text-xs font-medium text-gray-400">
                 {chatsRemaining} left ·{" "}
-                <Link href="/account?tab=subscription" className="text-brand underline">Go Pro</Link>
+                <Link href="/account?tab=subscription" className="text-brand underline font-bold">Go Pro</Link>
               </span>
             ) : (
               <Link href="/login?redirect=/chat"
@@ -357,7 +395,7 @@ export default function ChatPage() {
             )}
             {messages.length > 0 && (
               <button onClick={startNewChat}
-                className="text-xs text-gray-400 hover:text-brand px-2.5 py-1 border border-gray-200 rounded-lg transition-all">
+                className="text-xs text-gray-400 hover:text-brand px-2.5 py-1 border border-gray-200 rounded-lg hover:border-gray-400 transition-all">
                 New
               </button>
             )}
@@ -366,6 +404,8 @@ export default function ChatPage() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
+
+          {/* Empty state */}
           {messages.length === 0 && (
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-8">
@@ -373,7 +413,7 @@ export default function ChatPage() {
                 <h1 className="text-2xl font-black text-brand mb-2">Ask StrainBot anything</h1>
                 <p className="text-gray-500 text-sm">Cannabis strains, growing tips, terpenes, effects — I know it all.</p>
                 {!user && (
-                  <div className="mt-3 inline-flex items-center gap-2 bg-lime-pale border-2 border-black rounded-xl px-4 py-2 text-xs font-bold">
+                  <div className="mt-4 inline-flex items-center gap-2 bg-lime-pale border-2 border-black rounded-xl px-4 py-2 text-xs font-bold">
                     💡 <Link href="/login?redirect=/chat" className="underline">Sign in</Link> to save your chat history
                   </div>
                 )}
@@ -389,6 +429,7 @@ export default function ChatPage() {
             </div>
           )}
 
+          {/* Message list */}
           {messages.map((msg, i) => (
             <div key={i} className="max-w-3xl mx-auto w-full">
               <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -403,8 +444,7 @@ export default function ChatPage() {
                   {msg.role === "assistant" ? <MarkdownText text={msg.content} /> : msg.content}
                 </div>
               </div>
-
-              {/* Strain cards below assistant message */}
+              {/* Strain cards */}
               {msg.role === "assistant" && msg.strains && msg.strains.length > 0 && (
                 <div className="mt-3 ml-9">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -417,6 +457,7 @@ export default function ChatPage() {
             </div>
           ))}
 
+          {/* Loading dots */}
           {loading && (
             <div className="flex justify-start max-w-3xl mx-auto w-full">
               <div className="w-7 h-7 bg-lime border-2 border-black rounded-lg flex items-center justify-center text-xs mr-2 flex-shrink-0">🤖</div>
@@ -430,6 +471,7 @@ export default function ChatPage() {
             </div>
           )}
 
+          {/* Error */}
           {error && (
             <div className="max-w-3xl mx-auto w-full">
               <div className="bg-red-50 border-2 border-red-200 rounded-2xl px-4 py-3 text-sm text-red-600 font-medium flex items-center justify-between gap-4">
@@ -447,7 +489,7 @@ export default function ChatPage() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
+        {/* Input bar */}
         <div className="bg-white border-t-2 border-black px-4 py-3 flex-shrink-0">
           <div className="max-w-3xl mx-auto flex gap-3 items-end">
             <textarea
@@ -458,19 +500,27 @@ export default function ChatPage() {
               placeholder={canChat ? "Ask about strains, growing, terpenes…" : "Upgrade to Pro for unlimited messages"}
               disabled={loading}
               rows={1}
-              className="flex-1 px-4 py-3 bg-gray-100 border-2 border-gray-200 focus:border-black focus:bg-white rounded-2xl text-sm font-medium resize-none outline-none transition-all placeholder:text-gray-400 disabled:opacity-50 overflow-hidden"
+              className="flex-1 px-4 py-3 bg-gray-100 border-2 border-gray-200 focus:border-black focus:bg-white rounded-2xl text-sm font-medium resize-none outline-none transition-all placeholder:text-gray-400 disabled:opacity-50"
             />
             <button
               onClick={() => sendMessage()}
               disabled={!input.trim() || loading}
-              className="w-11 h-11 bg-lime border-2 border-black rounded-xl flex items-center justify-center shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-brutal-sm flex-shrink-0"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              className="w-12 h-12 bg-lime border-2 border-black rounded-2xl flex items-center justify-center shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-brutal-sm disabled:hover:translate-y-0 flex-shrink-0">
+              {loading ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+              )}
             </button>
           </div>
-          <p className="text-center text-xs text-gray-300 mt-1.5">Enter to send · Shift+Enter for new line</p>
+          <div className="max-w-3xl mx-auto mt-1.5 text-center text-[10px] text-gray-300">
+            StrainBot can make mistakes. Always verify important grow decisions.
+          </div>
         </div>
       </div>
     </div>
