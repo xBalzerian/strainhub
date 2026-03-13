@@ -5,9 +5,8 @@ import { useState } from "react";
 interface Review {
   id: string;
   author: string;
-  avatar: string; // color hex
+  avatar: string;
   avatarInitials: string;
-  avatarEmoji: string;
   age: string;
   location: string;
   joinYear: number;
@@ -22,32 +21,63 @@ interface Review {
   type: "recreational" | "medical" | "grow";
 }
 
+// ── Multiple independent hash functions so each profile field varies independently ──
+function hash1(n: number): number {
+  let h = n ^ 0xdeadbeef;
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+  return Math.abs(h ^ (h >>> 16));
+}
+function hash2(n: number): number {
+  let h = n ^ 0x12345678;
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  h = Math.imul(h ^ (h >>> 15), 0x27d4eb2f);
+  return Math.abs(h ^ (h >>> 16));
+}
+function hash3(n: number): number {
+  let h = n ^ 0xabcdef01;
+  h = Math.imul(h ^ (h >>> 11), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return Math.abs(h ^ (h >>> 16));
+}
 function hashStr(s: string): number {
-  let h = 0;
+  let h = 5381;
   for (let i = 0; i < s.length; i++) {
-    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+    h = ((h << 5) + h) ^ s.charCodeAt(i);
   }
-  return Math.abs(h);
+  return Math.abs(h >>> 0);
 }
 
-// ─── Rich human profile data ─────────────────────────────────────────
+// Large diverse name pool — 40 first names, varied backgrounds
 const FIRST_NAMES = [
-  "Jake", "Maria", "Darnell", "Sophie", "Carlos", "Priya", "Tyler",
-  "Keisha", "Liam", "Ximena", "Owen", "Fatima", "Elijah", "Nora",
-  "Jordan", "Aaliya", "Marcus", "Hazel", "Devon", "Rosa",
+  "Jake", "Maria", "Darnell", "Sophie", "Carlos", "Priya", "Tyler", "Keisha",
+  "Liam", "Ximena", "Owen", "Fatima", "Elijah", "Nora", "Jordan", "Aaliya",
+  "Marcus", "Hazel", "Devon", "Rosa", "Brandon", "Chloe", "Isaiah", "Tanya",
+  "Ryan", "Amara", "Sean", "Luna", "Kevin", "Jade", "Austin", "Simone",
+  "Noah", "Brianna", "Caleb", "Yara", "Ethan", "Mila", "Zack", "Destiny",
+  "Cole", "Naomi", "Alex", "Samira", "Drew", "Leah", "Finn", "Amani",
+  "Reed", "Dahlia",
 ];
-const LAST_INITIALS = "ABCDEFGHJKLMNPRSTW";
+
+// 26 last initials spread across alphabet
+const LAST_INITIALS = "ABCDEFGHJKLMNPQRSTVWXYZ";
+
 const LOCATIONS = [
   "Colorado", "California", "Oregon", "Washington", "Michigan",
   "Nevada", "Arizona", "New Mexico", "Maine", "Vermont",
-  "British Columbia", "Ontario", "Amsterdam", "Barcelona", "Amsterdam",
+  "British Columbia", "Ontario", "Massachusetts", "Illinois", "Florida",
+  "Montana", "New York", "Texas", "Alaska", "Hawaii",
+  "Amsterdam", "Barcelona", "Toronto", "Vancouver", "Denver",
 ];
+
 const AVATAR_COLORS = [
   "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7",
   "#DDA0DD", "#98D8C8", "#F7DC6F", "#BB8FCE", "#85C1E9",
   "#82E0AA", "#F1948A", "#AED6F1", "#A9DFBF", "#FAD7A0",
   "#D2B4DE", "#A3E4D7", "#F9E79F", "#ABEBC6", "#F0B27A",
+  "#C39BD3", "#76D7C4", "#F8C471", "#7FB3D3", "#A9CCE3",
 ];
+
 const AGE_RANGES = ["21–25", "26–30", "31–35", "36–42", "43–50", "50+"];
 
 const REVIEW_TEMPLATES = [
@@ -62,6 +92,8 @@ const REVIEW_TEMPLATES = [
       "Surprised me big time",
       "Smooth and balanced",
       "Great for the weekend",
+      "Don't sleep on this one",
+      "Better than expected",
     ],
     bodies: [
       "Picked this up last weekend and was blown away right away. The effects came on smooth and lasted a solid 2–3 hours. Really great for unwinding after a long stressful week.",
@@ -72,6 +104,8 @@ const REVIEW_TEMPLATES = [
       "Three sessions in and I'm a convert. First hit you feel the body relax, then the head clears out nicely. Not too heavy, not too light — right in the sweet spot.",
       "Shared this with a few friends on a camping trip and everyone loved it. Social, uplifting, zero anxiety. This is the kind of strain you keep coming back to.",
       "Used to be a sativa-only person but this changed my mind. The balance here is genuinely impressive — energetic enough to stay active but relaxing when you sit down.",
+      "Flavor is something else — really distinct and hits clean every time. Effects are consistent too. Not a one-hit wonder, it delivers every session.",
+      "Grabbed this on a recommendation and I get it now. Doesn't knock you out, doesn't wire you up — just settles you right into a good headspace.",
     ],
   },
   {
@@ -84,6 +118,7 @@ const REVIEW_TEMPLATES = [
       "Recommend for chronic pain",
       "Helps me get through the day",
       "Better than anything else I've tried",
+      "My go-to for stress",
     ],
     bodies: [
       "Been using cannabis medicinally for a few years and this is one of the better ones I've tried for managing my chronic back pain. Takes the edge off without knocking me out.",
@@ -91,8 +126,9 @@ const REVIEW_TEMPLATES = [
       "Insomnia has been rough for me lately. Started using a small amount before bed and it's made a real difference — I'm actually getting through the night now.",
       "After trying a dozen different strains for stress relief, this one has become my go-to. Body relaxation is real and it doesn't fog my brain during the day.",
       "Works well for appetite issues — I deal with nausea from medication and this genuinely helps me eat a normal meal. Grateful I found it.",
-      "Has been a game changer for my migraines. I can feel the tension behind my eyes release within 20 minutes. Not a cure but it gives me functional relief.",
-      "I have fibromyalgia and the full-body relaxation from this is something I haven't found elsewhere. It doesn't eliminate pain but brings it down to a manageable level.",
+      "Has been a game changer for my migraines. I can feel the tension release within about 20 minutes. Not a cure but gives me functional relief when I really need it.",
+      "I have fibromyalgia and the full-body relaxation from this is something I haven't found elsewhere. Doesn't eliminate pain but brings it to a manageable level.",
+      "PTSD nights have been rough. This helps quiet the noise and actually lets me rest. Wouldn't say it fixes anything but it genuinely helps me cope.",
     ],
   },
   {
@@ -105,6 +141,7 @@ const REVIEW_TEMPLATES = [
       "Just harvested, super happy",
       "Dense buds, strong genetics",
       "Third run with this strain",
+      "Consistent performer",
     ],
     bodies: [
       "First time growing and this was a great choice. Very forgiving if you make small mistakes and the plants stayed healthy throughout. Decent yield for a beginner setup.",
@@ -112,8 +149,9 @@ const REVIEW_TEMPLATES = [
       "Really sturdy genetics — withstood a couple temperature swings without major issues. Flowering stage was pretty textbook. Very happy with the harvest quality.",
       "Followed a basic grow guide and ended up with a solid first harvest. Doesn't demand much attention which is perfect for people still learning the basics.",
       "Second run with this strain. First time was a learning experience — this time I dialed in the nutrients and the difference was massive. Highly recommend.",
-      "Grew this in a 4x4 tent under LED. Stretched a bit more than expected but the structure was solid and the trichome development was beautiful. Dense, frosty buds.",
+      "Grew this in a 4x4 tent under LED. Stretched more than expected but structure was solid and trichome development was beautiful. Dense frosty buds at the end.",
       "This strain handled a pH issue mid-grow better than anything else I've grown. Recovered quickly and the final product was still excellent. Strong genetics.",
+      "Outdoor run in full sun. She got massive — had to stake the main branches. The cure took 3 weeks and the smell is absolutely incredible. Worth every minute.",
     ],
   },
 ];
@@ -124,51 +162,85 @@ const EFFECT_TAG_OPTIONS = [
   "Body High", "Head High", "Giggly", "Talkative", "Couch-lock",
 ];
 
+// Generate a date string between Jan 2024 and today (March 2026)
+function generateDate(seed: number): string {
+  // Range: Jan 1 2024 → Mar 13 2026 = ~807 days
+  const start = new Date("2024-01-01").getTime();
+  const end = new Date("2026-03-13").getTime();
+  const range = end - start;
+  const offset = (seed % 100000) / 100000; // 0..1
+  const ts = start + Math.floor(offset * range);
+  return new Date(ts).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
+
 function generateReviews(strainSlug: string): Review[] {
-  const seed = hashStr(strainSlug);
-  const count = 6 + (seed % 4); // 6–9 reviews
+  const baseSeed = hashStr(strainSlug);
+  const count = 6 + (baseSeed % 4); // 6–9 reviews
   const reviews: Review[] = [];
 
-  for (let i = 0; i < count; i++) {
-    const s = hashStr(strainSlug + String(i));
-    const s2 = hashStr(strainSlug + String(i) + "b");
-    const template = REVIEW_TEMPLATES[s % 3];
-    const titleIdx = (s >> 2) % template.titles.length;
-    const bodyIdx = (s >> 4) % template.bodies.length;
+  // Track used names to guarantee uniqueness
+  const usedNames = new Set<string>();
 
-    const firstName = FIRST_NAMES[(s >> 6) % FIRST_NAMES.length];
-    const lastInitial = LAST_INITIALS[(s >> 8) % LAST_INITIALS.length];
+  for (let i = 0; i < count; i++) {
+    // Use completely independent seeds per reviewer per field
+    // Each field gets a different hash function AND a different salt
+    const seedBase = baseSeed + i * 999983; // large prime offset per reviewer
+
+    const s1 = hash1(seedBase);
+    const s2 = hash2(seedBase + 1111);
+    const s3 = hash3(seedBase + 2222);
+    const s4 = hash1(seedBase + 3333);
+    const s5 = hash2(seedBase + 4444);
+    const s6 = hash3(seedBase + 5555);
+    const s7 = hash1(seedBase + 6666);
+    const s8 = hash2(seedBase + 7777);
+    const s9 = hash3(seedBase + 8888);
+    const s10 = hash1(seedBase + 9999);
+
+    // Name — ensure uniqueness by trying next index if collision
+    let firstName = "";
+    let lastInitial = "";
+    let nameAttempt = 0;
+    do {
+      const ns = hash1(seedBase + nameAttempt * 77777);
+      firstName = FIRST_NAMES[ns % FIRST_NAMES.length];
+      lastInitial = LAST_INITIALS[hash2(seedBase + nameAttempt * 33333) % LAST_INITIALS.length];
+      nameAttempt++;
+    } while (usedNames.has(`${firstName} ${lastInitial}`) && nameAttempt < 50);
+    usedNames.add(`${firstName} ${lastInitial}`);
+
     const author = `${firstName} ${lastInitial}.`;
     const avatarInitials = `${firstName[0]}${lastInitial}`;
-    const avatarEmoji = ["🧑", "👩", "🧔", "👨‍🦱", "👩‍🦰", "🧑‍🦳", "👩‍🦲", "🧑‍🦱"][(s >> 10) % 8];
-    const avatarColor = AVATAR_COLORS[(s >> 12) % AVATAR_COLORS.length];
-    const location = LOCATIONS[(s >> 14) % LOCATIONS.length];
-    const age = AGE_RANGES[(s >> 16) % AGE_RANGES.length];
-    const joinYear = 2018 + ((s >> 18) % 7); // 2018–2024
-    const reviewCount = 3 + ((s >> 20) % 48); // 3–50 reviews
-    const verified = (s % 5) !== 0; // 80% verified
+    const avatarColor = AVATAR_COLORS[s2 % AVATAR_COLORS.length];
+    const location = LOCATIONS[s3 % LOCATIONS.length];
+    const age = AGE_RANGES[s4 % AGE_RANGES.length];
+    const joinYear = 2017 + (s5 % 8); // 2017–2024
+    const reviewCount = 2 + (s6 % 64); // 2–65 reviews
+    const verified = (s7 % 5) !== 0;
 
-    const ratingSeed = s % 10;
+    const ratingSeed = s8 % 10;
     const rating = ratingSeed < 1 ? 2 : ratingSeed < 2 ? 3 : ratingSeed < 5 ? 4 : 5;
 
-    const daysAgo = (s % 540) + 1;
-    const date = new Date();
-    date.setDate(date.getDate() - daysAgo);
-    const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    const dateStr = generateDate(s9);
 
-    const numTags = 2 + (s % 2);
+    const template = REVIEW_TEMPLATES[s10 % 3];
+    const titleIdx = hash1(seedBase + 11111) % template.titles.length;
+    const bodyIdx = hash2(seedBase + 22222) % template.bodies.length;
+
+    const numTags = 2 + (hash3(seedBase + 33333) % 2);
     const tags: string[] = [];
     for (let t = 0; t < numTags; t++) {
-      const tag = EFFECT_TAG_OPTIONS[(s2 + t * 7) % EFFECT_TAG_OPTIONS.length];
+      const tag = EFFECT_TAG_OPTIONS[hash1(seedBase + 44444 + t * 55555) % EFFECT_TAG_OPTIONS.length];
       if (!tags.includes(tag)) tags.push(tag);
     }
+
+    const helpful = hash2(seedBase + 66666) % 48;
 
     reviews.push({
       id: `${strainSlug}-${i}`,
       author,
       avatar: avatarColor,
       avatarInitials,
-      avatarEmoji,
       age,
       location,
       joinYear,
@@ -179,7 +251,7 @@ function generateReviews(strainSlug: string): Review[] {
       title: template.titles[titleIdx],
       body: template.bodies[bodyIdx],
       effect_tags: tags,
-      helpful: (s >> 22) % 45,
+      helpful,
       type: template.type,
     });
   }
@@ -230,7 +302,6 @@ const TYPE_LABELS: Record<string, string> = {
 };
 const RATING_BAR_COLOR = ["", "bg-red-400", "bg-orange-400", "bg-yellow-400", "bg-lime", "bg-lime"];
 
-// ─── Reviewer Avatar ──────────────────────────────────────────────────
 function ReviewerAvatar({ review, size = "md" }: { review: Review; size?: "sm" | "md" }) {
   const sz = size === "md" ? "w-10 h-10 text-sm" : "w-8 h-8 text-xs";
   return (
@@ -243,14 +314,12 @@ function ReviewerAvatar({ review, size = "md" }: { review: Review; size?: "sm" |
   );
 }
 
-// ─── Review Card ──────────────────────────────────────────────────────
 function ReviewCard({ review }: { review: Review }) {
   const [helpful, setHelpful] = useState(review.helpful);
   const [voted, setVoted] = useState(false);
 
   return (
     <div className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal-sm">
-      {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-start gap-3 mb-3">
           <ReviewerAvatar review={review} />
@@ -276,7 +345,6 @@ function ReviewCard({ review }: { review: Review }) {
           </span>
         </div>
 
-        {/* Rating + date */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <StarDisplay rating={review.rating} />
@@ -285,14 +353,10 @@ function ReviewCard({ review }: { review: Review }) {
           <span className="text-[10px] text-gray-400">{review.date}</span>
         </div>
 
-        {/* Title */}
         <p className="font-black text-sm mb-1.5 leading-snug">"{review.title}"</p>
-
-        {/* Body */}
         <p className="text-xs text-gray-600 leading-relaxed">{review.body}</p>
       </div>
 
-      {/* Tags */}
       {review.effect_tags.length > 0 && (
         <div className="px-4 pb-3 flex flex-wrap gap-1.5">
           {review.effect_tags.map((tag) => (
@@ -303,7 +367,6 @@ function ReviewCard({ review }: { review: Review }) {
         </div>
       )}
 
-      {/* Footer */}
       <div className="px-4 py-2.5 bg-gray-50 border-t-2 border-black flex items-center justify-between">
         <span className="text-[10px] text-gray-400">Helpful?</span>
         <button
@@ -321,7 +384,6 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-// ─── Summary (used in strain page header) ────────────────────────────
 export function ReviewSummary({ strainSlug, strainName }: { strainSlug: string; strainName: string }) {
   const reviews = generateReviews(strainSlug);
   const avg = reviews.reduce((a, r) => a + r.rating, 0) / reviews.length;
@@ -336,7 +398,6 @@ export function ReviewSummary({ strainSlug, strainName }: { strainSlug: string; 
   );
 }
 
-// ─── Main Reviews Component ───────────────────────────────────────────
 export default function StrainReviews({ strainSlug, strainName }: { strainSlug: string; strainName: string }) {
   const allReviews = generateReviews(strainSlug);
   const avg = allReviews.reduce((a, r) => a + r.rating, 0) / allReviews.length;
@@ -374,7 +435,6 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
 
   return (
     <div className="mb-8">
-      {/* ── Section header ── */}
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest">⭐ User Reviews</h2>
         <button
@@ -385,26 +445,21 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
         </button>
       </div>
 
-      {/* ── Summary card — mobile-first ── */}
+      {/* Summary card */}
       <div className="bg-white border-2 border-black rounded-2xl p-4 shadow-brutal mb-5">
         <div className="flex gap-4 items-start">
-          {/* Big score */}
           <div className="flex-shrink-0 text-center">
             <div className="text-5xl font-black leading-none">{avgRounded.toFixed(1)}</div>
             <StarDisplay rating={Math.round(avg)} size="lg" />
             <div className="text-[10px] text-gray-400 font-semibold mt-1">{allReviews.length} reviews</div>
           </div>
-          {/* Bar chart */}
           <div className="flex-1 flex flex-col gap-1.5">
             {dist.map((d) => (
               <div key={d.star} className="flex items-center gap-2">
                 <span className="text-[10px] font-black text-gray-500 w-3 text-right">{d.star}</span>
                 <span className="text-yellow-400 text-[10px]">★</span>
                 <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${RATING_BAR_COLOR[d.star]}`}
-                    style={{ width: `${d.pct}%` }}
-                  />
+                  <div className={`h-full rounded-full transition-all ${RATING_BAR_COLOR[d.star]}`} style={{ width: `${d.pct}%` }} />
                 </div>
                 <span className="text-[10px] text-gray-400 w-7 text-right">{d.pct}%</span>
               </div>
@@ -412,7 +467,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
           </div>
         </div>
 
-        {/* Filter tabs — scroll on mobile */}
+        {/* Filter + sort tabs */}
         <div className="mt-4 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {(["all", "recreational", "medical", "grow"] as const).map((f) => (
             <button
@@ -441,7 +496,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
         </div>
       </div>
 
-      {/* ── Write review form ── */}
+      {/* Write review form */}
       {showForm && !submitted && (
         <div className="bg-white border-2 border-black rounded-2xl p-4 shadow-brutal mb-5">
           <h3 className="font-black text-sm mb-4">Share your experience with {strainName}</h3>
@@ -454,14 +509,8 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
               <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-1.5">Review Type</label>
               <div className="flex gap-2 flex-wrap">
                 {(["recreational", "medical", "grow"] as const).map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setFormType(t)}
-                    className={`text-xs font-bold px-3 py-1.5 rounded-lg border-2 transition-all ${
-                      formType === t ? "bg-lime border-black" : "bg-gray-50 border-gray-200"
-                    }`}
-                  >
+                  <button key={t} type="button" onClick={() => setFormType(t)}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-lg border-2 transition-all ${formType === t ? "bg-lime border-black" : "bg-gray-50 border-gray-200"}`}>
                     {TYPE_LABELS[t]}
                   </button>
                 ))}
@@ -469,63 +518,36 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
             </div>
             <div>
               <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-1.5">Your Name</label>
-              <input
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder="First name or username"
-                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime"
-              />
+              <input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="First name or username"
+                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime" />
             </div>
             <div>
               <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-1.5">Title</label>
-              <input
-                value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
-                placeholder="Sum it up in one line"
-                required
-                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime"
-              />
+              <input value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="Sum it up in one line" required
+                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime" />
             </div>
             <div>
               <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-1.5">Your Review</label>
-              <textarea
-                value={formBody}
-                onChange={(e) => setFormBody(e.target.value)}
-                placeholder="What was your experience? Effects, flavor, how you used it..."
-                required
-                rows={4}
-                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime resize-none"
-              />
+              <textarea value={formBody} onChange={(e) => setFormBody(e.target.value)} placeholder="What was your experience? Effects, flavor, how you used it..." required rows={4}
+                className="w-full border-2 border-black rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime resize-none" />
             </div>
             <div>
               <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-1.5">Effects You Noticed</label>
               <div className="flex flex-wrap gap-1.5">
                 {EFFECT_TAG_OPTIONS.slice(0, 10).map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
+                  <button key={tag} type="button"
                     onClick={() => setFormTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])}
-                    className={`text-[11px] font-bold px-2.5 py-1 rounded-full border-2 transition-all ${
-                      formTags.includes(tag) ? "bg-lime border-black" : "bg-gray-50 border-gray-200 hover:border-black"
-                    }`}
-                  >
+                    className={`text-[11px] font-bold px-2.5 py-1 rounded-full border-2 transition-all ${formTags.includes(tag) ? "bg-lime border-black" : "bg-gray-50 border-gray-200 hover:border-black"}`}>
                     {tag}
                   </button>
                 ))}
               </div>
             </div>
             <div className="flex gap-3">
-              <button
-                type="submit"
-                className="flex-1 bg-lime border-2 border-black font-black text-sm py-3 rounded-xl shadow-brutal hover:shadow-brutal-lg active:translate-y-0.5 transition-all"
-              >
+              <button type="submit" className="flex-1 bg-lime border-2 border-black font-black text-sm py-3 rounded-xl shadow-brutal hover:shadow-brutal-lg active:translate-y-0.5 transition-all">
                 Submit Review
               </button>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="px-4 border-2 border-gray-200 font-bold text-sm py-3 rounded-xl hover:border-black transition-all"
-              >
+              <button type="button" onClick={() => setShowForm(false)} className="px-4 border-2 border-gray-200 font-bold text-sm py-3 rounded-xl hover:border-black transition-all">
                 Cancel
               </button>
             </div>
@@ -541,7 +563,7 @@ export default function StrainReviews({ strainSlug, strainName }: { strainSlug: 
         </div>
       )}
 
-      {/* ── Review cards ── */}
+      {/* Review cards */}
       <div className="flex flex-col gap-3">
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
