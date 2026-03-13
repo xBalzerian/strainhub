@@ -1,38 +1,80 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
 const MONTHLY_PLAN_ID = process.env.NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID || "";
 const ANNUAL_PLAN_ID = process.env.NEXT_PUBLIC_PAYPAL_ANNUAL_PLAN_ID || "";
 
-export default function AccountPage() {
+type Tab = "profile" | "subscription" | "activity";
+
+function AccountPageInner() {
   const { user, profile, isPro, signOut, refreshProfile, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
   const [subSuccess, setSubSuccess] = useState(false);
-  const [tab, setTab] = useState<"profile" | "subscription" | "activity">("profile");
+  const [profileTimeout, setProfileTimeout] = useState(false);
   const paypalRendered = useRef(false);
+  const paypalContainerRef = useRef<HTMLDivElement>(null);
 
+  // Read tab from URL — default "profile"
+  const tabParam = searchParams.get("tab") as Tab | null;
+  const [tab, setTab] = useState<Tab>(
+    tabParam === "subscription" || tabParam === "activity" ? tabParam : "profile"
+  );
+
+  // Sync tab if URL param changes (e.g. navigating from dropdown)
+  useEffect(() => {
+    if (tabParam === "subscription" || tabParam === "activity" || tabParam === "profile") {
+      setTab(tabParam);
+    }
+  }, [tabParam]);
+
+  // Update URL when tab changes (so back button works + links work)
+  const switchTab = (t: Tab) => {
+    setTab(t);
+    router.replace(`/account${t !== "profile" ? `?tab=${t}` : ""}`, { scroll: false });
+  };
+
+  // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) router.push("/login?redirect=/account");
   }, [user, loading, router]);
 
+  // Profile timeout fallback
+  useEffect(() => {
+    if (user && !profile) {
+      const t = setTimeout(() => setProfileTimeout(true), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [user, profile]);
+
+  // Load PayPal SDK
   useEffect(() => {
     if (!PAYPAL_CLIENT_ID || isPro) return;
-    if (window.paypal) { setPaypalLoaded(true); return; }
+    if (typeof window !== "undefined" && window.paypal) {
+      setPaypalLoaded(true);
+      return;
+    }
+    const existing = document.querySelector('script[src*="paypal.com/sdk"]');
+    if (existing) {
+      existing.addEventListener("load", () => setPaypalLoaded(true));
+      return;
+    }
     const script = document.createElement("script");
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&vault=true&intent=subscription`;
-    script.onload = () => setPaypalLoaded(true);
+    script.addEventListener("load", () => setPaypalLoaded(true));
     document.body.appendChild(script);
   }, [isPro]);
 
+  // Render PayPal button
   useEffect(() => {
-    if (!paypalLoaded || isPro || tab !== "subscription") return;
+    if (!paypalLoaded || isPro || tab !== "subscription" || subSuccess) return;
     if (paypalRendered.current) return;
     const container = document.getElementById("account-paypal-btn");
     if (!container) return;
@@ -40,12 +82,11 @@ export default function AccountPage() {
     paypalRendered.current = true;
 
     window.paypal.Buttons({
-      style: { shape: "rect", color: "gold", layout: "vertical", label: "subscribe" },
+      style: { shape: "pill", color: "gold", layout: "vertical", label: "subscribe" },
       createSubscription: (_data: unknown, actions: { subscription: { create: (a: { plan_id: string }) => Promise<string> } }) =>
         actions.subscription.create({ plan_id: billing === "annual" ? ANNUAL_PLAN_ID : MONTHLY_PLAN_ID }),
       onApprove: async (data: { subscriptionID: string }) => {
         setUpgrading(true);
-        // Call our webhook to update profile
         await fetch("/api/subscription/activate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -56,30 +97,24 @@ export default function AccountPage() {
         setUpgrading(false);
       },
     }).render("#account-paypal-btn");
-  }, [paypalLoaded, isPro, tab, billing, user?.id, refreshProfile]);
+  }, [paypalLoaded, isPro, tab, billing, user?.id, refreshProfile, subSuccess]);
 
-  // Reset paypal on billing toggle
+  // Re-render PayPal when billing toggle changes
   useEffect(() => {
     paypalRendered.current = false;
   }, [billing]);
 
-  // Show spinner only while auth is loading or user is confirmed but profile hasn't loaded yet
-  // After 5s with user but no profile, show page anyway to avoid infinite spinner
-  const [profileTimeout, setProfileTimeout] = useState(false);
-  useEffect(() => {
-    if (user && !profile) {
-      const t = setTimeout(() => setProfileTimeout(true), 5000);
-      return () => clearTimeout(t);
-    }
-  }, [user, profile]);
-
+  // Loading state
   if (loading || (!user && !profileTimeout)) {
-    return <div className="min-h-screen bg-[#F8F8F0] flex items-center justify-center"><div className="text-2xl animate-pulse">🌿</div></div>;
+    return (
+      <div className="min-h-screen bg-[#F8F8F0] flex items-center justify-center">
+        <div className="text-2xl animate-pulse">🌿</div>
+      </div>
+    );
   }
+  if (!user) return null;
 
-  if (!user) return null; // redirect handled by useEffect above
-
-  // Fallback profile built from user auth data if DB row missing
+  // Safe profile fallback
   const safeProfile = profile ?? {
     id: user.id,
     email: user.email ?? "",
@@ -94,21 +129,33 @@ export default function AccountPage() {
     created_at: user.created_at ?? new Date().toISOString(),
   };
 
-  const planLabel = isPro ? (safeProfile.plan === "annual" ? "Pro Annual" : "Pro Monthly") : "Free";
-  const planExpiry = safeProfile.plan_expires_at ? new Date(safeProfile.plan_expires_at).toLocaleDateString() : null;
+  const planLabel = isPro
+    ? safeProfile.plan === "annual" ? "Pro Annual" : "Pro Monthly"
+    : "Free";
+  const planExpiry = safeProfile.plan_expires_at
+    ? new Date(safeProfile.plan_expires_at).toLocaleDateString()
+    : null;
 
   return (
     <div className="min-h-screen bg-[#F8F8F0] px-4 py-10">
       <div className="max-w-2xl mx-auto">
-        {/* Profile Header */}
+
+        {/* ── Profile Header ── */}
         <div className="bg-white border-2 border-black rounded-3xl shadow-brutal p-6 mb-6">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl border-2 border-black overflow-hidden bg-lime flex items-center justify-center flex-shrink-0">
               {(user?.user_metadata?.avatar_url || safeProfile.avatar_url) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={user?.user_metadata?.avatar_url || safeProfile.avatar_url} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img
+                  src={user?.user_metadata?.avatar_url || safeProfile.avatar_url!}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
               ) : (
-                <span className="text-2xl font-black">{(safeProfile.full_name || safeProfile.email)[0].toUpperCase()}</span>
+                <span className="text-2xl font-black">
+                  {(safeProfile.full_name || safeProfile.email)[0].toUpperCase()}
+                </span>
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -116,9 +163,11 @@ export default function AccountPage() {
               <div className="text-sm text-gray-400 truncate">{safeProfile.email}</div>
               <div className="flex items-center gap-2 mt-1">
                 <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${isPro ? "bg-lime border-black" : "bg-gray-100 border-gray-200 text-gray-500"}`}>
-                  {isPro ? "✨ " : ""}{ planLabel}
+                  {isPro ? "✨ " : ""}{planLabel}
                 </span>
-                {planExpiry && isPro && <span className="text-xs text-gray-400">Renews {planExpiry}</span>}
+                {planExpiry && isPro && (
+                  <span className="text-xs text-gray-400">Renews {planExpiry}</span>
+                )}
               </div>
             </div>
             <button
@@ -130,20 +179,22 @@ export default function AccountPage() {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* ── Tabs ── */}
         <div className="flex gap-1 bg-white border-2 border-black rounded-2xl p-1 mb-6 shadow-brutal-sm">
           {(["profile", "subscription", "activity"] as const).map((t) => (
             <button
               key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-bold capitalize transition-all ${tab === t ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400 hover:text-brand"}`}
+              onClick={() => switchTab(t)}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold capitalize transition-all ${
+                tab === t ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400 hover:text-brand"
+              }`}
             >
               {t === "profile" ? "👤 Profile" : t === "subscription" ? "⭐ Subscription" : "📊 Activity"}
             </button>
           ))}
         </div>
 
-        {/* Tab: Profile */}
+        {/* ── Tab: Profile ── */}
         {tab === "profile" && (
           <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-6 space-y-5">
             <h2 className="font-black text-lg">Account Details</h2>
@@ -172,16 +223,19 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* Tab: Subscription */}
+        {/* ── Tab: Subscription ── */}
         {tab === "subscription" && (
           <div className="space-y-5">
             {isPro ? (
+              /* ── Already Pro ── */
               <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-lime border-2 border-black rounded-xl flex items-center justify-center text-2xl">✨</div>
                   <div>
                     <div className="font-black text-lg">StrainHub Pro Active</div>
-                    <div className="text-sm text-gray-400">{safeProfile.plan === "annual" ? "Annual Plan · $9.99/year" : "Monthly Plan · $2.99/month"}</div>
+                    <div className="text-sm text-gray-400">
+                      {safeProfile.plan === "annual" ? "Annual Plan · $9.99/year" : "Monthly Plan · $2.99/month"}
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-3 mb-6">
@@ -198,10 +252,13 @@ export default function AccountPage() {
                 )}
                 <p className="text-xs text-gray-400 mt-4 text-center">
                   To cancel, manage your subscription in your{" "}
-                  <a href="https://www.paypal.com/myaccount/autopay" target="_blank" rel="noopener noreferrer" className="underline">PayPal account</a>.
+                  <a href="https://www.paypal.com/myaccount/autopay" target="_blank" rel="noopener noreferrer" className="underline">
+                    PayPal account
+                  </a>.
                 </p>
               </div>
             ) : subSuccess ? (
+              /* ── Just subscribed ── */
               <div className="bg-white border-2 border-black rounded-3xl shadow-brutal p-8 text-center">
                 <div className="text-5xl mb-3">🎉</div>
                 <div className="font-black text-2xl mb-2">You&apos;re Pro!</div>
@@ -211,31 +268,39 @@ export default function AccountPage() {
                 </Link>
               </div>
             ) : (
+              /* ── Upgrade to Pro ── */
               <>
-                {/* Current plan */}
-                <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 flex items-center justify-between">
+                {/* Current plan banner */}
+                <div className="bg-white border-2 border-gray-200 rounded-2xl px-5 py-4 flex items-center justify-between">
                   <div>
-                    <div className="font-bold text-sm">Current Plan: Free</div>
-                    <div className="text-xs text-gray-400">10 strain views/day · 5 AI chats/day</div>
+                    <div className="text-xs font-black uppercase tracking-widest text-gray-400">Current Plan</div>
+                    <div className="font-black text-base mt-0.5">Free</div>
+                    <div className="text-xs text-gray-400 mt-0.5">10 strain views/day · 5 AI chats/day</div>
                   </div>
-                  <span className="text-xs bg-gray-200 text-gray-600 font-bold px-3 py-1 rounded-full">Free</span>
+                  <span className="text-xs font-black px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-gray-500">Free</span>
                 </div>
 
                 {/* Billing toggle */}
-                <div className="flex bg-white border-2 border-black rounded-2xl p-1 gap-1">
-                  <button onClick={() => setBilling("monthly")} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${billing === "monthly" ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400"}`}>
+                <div className="bg-white border-2 border-black rounded-2xl p-1.5 flex shadow-brutal-sm">
+                  <button
+                    onClick={() => setBilling("monthly")}
+                    className={`flex-1 py-2.5 rounded-xl text-sm font-black transition-all ${billing === "monthly" ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400"}`}
+                  >
                     Monthly · $2.99
                   </button>
-                  <button onClick={() => setBilling("annual")} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all relative ${billing === "annual" ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400"}`}>
+                  <button
+                    onClick={() => setBilling("annual")}
+                    className={`flex-1 py-2.5 rounded-xl text-sm font-black transition-all relative ${billing === "annual" ? "bg-lime border-2 border-black shadow-brutal-sm" : "text-gray-400"}`}
+                  >
                     Annual · $9.99
-                    <span className="absolute -top-3 -right-1 bg-black text-lime text-[9px] font-black px-1.5 py-0.5 rounded-full">72% OFF</span>
+                    <span className="absolute -top-2.5 -right-1 bg-black text-lime text-[9px] font-black px-1.5 py-0.5 rounded-full">72% OFF</span>
                   </button>
                 </div>
 
-                {/* Pro features */}
-                <div className="bg-white border-2 border-black rounded-2xl p-5">
-                  <div className="font-black mb-4">Everything in Pro:</div>
-                  <div className="space-y-2">
+                {/* Features */}
+                <div className="bg-white border-2 border-black rounded-3xl p-6 shadow-brutal-sm">
+                  <div className="font-black text-base mb-4">Everything in Pro:</div>
+                  <div className="space-y-3">
                     {[
                       ["🔓", "Unlimited strain views"],
                       ["🤖", "Unlimited AI chat with StrainBot"],
@@ -243,55 +308,96 @@ export default function AccountPage() {
                       ["🧬", "Full cannabinoid data (CBN, CBG, THCV)"],
                       ["🚫", "Ad-free experience"],
                       ["⚡", "Early access to new features"],
-                    ].map(([icon, label]) => (
-                      <div key={label} className="flex items-center gap-2 text-sm font-medium">
-                        <span>{icon}</span><span>{label}</span>
+                    ].map(([icon, text]) => (
+                      <div key={text} className="flex items-center gap-2.5 text-sm font-medium">
+                        <span>{icon}</span> {text}
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* PayPal button */}
-                <div className="bg-white border-2 border-black rounded-2xl p-5">
+                <div className="bg-white border-2 border-black rounded-3xl p-6 shadow-brutal-sm">
+                  <div className="font-black text-base mb-1">
+                    {billing === "monthly" ? "Monthly · $2.99/month" : "Annual · $9.99/year"}
+                  </div>
+                  <div className="text-xs text-gray-400 mb-4">
+                    {billing === "annual" ? "Billed once a year. Cancel anytime." : "Billed monthly. Cancel anytime."}
+                  </div>
+
                   {upgrading ? (
-                    <div className="text-center py-4 font-bold text-gray-500 animate-pulse">Activating Pro... 🌿</div>
+                    <div className="text-center py-4 font-bold text-gray-500 animate-pulse">Activating your Pro plan…</div>
+                  ) : PAYPAL_CLIENT_ID ? (
+                    <>
+                      <div ref={paypalContainerRef} id="account-paypal-btn" className="min-h-[45px]" />
+                      {!paypalLoaded && (
+                        <div className="text-center text-xs text-gray-400 py-3 animate-pulse">Loading payment…</div>
+                      )}
+                    </>
                   ) : (
-                    <div id="account-paypal-btn" className="min-h-[50px]" />
+                    <div className="text-center py-4 text-sm text-gray-400 border-2 border-dashed border-gray-200 rounded-xl">
+                      PayPal not configured yet.{" "}
+                      <Link href="/contact" className="underline text-brand">Contact us</Link> to upgrade.
+                    </div>
                   )}
-                  <p className="text-center text-xs text-gray-400 mt-3">Secure via PayPal · Cancel anytime</p>
+
+                  <p className="text-[11px] text-gray-400 text-center mt-3">
+                    Secured by PayPal · Cancel anytime from your{" "}
+                    <a href="https://www.paypal.com/myaccount/autopay" target="_blank" rel="noopener noreferrer" className="underline">PayPal account</a>
+                  </p>
                 </div>
               </>
             )}
           </div>
         )}
 
-        {/* Tab: Activity */}
+        {/* ── Tab: Activity ── */}
         {tab === "activity" && (
-          <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-6 space-y-5">
-            <h2 className="font-black text-lg">Today&apos;s Usage</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-lime-pale border-2 border-black rounded-2xl p-4 text-center">
-                <div className="text-3xl font-black">{safeProfile.views_today || 0}</div>
-                <div className="text-xs font-bold text-gray-500 mt-1">Strains Viewed</div>
-                {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 10 free</div>}
-                {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
-              </div>
-              <div className="bg-lime-pale border-2 border-black rounded-2xl p-4 text-center">
-                <div className="text-3xl font-black">{safeProfile.chats_today || 0}</div>
-                <div className="text-xs font-bold text-gray-500 mt-1">AI Chats</div>
-                {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 5 free</div>}
-                {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
+          <div className="space-y-4">
+            <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-6">
+              <h2 className="font-black text-lg mb-5">Today&apos;s Usage</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 text-center">
+                  <div className="text-3xl font-black">{safeProfile.views_today || 0}</div>
+                  <div className="text-xs font-bold text-gray-500 mt-1">Strains Viewed</div>
+                  {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 10 free</div>}
+                  {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
+                </div>
+                <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 text-center">
+                  <div className="text-3xl font-black">{safeProfile.chats_today || 0}</div>
+                  <div className="text-xs font-bold text-gray-500 mt-1">AI Chats</div>
+                  {!isPro && <div className="text-xs text-gray-400 mt-0.5">of 5 free</div>}
+                  {isPro && <div className="text-xs text-green-600 font-bold mt-0.5">Unlimited ✨</div>}
+                </div>
               </div>
             </div>
-            <div className="text-xs text-gray-400 text-center">Counts reset at midnight UTC</div>
+
             {!isPro && (
-              <button onClick={() => setTab("subscription")} className="w-full py-3 bg-lime border-2 border-black rounded-xl font-black shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5 transition-all">
-                🌿 Upgrade to Pro — Remove All Limits
-              </button>
+              <div className="bg-lime border-2 border-black rounded-3xl shadow-brutal-sm p-5 flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-black">Upgrade to Pro</div>
+                  <div className="text-sm text-gray-700 mt-0.5">Unlimited everything from $2.99/month</div>
+                </div>
+                <button
+                  onClick={() => switchTab("subscription")}
+                  className="px-4 py-2 bg-black text-lime font-black text-sm rounded-xl whitespace-nowrap hover:opacity-90 transition-all"
+                >
+                  Go Pro →
+                </button>
+              </div>
             )}
           </div>
         )}
+
       </div>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8F8F0] flex items-center justify-center"><div className="text-2xl animate-pulse">🌿</div></div>}>
+      <AccountPageInner />
+    </Suspense>
   );
 }
