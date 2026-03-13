@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains } from "@/lib/strains";
+import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains, getParentSlugs } from "@/lib/strains";
 import { strainMetadata, strainJsonLd } from "@/lib/seo";
 import StrainCard from "@/components/StrainCard";
 import StrainReviews, { ReviewSummary } from "@/components/StrainReviews";
@@ -240,7 +240,10 @@ export default async function StrainPage({ params }: { params: { slug: string } 
   const strain = await getStrainBySlug(params.slug);
   if (!strain) notFound();
 
-  const similar = await getSimilarStrains(strain.type, strain.slug, 4);
+  const [similar, parentSlugs] = await Promise.all([
+    getSimilarStrains(strain.type, strain.slug, 4),
+    getParentSlugs(strain.parents || []),
+  ]);
   const jsonLd = strainJsonLd(strain);
   const thcPct = Math.min(100, (strain.thc_max / 35) * 100);
   const cbdPct = Math.min(100, (strain.cbd_max / 25) * 100);
@@ -434,6 +437,46 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             </div>
 
+            {/* 🌱 Genetics & Lineage — animated, placed after ratio */}
+            {strain.parents?.length > 0 && (
+              <div className="mb-8 genetics-section">
+                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">🌱 Genetics &amp; Lineage</h2>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {strain.parents.map((parent, i) => {
+                    const parentSlug = parentSlugs[parent];
+                    const pill = (
+                      <span
+                        key={parent}
+                        className="genetics-parent bg-lime-pale border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm"
+                        style={{ animationDelay: `${i * 0.18}s` }}
+                      >
+                        {parent}
+                      </span>
+                    );
+                    return (
+                      <span key={parent} className="flex items-center gap-2">
+                        {parentSlug ? (
+                          <a href={`/strains/${parentSlug}`} className="hover:opacity-80 transition-opacity">
+                            {pill}
+                          </a>
+                        ) : pill}
+                        {i < strain.parents.length - 1 && (
+                          <span className="genetics-plus text-gray-500 font-black text-lg" style={{ animationDelay: `${i * 0.18 + 0.12}s` }}>×</span>
+                        )}
+                      </span>
+                    );
+                  })}
+                  <span className="genetics-arrow text-gray-400 font-black text-lg">→</span>
+                  <span className="genetics-result bg-brand border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm">
+                    {strain.name}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 text-center mt-3">
+                  {strain.name} was bred by crossing {strain.parents.join(" × ")}.
+                </p>
+              </div>
+            )}
+
             {/* YELLOW #2 — Minor Cannabinoids */}
             <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal-sm mb-8">
               <div className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-1">🔬 Full Cannabinoid Profile</div>
@@ -546,31 +589,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </div>
             )}
 
-            {/* Genetics */}
-            {strain.parents?.length > 0 && (
-              <div className="mb-8">
-                <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">🌱 Genetics &amp; Lineage</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  {strain.name} was created by crossing{" "}
-                  {strain.parents.map((p, i) => (
-                    <span key={p}>
-                      <strong>{p}</strong>
-                      {i < strain.parents.length - 2 ? ", " : i === strain.parents.length - 2 ? " and " : ""}
-                    </span>
-                  ))}, combining the best traits of both parent strains.
-                </p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  {strain.parents.map((parent, i) => (
-                    <span key={parent} className="flex items-center gap-2">
-                      <span className="bg-lime-pale border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black shadow-brutal-sm">{parent}</span>
-                      {i < strain.parents.length - 1 && <span className="text-gray-400 font-black">→</span>}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Terpenes */}
+{/* Terpenes */}
             {strain.terpenes?.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">🧬 Terpene Profile</h2>
