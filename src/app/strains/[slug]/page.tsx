@@ -760,8 +760,23 @@ export default async function StrainPage({ params }: { params: { slug: string } 
         {/* Similar Strains */}
         {similar.length > 0 && (
           <div>
-            <h2 className="text-xl font-black mb-6">🌿 Similar {strain.type} Strains</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-black">🌿 Similar {strain.type} Strains</h2>
+              <Link href={'/strains?type=' + strain.type} className="text-xs font-bold border-2 border-black px-3 py-1.5 rounded-xl hover:bg-lime transition-all">
+                See All →
+              </Link>
+            </div>
+            {/* Mobile: horizontal scroll — Desktop: grid */}
+            <div className="sm:hidden -mx-4 px-4">
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+                {similar.map((s) => (
+                  <div key={s.id} className="flex-shrink-0 w-[280px]">
+                    <StrainCard strain={s} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-4">
               {similar.map((s) => (
                 <StrainCard key={s.id} strain={s} />
               ))}
