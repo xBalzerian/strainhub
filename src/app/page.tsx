@@ -129,29 +129,31 @@ export default async function HomePage() {
       </section>
 
       {/* AD BANNERS */}
-      <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+
         {/* Crop King Seeds */}
         <a
           href="https://www.cropkingseeds.com"
           target="_blank"
           rel="noopener noreferrer sponsored"
-          className="bg-white border-2 border-black rounded-2xl p-5 flex items-center justify-between gap-4 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
+          className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
         >
-          <div className="flex items-center gap-4">
-            <img
-              src="/cropking-logo.png"
-              alt="Crop King Seeds"
-              className="h-10 w-auto object-contain"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black">Crop King Seeds</span>
-                <span className="text-[9px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded font-normal">AD</span>
-              </div>
-              <span className="text-xs text-gray-500">80% germination guarantee · Ships worldwide</span>
+          {/* Logo */}
+          <img
+            src="/cropking-logo.png"
+            alt="Crop King Seeds"
+            className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100"
+          />
+          {/* Text — min-w-0 prevents overflow */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-sm font-black truncate">Crop King Seeds</span>
+              <span className="text-[8px] text-gray-400 border border-gray-200 px-1 py-0.5 rounded flex-shrink-0">AD</span>
             </div>
+            <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">80% germination guarantee · Ships worldwide</span>
           </div>
-          <span className="bg-lime border-2 border-black font-black text-xs px-4 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap shrink-0">
+          {/* CTA — never shrinks */}
+          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
             Shop Seeds →
           </span>
         </a>
@@ -161,26 +163,28 @@ export default async function HomePage() {
           href="https://www.rocketseeds.com"
           target="_blank"
           rel="noopener noreferrer sponsored"
-          className="bg-white border-2 border-black rounded-2xl p-5 flex items-center justify-between gap-4 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
+          className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
         >
-          <div className="flex items-center gap-4">
-            <img
-              src="/rocket-logo.svg"
-              alt="Rocket Seeds"
-              className="h-10 w-auto object-contain"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-black">Rocket Seeds</span>
-                <span className="text-[9px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded font-normal">AD</span>
-              </div>
-              <span className="text-xs text-gray-500">Free shipping over $200 · 10 free seeds on $420+</span>
+          {/* Logo */}
+          <img
+            src="/rocket-logo.svg"
+            alt="Rocket Seeds"
+            className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100"
+          />
+          {/* Text */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-sm font-black truncate">Rocket Seeds</span>
+              <span className="text-[8px] text-gray-400 border border-gray-200 px-1 py-0.5 rounded flex-shrink-0">AD</span>
             </div>
+            <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">Free shipping over $200 · 10 free seeds on $420+</span>
           </div>
-          <span className="bg-lime border-2 border-black font-black text-xs px-4 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap shrink-0">
+          {/* CTA */}
+          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
             Shop Seeds →
           </span>
         </a>
+
       </div>
 
       {/* TOP STRAINS */}
@@ -235,6 +239,7 @@ export default async function HomePage() {
     </>
   );
 }
+
 
 
 
