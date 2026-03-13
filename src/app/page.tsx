@@ -1,20 +1,25 @@
 import Link from "next/link";
-import { getTopStrains, getAllStrains } from "@/lib/strains";
+import Image from "next/image";
+import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
 import StrainCard from "@/components/StrainCard";
 
+// ISR: rebuild page every 6 hours — no Supabase hit on every visitor
+export const revalidate = 21600;
+
 export default async function HomePage() {
-  const [topStrains, allStrains] = await Promise.all([
+  // Two fast parallel queries — no more getAllStrains() fetching every field for all 100 strains
+  const [topStrains, strainsMeta] = await Promise.all([
     getTopStrains(12),
-    getAllStrains(),
+    getAllStrainsMeta(),
   ]);
 
   const counts = {
-    Indica: allStrains.filter((s) => s.type === "Indica").length,
-    Sativa: allStrains.filter((s) => s.type === "Sativa").length,
-    Hybrid: allStrains.filter((s) => s.type === "Hybrid").length,
+    Indica: strainsMeta.filter((s) => s.type === "Indica").length,
+    Sativa: strainsMeta.filter((s) => s.type === "Sativa").length,
+    Hybrid: strainsMeta.filter((s) => s.type === "Hybrid").length,
   };
 
-  const tickerStrains = allStrains.slice(0, 20);
+  const tickerStrains = strainsMeta.slice(0, 20);
 
   return (
     <>
@@ -23,7 +28,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 bg-lime border-2 border-black px-4 py-1.5 rounded-full text-xs font-black shadow-brutal-sm mb-6">
-              🌿 {allStrains.length}+ Strains Catalogued &amp; Growing
+              🌿 {strainsMeta.length}+ Strains Catalogued &amp; Growing
             </div>
             <h1 className="text-5xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-5">
               Find Your<br />
@@ -49,7 +54,7 @@ export default async function HomePage() {
             </div>
             <div className="flex gap-6 flex-wrap">
               {[
-                { num: allStrains.length + "+", label: "Strains" },
+                { num: strainsMeta.length + "+", label: "Strains" },
                 { num: "20+", label: "Effects" },
                 { num: "3", label: "Types" },
                 { num: "Free", label: "Always" },
@@ -63,7 +68,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero preview cards */}
+          {/* Hero preview cards — next/image for optimization */}
           <div className="hidden lg:grid grid-cols-2 gap-4">
             {topStrains.slice(0, 4).map((s, i) => (
               <Link
@@ -72,7 +77,16 @@ export default async function HomePage() {
                 className={`group bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all ${i % 2 === 0 ? "mt-6" : "-mt-3"}`}
               >
                 {s.image_url && (
-                  <img src={s.image_url} alt={s.name} className="w-full aspect-square object-cover" />
+                  <div className="relative w-full aspect-square">
+                    <Image
+                      src={s.image_url}
+                      alt={s.name}
+                      fill
+                      sizes="200px"
+                      className="object-contain p-1"
+                      priority={i < 2}
+                    />
+                  </div>
                 )}
                 <div className="p-3">
                   <div className="font-black text-sm">{s.name}</div>
@@ -130,7 +144,6 @@ export default async function HomePage() {
 
       {/* AD BANNERS */}
       <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-
         {/* Crop King Seeds */}
         <a
           href="https://www.cropkingseeds.com"
@@ -138,13 +151,7 @@ export default async function HomePage() {
           rel="noopener noreferrer sponsored"
           className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
         >
-          {/* Logo */}
-          <img
-            src="/cropking-logo.png"
-            alt="Crop King Seeds"
-            className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100"
-          />
-          {/* Text — min-w-0 prevents overflow */}
+          <img src="/cropking-logo.png" alt="Crop King Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-sm font-black truncate">Crop King Seeds</span>
@@ -152,7 +159,6 @@ export default async function HomePage() {
             </div>
             <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">80% germination guarantee · Ships worldwide</span>
           </div>
-          {/* CTA — never shrinks */}
           <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
             Shop Seeds →
           </span>
@@ -165,13 +171,7 @@ export default async function HomePage() {
           rel="noopener noreferrer sponsored"
           className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
         >
-          {/* Logo */}
-          <img
-            src="/rocket-logo.svg"
-            alt="Rocket Seeds"
-            className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100"
-          />
-          {/* Text */}
+          <img src="/rocket-logo.svg" alt="Rocket Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-sm font-black truncate">Rocket Seeds</span>
@@ -179,12 +179,10 @@ export default async function HomePage() {
             </div>
             <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">Free shipping over $200 · 10 free seeds on $420+</span>
           </div>
-          {/* CTA */}
           <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
             Shop Seeds →
           </span>
         </a>
-
       </div>
 
       {/* TOP STRAINS */}
@@ -198,48 +196,15 @@ export default async function HomePage() {
             href="/strains"
             className="text-sm font-bold border-2 border-black px-4 py-2 rounded-xl hover:bg-lime transition-all whitespace-nowrap"
           >
-            View all {allStrains.length} →
+            See All →
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {topStrains.map((s) => (
-            <StrainCard key={s.slug} strain={s} />
+          {topStrains.map((s, idx) => (
+            <StrainCard key={s.slug} strain={s} priority={idx < 4} />
           ))}
-        </div>
-      </section>
-
-      {/* LEARN HUB */}
-      <section className="bg-lime border-y-2 border-black">
-        <div className="max-w-7xl mx-auto px-6 py-14">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-black tracking-tight">📚 Learning Hub</h2>
-              <p className="text-brand/70 mt-1.5 text-sm">Free educational content — always free, never gated</p>
-            </div>
-            <Link href="/learn" className="text-sm font-bold bg-white border-2 border-black px-4 py-2 rounded-xl hover:bg-brand hover:text-white transition-all">
-              Explore All →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: "🧬", title: "Terpene Guide", desc: "Myrcene, Limonene, Caryophyllene — what each terpene does.", href: "/learn/terpenes" },
-              { icon: "🌡️", title: "Grow Guide", desc: "Week-by-week from seed to harvest.", href: "/learn/grow-guide" },
-              { icon: "🔬", title: "Cannabinoids", desc: "THC, CBD, CBN, CBG, THCV explained.", href: "/learn/cannabinoids" },
-              { icon: "🍂", title: "Deficiency Guide", desc: "Diagnose yellow leaves and plant problems.", href: "/learn/deficiencies" },
-            ].map((c) => (
-              <Link key={c.href} href={c.href} className="bg-white border-2 border-black rounded-2xl p-5 shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all block">
-                <div className="text-3xl mb-3">{c.icon}</div>
-                <h3 className="font-black text-sm mb-1.5">{c.title}</h3>
-                <p className="text-xs text-gray-500 leading-relaxed">{c.desc}</p>
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
     </>
   );
 }
-
-
-
-
