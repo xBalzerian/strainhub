@@ -5,7 +5,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-ke
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    flowType: "pkce",
+    flowType: "implicit",
     autoRefreshToken: true,
     detectSessionInUrl: true,
     persistSession: true,
