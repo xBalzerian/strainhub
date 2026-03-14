@@ -39,10 +39,12 @@ Max 3 strain cards unless they specifically ask for more. Always include cards w
 
 export async function POST(req: NextRequest) {
   try {
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supaUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supaKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    if (!supaUrl || !supaKey) {
+      console.error("[chat] Missing Supabase env vars");
+    }
+    const supabaseAdmin = createClient(supaUrl, supaKey);
     const { messages, userId, sessionId } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
