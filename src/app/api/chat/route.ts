@@ -146,22 +146,24 @@ export async function POST(req: NextRequest) {
       console.log("[chat] No STRAIN_CARDS block found in AI response");
     }
 
-    // ── Fetch strain data from DB ─────────────────────────────────────────────
+    // ── Fetch strain data from DB (strains are public — anon key works) ─────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let strains: any[] = [];
     if (strainSlugs.length > 0) {
-      // Try admin client first (bypasses RLS), fallback to anon
-      const dbClient = getAdminClient() || getAnonClient();
-      const { data: strainData, error: strainErr } = await dbClient
-        .from("strains")
-        .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
-        .in("slug", strainSlugs);
-
-      if (strainErr) {
-        console.error("[chat] Strain fetch error:", strainErr.message);
-      } else {
-        strains = (strainData || []).sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
-        console.log("[chat] Fetched strains:", strains.map(s => s.slug));
+      try {
+        const anon = getAnonClient();
+        const { data: strainData, error: strainErr } = await anon
+          .from("strains")
+          .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
+          .in("slug", strainSlugs);
+        if (strainErr) {
+          console.error("[chat] Strain fetch error:", strainErr.message);
+        } else {
+          strains = (strainData || []).sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
+          console.log("[chat] Fetched", strains.length, "strains for slugs:", strainSlugs);
+        }
+      } catch (e) {
+        console.error("[chat] Strain fetch exception:", e);
       }
     }
 

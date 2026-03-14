@@ -138,7 +138,12 @@ export default function ChatPage() {
 
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem("sh_chat_messages") || "[]"); } catch { return []; }
+    try {
+      // Version guard — clear stale data from old builds
+      const v = localStorage.getItem("sh_chat_v");
+      if (v !== "2") { localStorage.removeItem("sh_chat_messages"); localStorage.removeItem("sh_chat_session_id"); localStorage.setItem("sh_chat_v", "2"); return []; }
+      return JSON.parse(localStorage.getItem("sh_chat_messages") || "[]");
+    } catch { return []; }
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
