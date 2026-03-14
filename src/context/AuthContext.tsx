@@ -1,14 +1,8 @@
 "use client";
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import type { User, Session } from "@supabase/supabase-js";
-import { createBrowserClient } from "@supabase/ssr";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
-export const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key"
-);
-
-// ── Matches ACTUAL DB columns in profiles table ───────────────────────────────
 export interface UserProfile {
   id: string;
   email: string;
@@ -16,13 +10,12 @@ export interface UserProfile {
   avatar_url: string | null;
   plan: "free" | "monthly" | "annual";
   plan_expires_at: string | null;
-  paypal_subscription_id?: string | null;
-  is_admin?: boolean;
-  // usage tracking — exact DB column names
-  ai_chats_used: number;
-  ai_chats_reset_at: string | null;
-  strain_views_today: number;
-  strain_views_reset_at: string | null;
+  paypal_subscription_id: string | null;
+  // Actual DB columns (from supabase-auth.sql)
+  views_today: number;
+  views_date: string | null;   // DATE as string "YYYY-MM-DD"
+  chats_today: number;
+  chats_date: string | null;   // DATE as string "YYYY-MM-DD"
   created_at: string;
   updated_at: string;
 }
@@ -37,28 +30,28 @@ interface AuthContextType {
   canChat: boolean;
   viewsRemaining: number;
   chatsRemaining: number;
-  signInWithGoogle: () => Promise<void>;
-  signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUpWithEmail: (email: string, password: string, name: string) => Promise<{ error: string | null }>;
-  signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   trackView: () => Promise<boolean>;
   trackChat: () => Promise<boolean>;
+  signOut: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ error: Error | null }>;
+  signInWithGoogle: () => Promise<{ error: Error | null }>;
 }
 
-const FREE_VIEW_LIMIT = 10;
 const FREE_CHAT_LIMIT = 5;
-const todayStr = () => new Date().toISOString().split("T")[0];
+const FREE_VIEW_LIMIT = 10;
 
-// Is the reset_at timestamp from today?
-function isToday(isoStr: string | null): boolean {
-  if (!isoStr) return false;
-  return isoStr.startsWith(todayStr());
+const todayStr = () => new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+function isToday(dateStr: string | null): boolean {
+  if (!dateStr) return false;
+  return dateStr.startsWith(todayStr());
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Upsert profile — syncs name/avatar, never overwrites usage/plan
+// Upsert profile on login — syncs name/avatar, never overwrites usage/plan
 async function upsertProfile(user: User) {
   const { data: existing } = await supabase
     .from("profiles")
@@ -87,8 +80,8 @@ async function upsertProfile(user: User) {
         full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
         avatar_url: user.user_metadata?.avatar_url || null,
         plan: "free",
-        ai_chats_used: 0,
-        strain_views_today: 0,
+        views_today: 0,
+        chats_today: 0,
       })
       .select()
       .single();
@@ -153,21 +146,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Pro check ──────────────────────────────────────────────────────────────
   const isPro =
     !!profile &&
-    (profile.is_admin === true ||
-      (profile.plan !== "free" &&
-        (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date())));
+    profile.plan !== "free" &&
+    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
 
-  // ── Usage helpers using actual DB columns ─────────────────────────────────
+  // ── Usage helpers (match actual DB columns) ───────────────────────────────
   const getChatsToday = () => {
     if (!profile) return 0;
-    if (!isToday(profile.ai_chats_reset_at)) return 0; // reset at was yesterday → count is stale
-    return profile.ai_chats_used || 0;
+    if (!isToday(profile.chats_date)) return 0;
+    return profile.chats_today || 0;
   };
 
   const getViewsToday = () => {
     if (!profile) return 0;
-    if (!isToday(profile.strain_views_reset_at)) return 0;
-    return profile.strain_views_today || 0;
+    if (!isToday(profile.views_date)) return 0;
+    return profile.views_today || 0;
   };
 
   const canView = isPro || getViewsToday() < FREE_VIEW_LIMIT;
@@ -176,88 +168,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const chatsRemaining = isPro ? Infinity : !user ? FREE_CHAT_LIMIT : Math.max(0, FREE_CHAT_LIMIT - getChatsToday());
 
   // ── trackView ─────────────────────────────────────────────────────────────
-  const trackView = async (): Promise<boolean> => {
-    if (!user) return true;
+  const trackView = useCallback(async (): Promise<boolean> => {
+    if (!user || !profile) return true;
     const { data: fresh } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    if (!fresh) return false;
-    const isProNow = fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()));
+    if (!fresh) return true;
+    const isProNow = fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date());
     if (isProNow) { setProfile(fresh as UserProfile); return true; }
-
-    const currentViews = isToday(fresh.strain_views_reset_at) ? (fresh.strain_views_today || 0) : 0;
-    if (currentViews >= FREE_VIEW_LIMIT) { setProfile(fresh as UserProfile); return false; }
-
-    const { data } = await supabase
+    const todayViews = isToday(fresh.views_date) ? (fresh.views_today || 0) : 0;
+    if (todayViews >= FREE_VIEW_LIMIT) { setProfile(fresh as UserProfile); return false; }
+    const { data: updated } = await supabase
       .from("profiles")
-      .update({
-        strain_views_today: currentViews + 1,
-        strain_views_reset_at: new Date().toISOString(),
-      })
+      .update({ views_today: todayViews + 1, views_date: todayStr() })
       .eq("id", user.id)
       .select()
       .single();
-    if (data) setProfile(data as UserProfile);
+    if (updated) setProfile(updated as UserProfile);
     return true;
-  };
+  }, [user, profile]);
 
-  // ── trackChat ─────────────────────────────────────────────────────────────
-  const trackChat = async (): Promise<boolean> => {
-    if (!user) return true; // guests always allowed
+  // ── trackChat — NOT called from frontend anymore (server handles limit) ───
+  // Kept for compatibility but server-side enforcement is primary
+  const trackChat = useCallback(async (): Promise<boolean> => {
+    if (!user || !profile) return true;
     const { data: fresh } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    if (!fresh) return true; // if profile missing, let them chat (don't block)
-    const isProNow = fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()));
+    if (!fresh) return true;
+    const isProNow = fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date());
     if (isProNow) { setProfile(fresh as UserProfile); return true; }
-
-    const currentChats = isToday(fresh.ai_chats_reset_at) ? (fresh.ai_chats_used || 0) : 0;
-    if (currentChats >= FREE_CHAT_LIMIT) { setProfile(fresh as UserProfile); return false; }
-
-    const { data } = await supabase
+    const todayChats = isToday(fresh.chats_date) ? (fresh.chats_today || 0) : 0;
+    if (todayChats >= FREE_CHAT_LIMIT) { setProfile(fresh as UserProfile); return false; }
+    const { data: updated } = await supabase
       .from("profiles")
-      .update({
-        ai_chats_used: currentChats + 1,
-        ai_chats_reset_at: new Date().toISOString(),
-      })
+      .update({ chats_today: todayChats + 1, chats_date: todayStr() })
       .eq("id", user.id)
       .select()
       .single();
-    if (data) setProfile(data as UserProfile);
+    if (updated) setProfile(updated as UserProfile);
     return true;
-  };
+  }, [user, profile]);
 
-  // ── Auth methods ──────────────────────────────────────────────────────────
-  const signInWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: { access_type: "offline", prompt: "consent" },
-      },
-    });
-  };
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+  }, []);
 
-  const signInWithEmail = async (email: string, password: string) => {
+  const signInWithEmail = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message || null };
-  };
+    return { error };
+  }, []);
 
-  const signUpWithEmail = async (email: string, password: string, name: string) => {
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: {
-        data: { full_name: name },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    return { error: error?.message || null };
-  };
+  const signUpWithEmail = useCallback(async (email: string, password: string, name?: string) => {
+    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    return { error };
+  }, []);
 
-  const signOut = async () => { await supabase.auth.signOut(); };
+  const signInWithGoogle = useCallback(async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback` } });
+    return { error };
+  }, []);
 
   return (
     <AuthContext.Provider value={{
       user, session, profile, loading, isPro, canView, canChat,
       viewsRemaining, chatsRemaining,
-      signInWithGoogle, signInWithEmail, signUpWithEmail, signOut,
-      refreshProfile, trackView, trackChat,
+      refreshProfile, trackView, trackChat, signOut,
+      signInWithEmail, signUpWithEmail, signInWithGoogle,
     }}>
       {children}
     </AuthContext.Provider>
@@ -266,6 +239,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 }

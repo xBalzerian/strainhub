@@ -5,11 +5,6 @@ const KIE_API_KEY = process.env.KIE_API_KEY || process.env.KIE_API || process.en
 const KIE_ENDPOINT = "https://api.kie.ai/gemini-2.5-flash/v1/chat/completions";
 
 const FREE_CHAT_LIMIT = 5;
-const todayStr = () => new Date().toISOString().split("T")[0];
-function isToday(isoStr: string | null): boolean {
-  if (!isoStr) return false;
-  return isoStr.startsWith(todayStr());
-}
 
 function getAnonClient() {
   return createClient(
@@ -76,18 +71,19 @@ export async function POST(req: NextRequest) {
       if (admin) {
         const { data: profile } = await admin
           .from("profiles")
-          .select("plan, plan_expires_at, is_admin, ai_chats_used, ai_chats_reset_at")
+          .select("plan, plan_expires_at, chats_today, chats_date")
           .eq("id", userId)
           .single();
 
         if (profile) {
           const isProUser =
-            profile.is_admin === true ||
-            (profile.plan !== "free" &&
-              (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date()));
+            profile.plan !== "free" &&
+            (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
 
           if (!isProUser) {
-            const currentChats = isToday(profile.ai_chats_reset_at) ? (profile.ai_chats_used || 0) : 0;
+            const today = new Date().toISOString().split("T")[0];
+            const isToday = (d: string | null) => !!(d && d.startsWith(today));
+            const currentChats = isToday(profile.chats_date) ? (profile.chats_today || 0) : 0;
             if (currentChats >= FREE_CHAT_LIMIT) {
               return NextResponse.json({
                 error: `You've used all ${FREE_CHAT_LIMIT} free chats for today. Upgrade to Pro for unlimited chat! 🚀`,
@@ -96,8 +92,8 @@ export async function POST(req: NextRequest) {
             }
             // Increment BEFORE calling AI
             await admin.from("profiles").update({
-              ai_chats_used: currentChats + 1,
-              ai_chats_reset_at: new Date().toISOString(),
+              chats_today: currentChats + 1,
+              chats_date: today,
             }).eq("id", userId);
           }
         }

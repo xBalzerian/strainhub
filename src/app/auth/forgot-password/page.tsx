@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";;
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");

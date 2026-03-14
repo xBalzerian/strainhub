@@ -213,12 +213,28 @@ export default function ChatPage() {
     if (user) setTimeout(() => loadSessions(), 500);
   }, [user, messages, sessionId, saveCurrentSession, loadSessions]);
 
-  function loadSession(session: ChatSession) {
-    setMessages(session.messages || []); setSessionId(session.id); setError(""); setSidebarOpen(false);
+  async function loadSession(session: ChatSession) {
+    const msgs = session.messages || [];
+    setMessages(msgs); setSessionId(session.id); setError(""); setSidebarOpen(false);
     try {
-      localStorage.setItem("sh_chat_messages", JSON.stringify(session.messages || []));
+      localStorage.setItem("sh_chat_messages", JSON.stringify(msgs));
       localStorage.setItem("sh_chat_session_id", session.id);
     } catch { /**/ }
+    // Re-enrich messages that are missing strain cards
+    // Extract slugs from /strains/slug href links in assistant messages
+    const enriched = await Promise.all(msgs.map(async (msg) => {
+      if (msg.role !== "assistant" || (msg.strains && msg.strains.length > 0)) return msg;
+      const slugMatches = [...(msg.content.matchAll(/\/strains\/([a-z0-9-]+)/g))];
+      const slugs = [...new Set(slugMatches.map(m => m[1]))].slice(0, 3);
+      if (slugs.length === 0) return msg;
+      try {
+        const res = await fetch(`/api/strains/by-slugs?slugs=${slugs.join(",")}`);
+        const data = await res.json();
+        return { ...msg, strains: data.strains || [] };
+      } catch { return msg; }
+    }));
+    setMessages(enriched);
+    try { localStorage.setItem("sh_chat_messages", JSON.stringify(enriched)); } catch { /**/ }
   }
 
   async function deleteSession(id: string, e: React.MouseEvent) {

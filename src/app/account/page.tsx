@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth, supabase } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";;
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
 const MONTHLY_PLAN_ID = process.env.NEXT_PUBLIC_PAYPAL_MONTHLY_PLAN_ID || "";
@@ -224,10 +225,12 @@ function AccountPageInner() {
     avatar_url: user.user_metadata?.avatar_url || null,
     plan: "free" as const,
     plan_expires_at: null,
-    ai_chats_used: 0,
-    ai_chats_reset_at: null,
-    strain_views_today: 0,
-    strain_views_reset_at: null,
+    chats_today: 0,
+    chats_date: null,
+    views_today: 0,
+    views_date: null,
+    
+    
     created_at: user.created_at ?? new Date().toISOString(),
   };
 
@@ -239,8 +242,8 @@ function AccountPageInner() {
     ? new Date(safeProfile.plan_expires_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     : null;
 
-  const viewsToday = safeProfile.strain_views_reset_at?.startsWith(todayStr()) ? (safeProfile.strain_views_today || 0) : 0;
-  const chatsToday = safeProfile.ai_chats_reset_at?.startsWith(todayStr()) ? (safeProfile.ai_chats_used || 0) : 0;
+  const viewsToday = safeProfile.views_date?.startsWith(todayStr()) ? (safeProfile.views_today || 0) : 0;
+  const chatsToday = safeProfile.chats_date?.startsWith(todayStr()) ? (safeProfile.chats_today || 0) : 0;
   const memberSince = new Date(safeProfile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   const daysOnPlatform = Math.floor((Date.now() - new Date(safeProfile.created_at).getTime()) / 86400000);
 

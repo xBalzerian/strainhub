@@ -39,11 +39,11 @@ export default function LoginForm() {
       if (!name.trim()) { setError("Please enter your name."); setLoading(false); return; }
       if (password.length < 6) { setError("Password must be at least 6 characters."); setLoading(false); return; }
       const { error } = await signUpWithEmail(email, password, name);
-      if (error) setError(error);
+      if (error) setError(error.message || String(error));
       else setSuccess("Check your email to confirm your account!");
     } else {
       const { error } = await signInWithEmail(email, password);
-      if (error) setError(error);
+      if (error) setError(error.message || String(error));
       else router.push(redirect);
     }
     setLoading(false);
