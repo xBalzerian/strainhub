@@ -8,6 +8,7 @@ export const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key"
 );
 
+// ── Matches ACTUAL DB columns in profiles table ───────────────────────────────
 export interface UserProfile {
   id: string;
   email: string;
@@ -17,12 +18,13 @@ export interface UserProfile {
   plan_expires_at: string | null;
   paypal_subscription_id?: string | null;
   is_admin?: boolean;
-  // usage tracking (matches DB columns)
-  views_today: number;
-  views_date: string | null;
-  chats_today: number;
-  chats_date: string | null;
+  // usage tracking — exact DB column names
+  ai_chats_used: number;
+  ai_chats_reset_at: string | null;
+  strain_views_today: number;
+  strain_views_reset_at: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 interface AuthContextType {
@@ -48,11 +50,16 @@ const FREE_VIEW_LIMIT = 10;
 const FREE_CHAT_LIMIT = 5;
 const todayStr = () => new Date().toISOString().split("T")[0];
 
+// Is the reset_at timestamp from today?
+function isToday(isoStr: string | null): boolean {
+  if (!isoStr) return false;
+  return isoStr.startsWith(todayStr());
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Upsert profile — syncs name/avatar from OAuth, NEVER overwrites plan/usage fields
+// Upsert profile — syncs name/avatar, never overwrites usage/plan
 async function upsertProfile(user: User) {
-  // First check if profile already exists
   const { data: existing } = await supabase
     .from("profiles")
     .select("id")
@@ -60,7 +67,6 @@ async function upsertProfile(user: User) {
     .single();
 
   if (existing) {
-    // Profile exists — only update name/avatar, leave plan/usage untouched
     const { data } = await supabase
       .from("profiles")
       .update({
@@ -73,7 +79,6 @@ async function upsertProfile(user: User) {
       .single();
     return data as UserProfile | null;
   } else {
-    // New user — create fresh profile with defaults
     const { data } = await supabase
       .from("profiles")
       .insert({
@@ -82,8 +87,8 @@ async function upsertProfile(user: User) {
         full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
         avatar_url: user.user_metadata?.avatar_url || null,
         plan: "free",
-        views_today: 0,
-        chats_today: 0,
+        ai_chats_used: 0,
+        strain_views_today: 0,
       })
       .select()
       .single();
@@ -107,7 +112,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data) {
       setProfile(data as UserProfile);
     } else {
-      // Profile row missing — create it now (handles existing users pre-trigger)
       const created = await upsertProfile(u);
       if (created) setProfile(created);
     }
@@ -125,14 +129,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       else setLoading(false);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-
       if (session?.user) {
-        // On every sign-in, upsert to sync latest name/avatar from Google
         if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
           await upsertProfile(session.user);
         }
@@ -146,92 +146,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
-  // Mark loading false once profile is set (or user is null)
   useEffect(() => {
     if (profile !== null || user === null) setLoading(false);
   }, [profile, user]);
 
+  // ── Pro check ──────────────────────────────────────────────────────────────
   const isPro =
     !!profile &&
-    (
-      profile.is_admin === true ||
+    (profile.is_admin === true ||
       (profile.plan !== "free" &&
-        (!profile.plan_expires_at ||
-          new Date(profile.plan_expires_at) > new Date()))
-    );
+        (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date())));
+
+  // ── Usage helpers using actual DB columns ─────────────────────────────────
+  const getChatsToday = () => {
+    if (!profile) return 0;
+    if (!isToday(profile.ai_chats_reset_at)) return 0; // reset at was yesterday → count is stale
+    return profile.ai_chats_used || 0;
+  };
 
   const getViewsToday = () => {
-    if (!profile || profile.views_date !== todayStr()) return 0;
-    return profile.views_today || 0;
-  };
-  const getChatsToday = () => {
-    if (!profile || profile.chats_date !== todayStr()) return 0;
-    return profile.chats_today || 0;
+    if (!profile) return 0;
+    if (!isToday(profile.strain_views_reset_at)) return 0;
+    return profile.strain_views_today || 0;
   };
 
   const canView = isPro || getViewsToday() < FREE_VIEW_LIMIT;
-  // Guests (not logged in) also get free chats — tracked via API/localStorage
   const canChat = !user ? true : isPro || getChatsToday() < FREE_CHAT_LIMIT;
-  const viewsRemaining = isPro
-    ? Infinity
-    : Math.max(0, FREE_VIEW_LIMIT - getViewsToday());
-  const chatsRemaining = isPro
-    ? Infinity
-    : !user
-    ? FREE_CHAT_LIMIT
-    : Math.max(0, FREE_CHAT_LIMIT - getChatsToday());
+  const viewsRemaining = isPro ? Infinity : Math.max(0, FREE_VIEW_LIMIT - getViewsToday());
+  const chatsRemaining = isPro ? Infinity : !user ? FREE_CHAT_LIMIT : Math.max(0, FREE_CHAT_LIMIT - getChatsToday());
 
+  // ── trackView ─────────────────────────────────────────────────────────────
   const trackView = async (): Promise<boolean> => {
-    if (!user) return true; // Guests can view freely
-    const { data: fresh } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-    if (!fresh) return false;
-    if (fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()))) {
-      setProfile(fresh as UserProfile);
-      return true;
-    }
-    const freshViewsToday = fresh.views_date === todayStr() ? (fresh.views_today || 0) : 0;
-    if (freshViewsToday >= FREE_VIEW_LIMIT) {
-      setProfile(fresh as UserProfile);
-      return false;
-    }
-    const { data } = await supabase
-      .from("profiles")
-      .update({ views_today: freshViewsToday + 1, views_date: todayStr() })
-      .eq("id", user.id)
-      .select()
-      .single();
-    if (data) setProfile(data as UserProfile);
-    return true;
-  };
-
-  const trackChat = async (): Promise<boolean> => {
-    // Guests get free chat — no DB tracking needed, API handles session limits
     if (!user) return true;
-    // Always fetch fresh from DB to avoid stale cache bugs
-    const { data: fresh } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+    const { data: fresh } = await supabase.from("profiles").select("*").eq("id", user.id).single();
     if (!fresh) return false;
-    // Admin or Pro — always allow, no tracking needed
-    if (fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()))) {
-      setProfile(fresh as UserProfile);
-      return true;
-    }
-    // Check fresh DB value for today's count
-    const freshChatsToday = fresh.chats_date === todayStr() ? (fresh.chats_today || 0) : 0;
-    if (freshChatsToday >= FREE_CHAT_LIMIT) {
-      setProfile(fresh as UserProfile);
-      return false;
-    }
+    const isProNow = fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()));
+    if (isProNow) { setProfile(fresh as UserProfile); return true; }
+
+    const currentViews = isToday(fresh.strain_views_reset_at) ? (fresh.strain_views_today || 0) : 0;
+    if (currentViews >= FREE_VIEW_LIMIT) { setProfile(fresh as UserProfile); return false; }
+
     const { data } = await supabase
       .from("profiles")
-      .update({ chats_today: freshChatsToday + 1, chats_date: todayStr() })
+      .update({
+        strain_views_today: currentViews + 1,
+        strain_views_reset_at: new Date().toISOString(),
+      })
       .eq("id", user.id)
       .select()
       .single();
@@ -239,6 +199,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  // ── trackChat ─────────────────────────────────────────────────────────────
+  const trackChat = async (): Promise<boolean> => {
+    if (!user) return true; // guests always allowed
+    const { data: fresh } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    if (!fresh) return true; // if profile missing, let them chat (don't block)
+    const isProNow = fresh.is_admin || (fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date()));
+    if (isProNow) { setProfile(fresh as UserProfile); return true; }
+
+    const currentChats = isToday(fresh.ai_chats_reset_at) ? (fresh.ai_chats_used || 0) : 0;
+    if (currentChats >= FREE_CHAT_LIMIT) { setProfile(fresh as UserProfile); return false; }
+
+    const { data } = await supabase
+      .from("profiles")
+      .update({
+        ai_chats_used: currentChats + 1,
+        ai_chats_reset_at: new Date().toISOString(),
+      })
+      .eq("id", user.id)
+      .select()
+      .single();
+    if (data) setProfile(data as UserProfile);
+    return true;
+  };
+
+  // ── Auth methods ──────────────────────────────────────────────────────────
   const signInWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -254,14 +239,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: error?.message || null };
   };
 
-  const signUpWithEmail = async (
-    email: string,
-    password: string,
-    name: string
-  ) => {
+  const signUpWithEmail = async (email: string, password: string, name: string) => {
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
+      email, password,
       options: {
         data: { full_name: name },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -270,31 +250,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: error?.message || null };
   };
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-  };
+  const signOut = async () => { await supabase.auth.signOut(); };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        profile,
-        loading,
-        isPro,
-        canView,
-        canChat,
-        viewsRemaining,
-        chatsRemaining,
-        signInWithGoogle,
-        signInWithEmail,
-        signUpWithEmail,
-        signOut,
-        refreshProfile,
-        trackView,
-        trackChat,
-      }}
-    >
+    <AuthContext.Provider value={{
+      user, session, profile, loading, isPro, canView, canChat,
+      viewsRemaining, chatsRemaining,
+      signInWithGoogle, signInWithEmail, signUpWithEmail, signOut,
+      refreshProfile, trackView, trackChat,
+    }}>
       {children}
     </AuthContext.Provider>
   );

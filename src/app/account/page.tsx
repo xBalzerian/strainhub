@@ -224,10 +224,10 @@ function AccountPageInner() {
     avatar_url: user.user_metadata?.avatar_url || null,
     plan: "free" as const,
     plan_expires_at: null,
-    views_today: 0,
-    views_date: null,
-    chats_today: 0,
-    chats_date: null,
+    ai_chats_used: 0,
+    ai_chats_reset_at: null,
+    strain_views_today: 0,
+    strain_views_reset_at: null,
     created_at: user.created_at ?? new Date().toISOString(),
   };
 
@@ -239,8 +239,8 @@ function AccountPageInner() {
     ? new Date(safeProfile.plan_expires_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     : null;
 
-  const viewsToday = safeProfile.views_date === todayStr() ? (safeProfile.views_today || 0) : 0;
-  const chatsToday = safeProfile.chats_date === todayStr() ? (safeProfile.chats_today || 0) : 0;
+  const viewsToday = safeProfile.strain_views_reset_at?.startsWith(todayStr()) ? (safeProfile.strain_views_today || 0) : 0;
+  const chatsToday = safeProfile.ai_chats_reset_at?.startsWith(todayStr()) ? (safeProfile.ai_chats_used || 0) : 0;
   const memberSince = new Date(safeProfile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   const daysOnPlatform = Math.floor((Date.now() - new Date(safeProfile.created_at).getTime()) / 86400000);
 
