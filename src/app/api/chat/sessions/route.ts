@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-function getAdmin() {
+function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  if (!url || !key) throw new Error("Missing Supabase env vars");
+  // Validate key — must be a JWT (starts with eyJ) and be long enough
+  if (!key || !key.startsWith("eyJ") || key.length < 100) {
+    return null;
+  }
   return createClient(url, key);
 }
 
@@ -13,8 +16,14 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
   if (!userId) return NextResponse.json({ sessions: [] });
 
+  const admin = getAdminClient();
+  if (!admin) {
+    console.warn("[sessions] Admin client unavailable — service role key invalid");
+    return NextResponse.json({ sessions: [], warning: "service_key_invalid" });
+  }
+
   try {
-    const { data, error } = await getAdmin()
+    const { data, error } = await admin
       .from("chat_sessions")
       .select("id, preview, updated_at, messages")
       .eq("user_id", userId)
@@ -28,11 +37,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ sessions: data || [] });
   } catch (e) {
     console.error("[sessions GET catch]", e);
-    return NextResponse.json({ sessions: [], serverError: String(e) });
+    return NextResponse.json({ sessions: [] });
   }
 }
 
-// POST — save/upsert a session
+// POST — upsert a session
 export async function POST(req: NextRequest) {
   try {
     const { sessionId, userId, messages, preview } = await req.json();
@@ -40,7 +49,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Missing required fields" });
     }
 
-    const { error } = await getAdmin()
+    const admin = getAdminClient();
+    if (!admin) {
+      console.warn("[sessions POST] Admin client unavailable");
+      return NextResponse.json({ ok: false, error: "service_key_invalid" });
+    }
+
+    const { error } = await admin
       .from("chat_sessions")
       .upsert({
         id: sessionId,
@@ -67,7 +82,10 @@ export async function DELETE(req: NextRequest) {
     const { sessionId, userId } = await req.json();
     if (!sessionId || !userId) return NextResponse.json({ ok: false, error: "Missing fields" });
 
-    const { error } = await getAdmin()
+    const admin = getAdminClient();
+    if (!admin) return NextResponse.json({ ok: false, error: "service_key_invalid" });
+
+    const { error } = await admin
       .from("chat_sessions")
       .delete()
       .eq("id", sessionId)
