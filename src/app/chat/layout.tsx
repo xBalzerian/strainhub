@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   },
 };
 
+// Hide footer on chat page — chat needs full viewport height
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <div className="chat-page-wrapper" style={{ display: "contents" }}>
+      {children}
+    </div>
+  );
 }
