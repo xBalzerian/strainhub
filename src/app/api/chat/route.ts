@@ -4,19 +4,20 @@ import { createClient } from "@supabase/supabase-js";
 const KIE_API_KEY = process.env.KIE_API_KEY || process.env.KIE_API || process.env.GEMINI_API_KEY || "";
 const KIE_ENDPOINT = "https://api.kie.ai/gemini-2.5-flash/v1/chat/completions";
 
-// Strains are public — use anon key (no service role needed)
-function getAnonClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+const FREE_CHAT_LIMIT = 5;
+const todayStr = () => new Date().toISOString().split("T")[0];
+function isToday(isoStr: string | null): boolean {
+  if (!isoStr) return false;
+  return isoStr.startsWith(todayStr());
 }
 
-// Sessions need service role for cross-user writes — but fall back gracefully if missing
+function getAnonClient() {
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+}
+
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  // Detect if the key is obviously wrong (same as URL, too short, or missing eyJ prefix)
   if (!key || !key.startsWith("eyJ") || key.length < 100) return null;
   return createClient(url, key);
 }
@@ -62,9 +63,59 @@ export async function POST(req: NextRequest) {
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
     }
-
     if (!KIE_API_KEY) {
       return NextResponse.json({ error: "AI not configured" }, { status: 500 });
+    }
+
+    // ── SERVER-SIDE chat limit enforcement ──────────────────────────────────
+    // This is the real gate — frontend checks are just UX, this prevents abuse
+    if (userId) {
+      const admin = getAdminClient();
+      if (admin) {
+        const { data: profile, error: profileErr } = await admin
+          .from("profiles")
+          .select("plan, plan_expires_at, is_admin, ai_chats_used, ai_chats_reset_at")
+          .eq("id", userId)
+          .single();
+
+        if (profileErr || !profile) {
+          // Profile missing — create it and allow
+          console.warn("[chat] Profile not found for userId:", userId);
+        } else {
+          const isProUser =
+            profile.is_admin === true ||
+            (profile.plan !== "free" &&
+              (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date()));
+
+          if (!isProUser) {
+            // Count chats used today
+            const currentChats = isToday(profile.ai_chats_reset_at)
+              ? (profile.ai_chats_used || 0)
+              : 0;
+
+            if (currentChats >= FREE_CHAT_LIMIT) {
+              return NextResponse.json({
+                error: `You've used all ${FREE_CHAT_LIMIT} free chats for today. Upgrade to Pro for unlimited chat! 🚀`,
+                limitReached: true,
+              }, { status: 429 });
+            }
+
+            // Increment count atomically BEFORE calling AI
+            const { error: updateErr } = await admin
+              .from("profiles")
+              .update({
+                ai_chats_used: currentChats + 1,
+                ai_chats_reset_at: new Date().toISOString(),
+              })
+              .eq("id", userId);
+
+            if (updateErr) {
+              console.error("[chat] Failed to increment chat count:", updateErr.message);
+              // Don't block — let them chat, just log
+            }
+          }
+        }
+      }
     }
 
     // ── Call KIE AI ──────────────────────────────────────────────────────────
@@ -92,7 +143,6 @@ export async function POST(req: NextRequest) {
     }
 
     const raw = await resp.text();
-    // KIE sometimes prepends an empty JSON object
     const cleaned = raw.replace(/^\{\}\s*/, "").trim();
 
     let data: { choices?: { message?: { content?: string } }[] };
@@ -123,7 +173,7 @@ export async function POST(req: NextRequest) {
       content = rawContent.replace(/\[STRAIN_CARDS\][\s\S]*?\[\/STRAIN_CARDS\]/, "").trim();
     }
 
-    // ── Fetch strain data using ANON key (public table) ──────────────────────
+    // ── Fetch strain data ────────────────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let strains: any[] = [];
     if (strainSlugs.length > 0) {
@@ -133,20 +183,17 @@ export async function POST(req: NextRequest) {
           .from("strains")
           .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
           .in("slug", strainSlugs);
-
         if (strainErr) {
           console.error("[chat] Strain fetch error:", strainErr.message);
         } else {
-          strains = (strainData || []).sort(
-            (a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug)
-          );
+          strains = (strainData || []).sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
         }
       } catch (e) {
         console.error("[chat] Strain fetch exception:", e);
       }
     }
 
-    // ── Save session using admin client (graceful if unavailable) ────────────
+    // ── Save session ─────────────────────────────────────────────────────────
     if (userId && sessionId) {
       const admin = getAdminClient();
       if (admin) {
@@ -165,8 +212,6 @@ export async function POST(req: NextRequest) {
         } catch (e) {
           console.error("[chat] Session save exception:", e);
         }
-      } else {
-        console.warn("[chat] Admin client unavailable — skipping session save");
       }
     }
 

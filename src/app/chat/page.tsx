@@ -253,7 +253,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="chat-fullscreen flex" style={{ height: "100dvh", paddingTop: "64px", overflow: "hidden" }}>
+    <div className="chat-fullscreen flex" style={{ height: "calc(100dvh - 64px)", overflow: "hidden" }}>
 
       {/* Sidebar overlay mobile */}
       {user && sidebarOpen && (
@@ -267,7 +267,7 @@ export default function ChatPage() {
           w-56 bg-white border-r-2 border-black flex flex-col
           transition-transform duration-200 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `} style={{ top: "64px", bottom: 0, height: "calc(100dvh - 64px)" }}>
+        `} style={{ top: 0, bottom: 0, height: "100%" }}>
           <div className="px-3 py-2 border-b-2 border-black flex items-center justify-between flex-shrink-0">
             <span className="font-black text-xs">Chat History</span>
             <button onClick={startNewChat}
@@ -413,7 +413,7 @@ export default function ChatPage() {
               {error && (
                 <div className="bg-red-50 border-2 border-red-200 rounded-xl px-3 py-2 text-xs text-red-600 font-medium flex items-center justify-between gap-3">
                   <span>{error}</span>
-                  {error.includes("free chats") && (
+                  {(error.includes("free chats") || error.includes("Upgrade") || error.includes("Pro")) && (
                     <Link href="/account?tab=subscription" className="flex-shrink-0 bg-lime border-2 border-black rounded-lg px-2.5 py-1 text-brand text-xs font-black shadow-brutal-sm hover:shadow-brutal transition-all">Go Pro →</Link>
                   )}
                 </div>

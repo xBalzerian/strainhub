@@ -155,14 +155,7 @@ img {
     genetics-glow-pulse 2.2s ease-in-out 1.4s infinite;
 }
 
-/* ── Chat page: hide footer, lock to viewport ── */
-.chat-fullscreen ~ footer,
-.chat-fullscreen ~ * footer,
+/* ── Chat page: hide footer ── */
 body:has(.chat-fullscreen) footer {
   display: none !important;
-}
-body:has(.chat-fullscreen) main {
-  padding-top: 0 !important;
-  height: 100dvh;
-  overflow: hidden;
 }
