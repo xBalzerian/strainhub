@@ -134,7 +134,7 @@ function StrainCardItem({ strain }: { strain: StrainCard }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ChatPage() {
-  const { isPro, chatsRemaining, user } = useAuth();
+  const { isPro, chatsRemaining, user, refreshProfile } = useAuth();
 
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") return [];
@@ -279,12 +279,14 @@ export default function ChatPage() {
 
       if (!res.ok || data.error) {
         setError(data.error || "Something went wrong.");
+        if (data.limitReached && user) refreshProfile(); // sync counter
         setLoading(false);
         return;
       }
 
       if (data.message) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.message, strains: data.strains || [] }]);
+        if (user) refreshProfile(); // update chat counter
         if (user && !historyUnavailable) setTimeout(() => loadSessions(), 600);
       } else {
         setError("No response received.");
