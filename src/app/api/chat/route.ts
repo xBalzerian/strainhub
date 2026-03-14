@@ -12,7 +12,10 @@ function isToday(isoStr: string | null): boolean {
 }
 
 function getAnonClient() {
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 }
 
 function getAdminClient() {
@@ -51,10 +54,10 @@ When you recommend ANY specific strains by name, you MUST include this JSON bloc
 {"slugs": ["slug-1", "slug-2", "slug-3"]}
 [/STRAIN_CARDS]
 
-Use these exact slugs:
-og-kush, blue-dream, sour-diesel, girl-scout-cookies, granddaddy-purple, northern-lights, jack-herer, white-widow, pineapple-express, gorilla-glue-4, wedding-cake, gelato, zkittlez, durban-poison, amnesia-haze, bruce-banner, green-crack, super-lemon-haze, purple-haze, ak-47, trainwreck, chemdawg, strawberry-cough, bubba-kush, purple-punch, sunset-sherbet, runtz, ice-cream-cake, do-si-dos, mimosa, banana-kush, lemon-haze, super-silver-haze, candy-kush, mango-kush, critical-kush, critical-mass, hindu-kush, master-kush, afghan-kush, blueberry, cherry-pie, death-star, girl-scout-cookies, godfather-og, headband, kosher-kush, la-confidential, purple-urkle, skywalker-og, tahoe-og, banana-og
+Use these exact slugs (pick the ones you mention):
+og-kush, blue-dream, sour-diesel, girl-scout-cookies, granddaddy-purple, northern-lights, jack-herer, white-widow, pineapple-express, gorilla-glue-4, wedding-cake, gelato, zkittlez, durban-poison, amnesia-haze, bruce-banner, green-crack, super-lemon-haze, purple-haze, ak-47, trainwreck, chemdawg, strawberry-cough, bubba-kush, purple-punch, sunset-sherbet, runtz, ice-cream-cake, do-si-dos, mimosa, banana-kush, lemon-haze, super-silver-haze, candy-kush, mango-kush, critical-kush, critical-mass, hindu-kush, master-kush, afghan-kush, blueberry, cherry-pie, headband, kosher-kush, la-confidential, purple-urkle, skywalker-og, tahoe-og, banana-og
 
-Max 3 slugs unless user specifically asks for more. ALWAYS include this block when mentioning specific strain names.`;
+Max 3 slugs per response. ALWAYS include this JSON block whenever you name specific strains.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,99 +70,66 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "AI not configured" }, { status: 500 });
     }
 
-    // ── SERVER-SIDE chat limit enforcement ──────────────────────────────────
-    // This is the real gate — frontend checks are just UX, this prevents abuse
+    // ── SERVER-SIDE chat limit (only for logged-in users) ─────────────────────
     if (userId) {
       const admin = getAdminClient();
       if (admin) {
-        const { data: profile, error: profileErr } = await admin
+        const { data: profile } = await admin
           .from("profiles")
           .select("plan, plan_expires_at, is_admin, ai_chats_used, ai_chats_reset_at")
           .eq("id", userId)
           .single();
 
-        if (profileErr || !profile) {
-          // Profile missing — create it and allow
-          console.warn("[chat] Profile not found for userId:", userId);
-        } else {
+        if (profile) {
           const isProUser =
             profile.is_admin === true ||
             (profile.plan !== "free" &&
               (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date()));
 
           if (!isProUser) {
-            // Count chats used today
-            const currentChats = isToday(profile.ai_chats_reset_at)
-              ? (profile.ai_chats_used || 0)
-              : 0;
-
+            const currentChats = isToday(profile.ai_chats_reset_at) ? (profile.ai_chats_used || 0) : 0;
             if (currentChats >= FREE_CHAT_LIMIT) {
               return NextResponse.json({
                 error: `You've used all ${FREE_CHAT_LIMIT} free chats for today. Upgrade to Pro for unlimited chat! 🚀`,
                 limitReached: true,
               }, { status: 429 });
             }
-
-            // Increment count atomically BEFORE calling AI
-            const { error: updateErr } = await admin
-              .from("profiles")
-              .update({
-                ai_chats_used: currentChats + 1,
-                ai_chats_reset_at: new Date().toISOString(),
-              })
-              .eq("id", userId);
-
-            if (updateErr) {
-              console.error("[chat] Failed to increment chat count:", updateErr.message);
-              // Don't block — let them chat, just log
-            }
+            // Increment BEFORE calling AI
+            await admin.from("profiles").update({
+              ai_chats_used: currentChats + 1,
+              ai_chats_reset_at: new Date().toISOString(),
+            }).eq("id", userId);
           }
         }
       }
     }
 
-    // ── Call KIE AI ──────────────────────────────────────────────────────────
-    const payload = {
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...messages.slice(-20),
-      ],
-      stream: false,
-    };
-
+    // ── Call KIE AI ───────────────────────────────────────────────────────────
     const resp = await fetch(KIE_ENDPOINT, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${KIE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      headers: { Authorization: `Bearer ${KIE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages.slice(-20)],
+        stream: false,
+      }),
     });
 
     if (!resp.ok) {
       const errText = await resp.text();
-      console.error("[chat] KIE API error:", resp.status, errText.slice(0, 200));
+      console.error("[chat] KIE error:", resp.status, errText.slice(0, 200));
       return NextResponse.json({ error: "AI service unavailable" }, { status: 502 });
     }
 
     const raw = await resp.text();
     const cleaned = raw.replace(/^\{\}\s*/, "").trim();
-
     let data: { choices?: { message?: { content?: string } }[] };
-    try {
-      data = JSON.parse(cleaned);
-    } catch {
-      console.error("[chat] JSON parse error:", cleaned.slice(0, 200));
-      return NextResponse.json({ error: "AI response parse error" }, { status: 500 });
-    }
+    try { data = JSON.parse(cleaned); }
+    catch { return NextResponse.json({ error: "AI response parse error" }, { status: 500 }); }
 
     const rawContent = data?.choices?.[0]?.message?.content;
-    if (!rawContent) {
-      console.error("[chat] No content in response:", JSON.stringify(data).slice(0, 200));
-      return NextResponse.json({ error: "No response from AI" }, { status: 500 });
-    }
+    if (!rawContent) return NextResponse.json({ error: "No response from AI" }, { status: 500 });
 
-    // ── Parse strain cards ───────────────────────────────────────────────────
+    // ── Parse STRAIN_CARDS block ──────────────────────────────────────────────
     let strainSlugs: string[] = [];
     let content = rawContent;
     const cardMatch = rawContent.match(/\[STRAIN_CARDS\]([\s\S]*?)\[\/STRAIN_CARDS\]/);
@@ -167,48 +137,48 @@ export async function POST(req: NextRequest) {
       try {
         const parsed = JSON.parse(cardMatch[1].trim());
         strainSlugs = (parsed.slugs || []).slice(0, 5);
-      } catch {
-        console.error("[chat] Strain card parse error:", cardMatch[1]);
+        console.log("[chat] Parsed strain slugs:", strainSlugs);
+      } catch (e) {
+        console.error("[chat] Strain card JSON parse failed:", cardMatch[1], e);
       }
       content = rawContent.replace(/\[STRAIN_CARDS\][\s\S]*?\[\/STRAIN_CARDS\]/, "").trim();
+    } else {
+      console.log("[chat] No STRAIN_CARDS block found in AI response");
     }
 
-    // ── Fetch strain data ────────────────────────────────────────────────────
+    // ── Fetch strain data from DB ─────────────────────────────────────────────
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let strains: any[] = [];
     if (strainSlugs.length > 0) {
-      try {
-        const anon = getAnonClient();
-        const { data: strainData, error: strainErr } = await anon
-          .from("strains")
-          .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
-          .in("slug", strainSlugs);
-        if (strainErr) {
-          console.error("[chat] Strain fetch error:", strainErr.message);
-        } else {
-          strains = (strainData || []).sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
-        }
-      } catch (e) {
-        console.error("[chat] Strain fetch exception:", e);
+      // Try admin client first (bypasses RLS), fallback to anon
+      const dbClient = getAdminClient() || getAnonClient();
+      const { data: strainData, error: strainErr } = await dbClient
+        .from("strains")
+        .select("name, slug, type, thc_max, thc_min, cbd_max, effects, flavors, terpenes, description, image_url")
+        .in("slug", strainSlugs);
+
+      if (strainErr) {
+        console.error("[chat] Strain fetch error:", strainErr.message);
+      } else {
+        strains = (strainData || []).sort((a, b) => strainSlugs.indexOf(a.slug) - strainSlugs.indexOf(b.slug));
+        console.log("[chat] Fetched strains:", strains.map(s => s.slug));
       }
     }
 
-    // ── Save session ─────────────────────────────────────────────────────────
+    // ── Save session (include strains in message data) ────────────────────────
     if (userId && sessionId) {
       const admin = getAdminClient();
       if (admin) {
         try {
           const lastUserMsg = messages[messages.length - 1]?.content || "";
-          const { error: saveErr } = await admin
-            .from("chat_sessions")
-            .upsert({
-              id: sessionId,
-              user_id: userId,
-              messages: [...messages, { role: "assistant", content }],
-              updated_at: new Date().toISOString(),
-              preview: lastUserMsg.slice(0, 80),
-            }, { onConflict: "id" });
-          if (saveErr) console.error("[chat] Session save error:", saveErr.message);
+          await admin.from("chat_sessions").upsert({
+            id: sessionId,
+            user_id: userId,
+            // Save strains alongside message so they reload correctly
+            messages: [...messages, { role: "assistant", content, strains }],
+            updated_at: new Date().toISOString(),
+            preview: lastUserMsg.slice(0, 80),
+          }, { onConflict: "id" });
         } catch (e) {
           console.error("[chat] Session save exception:", e);
         }

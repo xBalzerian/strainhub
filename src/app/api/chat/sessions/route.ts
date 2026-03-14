@@ -76,15 +76,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE — remove a session
+// DELETE — remove a session (or all sessions for a user)
 export async function DELETE(req: NextRequest) {
   try {
-    const { sessionId, userId } = await req.json();
-    if (!sessionId || !userId) return NextResponse.json({ ok: false, error: "Missing fields" });
+    const { sessionId, userId, deleteAll } = await req.json();
+    if (!userId) return NextResponse.json({ ok: false, error: "Missing userId" });
 
     const admin = getAdminClient();
     if (!admin) return NextResponse.json({ ok: false, error: "service_key_invalid" });
 
+    if (deleteAll) {
+      const { error } = await admin.from("chat_sessions").delete().eq("user_id", userId);
+      if (error) return NextResponse.json({ ok: false, error: error.message });
+      return NextResponse.json({ ok: true, deletedAll: true });
+    }
+
+    if (!sessionId) return NextResponse.json({ ok: false, error: "Missing sessionId" });
     const { error } = await admin
       .from("chat_sessions")
       .delete()
@@ -100,3 +107,5 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
   }
 }
+
+// Note: DELETE is already defined above. The body can optionally include { deleteAll: true }
