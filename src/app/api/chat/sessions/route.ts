@@ -13,23 +13,30 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
   if (!userId) return NextResponse.json({ sessions: [] });
 
-  const { data } = await getAdmin()
+  const { data, error } = await getAdmin()
     .from("chat_sessions")
     .select("id, preview, updated_at, messages")
     .eq("user_id", userId)
     .order("updated_at", { ascending: false })
     .limit(30);
 
+  if (error) {
+    console.error("[sessions GET error]", error);
+    return NextResponse.json({ sessions: [], error: error.message });
+  }
+
   return NextResponse.json({ sessions: data || [] });
 }
 
-// POST — save/upsert a session (called when user clicks New Chat)
+// POST — save/upsert a session
 export async function POST(req: NextRequest) {
   try {
     const { sessionId, userId, messages, preview } = await req.json();
-    if (!sessionId || !userId || !messages) return NextResponse.json({ ok: false });
+    if (!sessionId || !userId || !messages) {
+      return NextResponse.json({ ok: false, error: "Missing fields" });
+    }
 
-    await getAdmin()
+    const { error } = await getAdmin()
       .from("chat_sessions")
       .upsert({
         id: sessionId,
@@ -39,16 +46,33 @@ export async function POST(req: NextRequest) {
         updated_at: new Date().toISOString(),
       }, { onConflict: "id" });
 
+    if (error) {
+      console.error("[sessions POST error]", error);
+      return NextResponse.json({ ok: false, error: error.message });
+    }
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 500 });
+  } catch (e) {
+    console.error("[sessions POST catch]", e);
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
   }
 }
 
 // DELETE — remove a session
 export async function DELETE(req: NextRequest) {
-  const { sessionId, userId } = await req.json();
-  if (!sessionId || !userId) return NextResponse.json({ ok: false });
-  await getAdmin().from("chat_sessions").delete().eq("id", sessionId).eq("user_id", userId);
-  return NextResponse.json({ ok: true });
+  try {
+    const { sessionId, userId } = await req.json();
+    if (!sessionId || !userId) return NextResponse.json({ ok: false });
+    const { error } = await getAdmin()
+      .from("chat_sessions")
+      .delete()
+      .eq("id", sessionId)
+      .eq("user_id", userId);
+    if (error) {
+      console.error("[sessions DELETE error]", error);
+      return NextResponse.json({ ok: false, error: error.message });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
+  }
 }

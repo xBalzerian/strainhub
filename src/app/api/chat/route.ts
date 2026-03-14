@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     // Save to chat_sessions table if userId provided
     if (userId && sessionId) {
       const lastUserMsg = messages[messages.length - 1]?.content || "";
-      await supabaseAdmin
+      const { error: saveErr } = await supabaseAdmin
         .from("chat_sessions")
         .upsert({
           id: sessionId,
@@ -112,6 +112,7 @@ export async function POST(req: NextRequest) {
           updated_at: new Date().toISOString(),
           preview: lastUserMsg.slice(0, 80),
         }, { onConflict: "id" });
+      if (saveErr) console.error("[chat save error]", saveErr);
     }
 
     return NextResponse.json({ message: content, strains });
