@@ -4,6 +4,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        // All crawlers — allow everything except private routes
         userAgent: "*",
         allow: "/",
         disallow: [
@@ -13,9 +14,11 @@ export default function robots(): MetadataRoute.Robots {
           "/_next/",
         ],
       },
+      // NOTE: Google-Extended powers AI Overviews / SGE — we WANT to be included
+      // Removed block on Google-Extended, anthropic-ai so we appear in AI search results
       {
-        // Block AI scrapers from training data (optional but common)
-        userAgent: ["GPTBot", "CCBot", "Google-Extended", "anthropic-ai"],
+        // Only block pure scraping bots with no SEO value
+        userAgent: ["CCBot", "SemrushBot", "AhrefsBot", "DotBot"],
         disallow: "/",
       },
     ],
