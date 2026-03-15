@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Cannabinoid Profiles Guide | StrainHub Learn",
-  description: "Comprehensive guide to cannabinoid profiles guide — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "How to Read a Cannabis Lab Report & Cannabinoid Profile | StrainHub Learn", description: "How to read a cannabis certificate of analysis — THC, CBD, CBG, CBN, THCV percentages explained and what different cannabinoid ratios mean for your experience." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
-          <span className="text-black font-semibold">Cannabinoid Profiles Guide</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span><span className="text-black font-semibold">Cannabinoid Profiles</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#faf5ff", color: "#7e22ce" }}>🧪 Strains</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Cannabinoid Profiles Explained</h1><p className="text-gray-500 text-lg leading-relaxed">The cannabinoid percentages on a lab report tell you far more than just potency — they reveal the entire pharmacological character of a strain. Here&apos;s how to actually read and use that data.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">THC vs. THCA: What the Numbers Mean</h2><p className="text-gray-600 leading-relaxed text-[17px]">Raw cannabis flower contains mostly <strong>THCA</strong> (tetrahydrocannabinolic acid) — the non-psychoactive precursor to THC. THCA converts to THC through decarboxylation (heat). Lab reports show both THCA and THC separately. To calculate the total potential THC after smoking or vaporizing, use: <strong>Total THC = (THCA × 0.877) + THC</strong>. The 0.877 factor accounts for molecular weight loss during decarboxylation. A flower labeled &quot;28% THCA, 1% THC&quot; has a total potential THC of roughly 25.6% — not 29%. Many dispensaries display total THC; some display only THCA. Always confirm which is shown to avoid misinterpreting potency.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">THC:CBD Ratio — The Most Important Number</h2><p className="text-gray-600 leading-relaxed text-[17px]">The ratio between THC and CBD fundamentally shapes the experience. <strong>High THC, low/no CBD (20:1+):</strong> Maximum psychoactivity, higher anxiety risk, stronger intoxication. Most recreational dispensary flower. <strong>Balanced 1:1 (e.g., 10% THC / 10% CBD):</strong> CBD moderates THC-induced anxiety, producing a clearer, more functional high with strong medicinal properties. Ideal for anxiety, pain, beginners exploring cannabis. <strong>High CBD, low THC (1:20+):</strong> Non-intoxicating or minimally intoxicating. Medicinal — epilepsy, inflammation, anxiety without impairment. <strong>CBD-only (hemp):</strong> Zero psychoactivity. Wellness/medical only. The 1:1 ratio is widely considered the most therapeutically versatile — it&apos;s what Sativex (the pharmaceutical spray) uses.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Minor Cannabinoids: CBG, CBN, THCV</h2><p className="text-gray-600 leading-relaxed text-[17px]">High-quality lab reports also quantify minor cannabinoids. What to look for: <strong>CBG above 1%</strong> — indicates a CBG-rich cultivar or early harvest; adds anti-inflammatory, antibacterial properties and a clear-headed quality. <strong>CBN above 0.5%</strong> — usually indicates older or oxidized flower; mildly sedating. <strong>THCV above 0.5%</strong> — adds appetite suppression and a fast-acting, clear-headed effect; common in African landrace-derived strains like Durban Poison. <strong>CBC above 0.5%</strong> — enhances anti-inflammatory and antidepressant effects. Most common commercial strains have minimal minor cannabinoids; specialized cultivars are increasingly bred to elevate specific minors.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Interpreting a Full COA (Certificate of Analysis)</h2><p className="text-gray-600 leading-relaxed text-[17px]">A complete COA from a licensed testing lab includes: <strong>Potency panel</strong> (cannabinoid percentages), <strong>Terpene panel</strong> (terpene percentages — the most important section for predicting effects), <strong>Pesticide panel</strong> (pass/fail for dozens of regulated pesticides), <strong>Heavy metals panel</strong> (lead, arsenic, cadmium, mercury), <strong>Microbials panel</strong> (total yeast/mold count, E. coli, Salmonella, Aspergillus), and <strong>Residual solvents panel</strong> (for extracts — butane, propane, ethanol levels). Always verify: the batch number on the COA matches the product, the testing lab is licensed in your state, and the test date is within 12 months. Reputable brands publish COAs via QR code on packaging. If a product has no COA, don&apos;t buy it.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">The &quot;Potency Arms Race&quot; Problem</h2><p className="text-gray-600 leading-relaxed text-[17px]">The legal cannabis market has created a consumer fixation on maximum THC percentage — dispensaries regularly stock 30%+ THC products, and strains are marketed primarily on potency. Research consistently shows this is misguided: above approximately 20% THC, consumers cannot reliably distinguish higher potency products in blind testing, and subjective &quot;high quality&quot; correlates more strongly with terpene profile than THC percentage. Many connoisseurs and medical professionals consider 15–22% THC with an excellent terpene profile superior to 30% THC with minimal terpenes. Focus on the full cannabinoid and terpene profile — not just the THC number.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Cannabinoid Profiles Guide</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Quick Reference</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["Total THC = (THCA × 0.877) + THC","1:1 THC:CBD = most balanced therapeutic profile","CBN > 0.5% = older/oxidized flower","THCV > 0.5% = appetite suppression, quick clear high","Always verify COA batch # matches product","Terpene profile > THC % for quality assessment"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/strains" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Strains
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/strains" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Strains</Link>
+      </div></div></div>
     </div>
   );
 }

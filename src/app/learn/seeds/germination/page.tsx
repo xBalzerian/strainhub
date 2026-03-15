@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Germination Science & Methods | StrainHub Learn",
-  description: "Comprehensive guide to germination science & methods — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "How to Germinate Cannabis Seeds | StrainHub Learn", description: "Step-by-step guide to germinating cannabis seeds — paper towel method, direct soil, water glass, and plug methods with success rates and troubleshooting." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Germination Science & Methods</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Germination Guide</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>🌱 Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Germination Guide</h1><p className="text-gray-500 text-lg leading-relaxed">Germination is the first critical step — bringing a dormant seed to life. The right conditions are simple: warmth, moisture, and darkness. Get these right and germination rates above 90% are achievable with quality seeds.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Ideal Conditions</h2><p className="text-gray-600 leading-relaxed text-[17px]">Cannabis seeds require three things to germinate: moisture (not soaking), warmth (21–26°C / 70–80°F), and darkness (light inhibits germination). Humidity around the seed should be 70–90%. pH of any water used should be 6.0–7.0 — tap water is fine if pH is in range. Most healthy seeds germinate within 24–72 hours under ideal conditions. Seeds older than 2–3 years or improperly stored may take longer or have reduced germination rates. Never let seeds dry out once started — the metabolic process of germination cannot be paused safely.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Method 1: Paper Towel (Most Popular)</h2><p className="text-gray-600 leading-relaxed text-[17px]">Place seeds between two damp (not soaking) paper towels on a plate. Cover with a second plate or plastic wrap to maintain humidity. Keep in a warm, dark place (top of a refrigerator, inside a cabinet). Check every 12 hours. Seeds are ready to plant when the taproot (white root tip) is 0.5–1cm long. Carefully transfer to soil using tweezers — taproot pointing down, 0.5–1cm deep. Cover lightly. This method has the highest visibility (you can monitor progress) and is the most popular for beginners. Downside: requires careful handling during transfer to avoid damaging the delicate taproot.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Method 2: Direct Soil</h2><p className="text-gray-600 leading-relaxed text-[17px]">The most natural method — simply plant seeds 0.5–1cm deep in pre-moistened seedling mix, cover lightly, and keep warm and dark until the sprout emerges (typically 2–5 days). Use a seedling or starter mix (not heavy potting soil — cannabis seeds need a light, airy medium to push through). Cover with a humidity dome or plastic wrap to maintain moisture. This method avoids the transfer shock of paper towel method and produces stronger seedlings — roots develop naturally without handling. Downside: you can&apos;t see what&apos;s happening, and if conditions are wrong you won&apos;t know until days have passed.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Method 3: Rockwool Cubes / Plugs</h2><p className="text-gray-600 leading-relaxed text-[17px]">Pre-formed rockwool cubes or peat plugs (Jiffy pellets, Rapid Rooters) are popular with hydroponic growers and those who clone regularly. Soak cubes to pH 5.5–6.0, allow to drain (don&apos;t squeeze), place seed 0.5cm deep, seal the hole with a small piece of cube material. Keep at 24°C, high humidity. Seedlings emerge in 2–5 days and can be transplanted directly into hydroponic systems, coco, or soil. Rapid Rooters (made from composted bark) are particularly effective with germination rates exceeding 95% under good conditions.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Troubleshooting Failed Germination</h2><p className="text-gray-600 leading-relaxed text-[17px]">If seeds haven&apos;t germinated after 7 days: check temperature (too cold is the most common cause — below 18°C significantly slows germination), check moisture (paper towels should be damp but not dripping), check seed age and storage quality. Seeds that float in water are sometimes described as &quot;bad&quot; — this is not reliably accurate (density varies). A hard, dark-colored seed shell is a good sign; pale, cracked, or mushy seeds are compromised. If the taproot emerges but the seedling doesn&apos;t push through soil, the seed may have been planted too deep or the soil too compacted — gently loosen the surface. A seed helmet (shell stuck to cotyledons) can be carefully removed with tweezers if left for over 24 hours with no progress.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Germination Science & Methods</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Facts</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["Ideal temp: 21–26°C (70–80°F)","Moisture: damp, not soaking","Germination time: 24–72 hours (healthy seeds)","Taproot ready to plant: 0.5–1cm","pH of water: 6.0–7.0","Direct soil = least transplant stress","Rockwool cubes: best for hydro growers"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }

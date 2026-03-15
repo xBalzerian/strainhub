@@ -1,41 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Breeding & Seed Production | StrainHub Learn",
-  description: "Comprehensive guide to breeding & seed production — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Cannabis Breeding Fundamentals | StrainHub Learn", description: "Introduction to cannabis breeding — selecting parents, stabilizing genetics, F1 through F6 generations, backcrossing, and creating your own strain." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Breeding & Seed Production</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Breeding Fundamentals</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>🧬 Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Breeding Fundamentals</h1><p className="text-gray-500 text-lg leading-relaxed">Cannabis breeding is both art and science — selecting parent plants for desired traits, crossing them, and stabilizing offspring over multiple generations to create a consistent, reproducible variety.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Phenotype Selection: The Foundation</h2><p className="text-gray-600 leading-relaxed text-[17px]">A phenotype (&quot;pheno&quot;) is the physical expression of a plant&apos;s genetics in a given environment. Growing a pack of 10–20 seeds from a cross will reveal the range of phenotypes in that genetic population — some plants will be taller, some more resinous, some will express different terpene profiles or flower faster. Phenotype hunting (or &quot;pheno hunting&quot;) is the process of growing large numbers of seeds to find the best individual expression. The selected plant becomes a &quot;keeper&quot; — preserved as a mother plant via cloning for vegetative propagation. Most commercial strain names refer to a specific phenotype selected by a breeder, not the entire genetic population.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">F1, F2, F3... Understanding Filial Generations</h2><p className="text-gray-600 leading-relaxed text-[17px]">F1 (first filial) = cross between two parent strains (P generation). F1 plants show hybrid vigor but are genetically diverse. F2 = crossing two F1 plants — produces wide genetic variation, where recessive traits begin to express. F2s are genetically rich but highly variable. F3, F4, F5 = continued selection and crossing of best offspring — genetic diversity narrows, traits stabilize. F5–F6 is generally considered a &quot;stable&quot; line. IBL (Inbred Line) = a strain stabilized through many generations of self-pollination and selection — shows very consistent traits across a pack of seeds. Most classic strains (Northern Lights, Skunk #1, Haze) are IBLs developed over decades.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Backcrossing (BX)</h2><p className="text-gray-600 leading-relaxed text-[17px]">Backcrossing involves crossing an offspring back to one of its parents — typically to strengthen a specific trait that the parent expresses strongly. A BX1 (first backcross) cross is 75% parent genetics; BX3 is approximately 93.75% parent genetics. This technique is used to: lock in a specific trait from a dominant parent while introducing a single new characteristic from the other parent, stabilize a new cross more rapidly than continued F generation breeding, and create &quot;S1&quot; feminized seeds (selfed from a single parent via stress-induced pollen) that are essentially clones in seed form. Many elite modern strains are backcrosses — the &quot;BX&quot; designation in a strain name (e.g., Wedding Cake BX3) indicates this.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Creating Feminized Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">Feminized seeds are produced by inducing a female plant to produce male pollen — either through: <strong>Colloidal silver</strong> (most common): a solution of silver particles in water sprayed on female flowers blocks ethylene production, causing the plant to produce male pollen sacs. This pollen contains only XX chromosomes, producing feminized offspring. <strong>Rodelization</strong>: allowing a female plant to over-mature (past peak harvest) — some plants naturally produce hermaphrodite flowers as a last-ditch reproduction attempt. Less reliable, produces stress-related hermaphrodite tendencies in offspring. <strong>STS (Silver Thiosulfate Solution)</strong>: professional/commercial standard — more effective and consistent than colloidal silver. The colloidal silver donor plant is not consumed.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Breeding & Seed Production</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Breeding Terms</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["F1 = Parent A × Parent B (hybrid vigor)","F2 = F1 × F1 (high variability)","F5-6 = considered stable line","IBL = Inbred Line (most consistent)","BX = Backcross to parent","S1 = Selfed (feminized from one parent)","Phenohunt = finding best plant in a pack"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }

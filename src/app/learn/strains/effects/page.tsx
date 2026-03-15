@@ -1,41 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Effect-Based Strain Classification | StrainHub Learn",
-  description: "Comprehensive guide to effect-based strain classification — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Why Different Cannabis Strains Feel Different | StrainHub Learn", description: "The science of strain-specific effects — how cannabinoid ratios, terpene profiles, and your individual biology interact to produce distinct experiences." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
-          <span className="text-black font-semibold">Effect-Based Strain Classification</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span><span className="text-black font-semibold">Strain Effects</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#faf5ff", color: "#7e22ce" }}>🌿 Strains</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Why Different Strains Feel Different</h1><p className="text-gray-500 text-lg leading-relaxed">Two strains at identical THC percentages can feel completely different — one energizing and creative, one deeply sedating. Understanding why is the key to choosing the right strain for any situation.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Factor 1: Cannabinoid Profile</h2><p className="text-gray-600 leading-relaxed text-[17px]">The ratio and combination of cannabinoids is the primary pharmacological driver. THC drives psychoactivity, euphoria, and appetite; CBD modulates and softens THC effects, reducing anxiety and prolonging duration; THCV suppresses appetite and adds a clear-headed quality; CBG adds alertness and antibacterial properties; CBN adds mild sedation. A strain with 25% THC and 0% CBD will feel categorically different from a 25% THC strain with 5% CBD — even though the THC level is identical. The minor cannabinoid profile, even at fractions of a percent, contributes meaningfully to the character of the experience through synergistic interactions.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Factor 2: Terpene Dominance</h2><p className="text-gray-600 leading-relaxed text-[17px]">The dominant terpene profile is the single strongest predictor of how a strain will feel at a consistent dose. Myrcene-dominant strains (OG Kush, Granddaddy Purple): heavy, sedating, body-focused — myrcene is a muscle relaxant that also enhances THC uptake into the brain. Limonene-dominant strains (Super Lemon Haze, Zkittlez): bright, mood-elevating, socially stimulating — limonene acts on serotonin 5-HT1A receptors. Pinene-dominant strains (Jack Herer, Blue Dream): clear, alert, focused — pinene is a bronchodilator and acetylcholinesterase inhibitor. Caryophyllene-dominant strains (GSC, Gelato): anti-inflammatory, warm body effect, grounded — caryophyllene is the only terpene that directly binds cannabinoid receptors (CB2).</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Factor 3: Individual Biology</h2><p className="text-gray-600 leading-relaxed text-[17px]">Two people consuming the same strain will have meaningfully different experiences based on: CB1 receptor density and sensitivity (genetically variable), baseline endocannabinoid levels, liver enzyme variants (CYP2C9, CYP3A4 — affecting how quickly THC is metabolized), tolerance from prior use, body weight and fat distribution (THC is fat-soluble — higher body fat = more storage and slower elimination), mental state and environment (set and setting). This is why personal experience with a strain is more valuable than any review — and why starting low is always the right approach with an unfamiliar strain, even for experienced users.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Effect Categories: A Practical Framework</h2><p className="text-gray-600 leading-relaxed text-[17px]">Rather than indica/sativa, a more useful framework classifies strains by their dominant effect profile: <strong>Sedating/Sleep</strong> — high myrcene, linalool; high THC; Granddaddy Purple, Northern Lights, Bubba Kush. <strong>Relaxing/Social</strong> — moderate myrcene + caryophyllene; balanced THC; Blue Dream, Wedding Cake, Gelato. <strong>Uplifting/Creative</strong> — limonene, terpinolene dominant; moderate THC; Jack Herer, Super Lemon Haze, Sour Diesel. <strong>Focused/Alert</strong> — pinene dominant; moderate THC + CBD; Harlequin, ACDC, Cannatonic. <strong>Pain/Anti-inflammatory</strong> — caryophyllene, myrcene; high THC or 1:1; OG Kush, White Widow, Pennywise. Use StrainHub&apos;s effect filter to search strains by these profiles.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Effect-Based Strain Classification</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Drivers</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["#1: Terpene dominant profile","#2: THC:CBD ratio","#3: Minor cannabinoids (THCV, CBG, CBN)","#4: Individual biology & genetics","#5: Tolerance & prior use","#6: Set and setting","Same THC % ≠ same experience"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/strains" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Strains
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/strains" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Strains</Link>
+      </div></div></div>
     </div>
   );
 }

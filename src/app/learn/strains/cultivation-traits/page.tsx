@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Cultivation Characteristics Guide | StrainHub Learn",
-  description: "Comprehensive guide to cultivation characteristics guide — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Cannabis Cultivation Traits Explained | StrainHub Learn", description: "How to read cultivation data for any cannabis strain — flowering time, yield, height, grow difficulty, and what each metric means for your specific grow setup." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
-          <span className="text-black font-semibold">Cultivation Characteristics Guide</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span><span className="text-black font-semibold">Cultivation Traits</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#faf5ff", color: "#7e22ce" }}>🌿 Strains</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Cultivation Traits Explained</h1><p className="text-gray-500 text-lg leading-relaxed">Every strain has distinct cultivation characteristics that determine how it will behave in your grow space. Understanding these before you plant saves weeks of frustration and significantly improves your harvest.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Flowering Time</h2><p className="text-gray-600 leading-relaxed text-[17px]">Flowering time is how many weeks a strain flowers before harvest — measured from when the light cycle is switched to 12/12 (for photoperiod) or from seed for autoflowers. <strong>Short (7–8 weeks):</strong> Indica-dominant varieties, Afghan-derived strains. Fast turnaround, smaller yield, heavier body effects. <strong>Medium (9–10 weeks):</strong> Most hybrid varieties. The sweet spot for commercial growing. <strong>Long (11–14 weeks):</strong> Sativa-dominant hybrids, Haze varieties. More complex terpene development, higher yields potential, cerebral effect profile. <strong>Very long (15+ weeks):</strong> Pure tropical sativas (Thai, Malawi, pure Haze). Outdoor-only in most climates. Extraordinary quality ceiling but impractical for most grows. Breeder-stated flowering times are typically minimum estimates — many strains benefit from an extra week.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Height & Structure</h2><p className="text-gray-600 leading-relaxed text-[17px]">Height predictions from breeders refer to final height — but indoor growers should know that the stretch during early flowering (first 2–3 weeks after flip to 12/12) can double the plant&apos;s vegetative height. A plant that is 50cm at flip may finish at 90–120cm. Indica-dominant plants (Afghan Kush, Northern Lights, Bubba Kush) are typically compact and bushy — ideal for small grow tents. Sativa-dominant plants (Haze, Jack Herer, Sour Diesel) can reach 2–3m indoors without training — not practical in standard tents without aggressive LST (low-stress training), topping, or SCROG. Structure also affects air circulation: tight, dense canopies need more pruning for airflow; open, airy structures are naturally more mold-resistant.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Yield</h2><p className="text-gray-600 leading-relaxed text-[17px]">Yield is expressed as grams per square meter (g/m²) indoors or grams per plant (g/plant) outdoors. Breeder yield claims are almost always achieved under optimal conditions (high-wattage lighting, perfect nutrition, experienced grower) — beginners should expect 30–60% of stated yields initially. Indoor yield benchmarks: <strong>Low (&lt;300g/m²):</strong> Craft/quality-focused varieties, many autoflowers. <strong>Medium (300–500g/m²):</strong> Most quality photoperiod strains. <strong>High (500g/m²+):</strong> High-yielding commercial varieties (Critical Mass, Big Bud, Auto Zkittlez). Yield is a function of light intensity, canopy coverage, feeding quality, and grow technique — genetics set the ceiling, but environment and skill determine where you land.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Grow Difficulty</h2><p className="text-gray-600 leading-relaxed text-[17px]">Grow difficulty ratings (Easy / Moderate / Difficult) reflect how demanding a strain is across several axes: <strong>Nutrient sensitivity:</strong> Some strains (many OG Kush phenotypes) are very sensitive to over-feeding and will tip-burn or show deficiencies at nutrient levels other strains thrive at. <strong>Climate sensitivity:</strong> Some genetics require precise humidity/temperature windows; others tolerate wide variation. <strong>Mold/pest resistance:</strong> Dense bud structure (Northern Lights, Critical Mass) is more vulnerable to botrytis than airier varieties. <strong>Training response:</strong> Some strains tolerate heavy topping and LST well; others stress easily. Autoflowers generally should not be heavily trained. For beginners: Northern Lights, White Widow, Blue Dream, and autoflowering feminized varieties are consistently rated easy.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Indoor vs. Outdoor Suitability</h2><p className="text-gray-600 leading-relaxed text-[17px]">Not all strains are equally suited for all environments. Indoors, short-to-medium flowering, compact height strains are most practical. Outdoors, the key factor is whether the strain will finish before your first frost. In northern climates (Canada, Northern Europe, Pacific Northwest), strains finishing by late September/early October are essential. Equatorial sativa varieties (Thai, Malawi, pure Haze) will not finish in northern outdoor seasons. Mediterranean climates (California, Spain, Italy, Greece) have the widest selection — nearly any variety can be grown outdoors with excellent results. Mold-resistant genetics (Durban Poison, Jack Herer, many autoflowers) are important choices for wet climates.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Cultivation Characteristics Guide</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Metrics</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["Flowering time: 7–8 wks (fast) to 15+ wks (pure sativa)","Indoor height: check stretch (can 2x at flip)","Yield: beginner = 30–60% of stated breeder yield","Difficulty: Northern Lights / White Widow = easiest","Dense buds = higher mold risk in humid climates","Outdoor: match flowering time to your last frost date"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/strains" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Strains
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/strains" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Strains</Link>
+      </div></div></div>
     </div>
   );
 }

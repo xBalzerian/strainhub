@@ -1,49 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Week-by-Week Grow Guide | StrainHub Learn",
-  description: "Comprehensive guide to week-by-week grow guide — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Using Strain Data to Plan Your Grow | StrainHub Learn", description: "How to use StrainHub strain data — flowering time, height, yield, difficulty, terpene profiles — to plan and optimize your grow from seed to harvest." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
-          <span className="text-black font-semibold">Week-by-Week Grow Guide</span>
-        </div>
-          {/* Hero Image */}
-          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/learn/grow-guide.jpg"
-              alt="Hero illustration"
-              className="w-full h-56 md:h-72 object-cover"
-            />
-          </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span><span className="text-black font-semibold">Using Strain Grow Data</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#faf5ff", color: "#7e22ce" }}>📋 Strains</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Using Strain Data to Plan Your Grow</h1><p className="text-gray-500 text-lg leading-relaxed">StrainHub&apos;s strain profiles contain cultivation data you can use directly to plan every aspect of your grow — from choosing the right strain for your space to timing your harvest window.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Step 1: Match Strain to Environment</h2><p className="text-gray-600 leading-relaxed text-[17px]">Before choosing a strain, know your constraints: <strong>Indoor grow tent?</strong> Check the height range and pick varieties that fit with room for your lights. In a 120cm-tall tent, choose strains with a max indoor height of 80–90cm to allow for light distance. Use the grow height filter on StrainHub. <strong>Outdoor grow?</strong> Your location&apos;s last frost date is the hard deadline. Count back from that date by the strain&apos;s flowering weeks to find your flip date — then ensure you have enough vegetative time before that. <strong>Limited time?</strong> Filter by flowering weeks — autoflowering strains offer the fastest seed-to-harvest (8–11 weeks total). <strong>High humidity climate?</strong> Filter by mold resistance and favor open, airy bud structures.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Step 2: Plan Your Timeline</h2><p className="text-gray-600 leading-relaxed text-[17px]">Use the strain&apos;s flowering week data to plan your full grow calendar. A typical indoor photoperiod grow: Germination (1 week) → Seedling (2 weeks) → Vegetative (4–8 weeks, grower-controlled) → Flowering (strain-dependent, 7–12 weeks) → Flush and harvest (1–2 weeks). Add 1–2 weeks buffer to the breeder&apos;s stated flowering time — it&apos;s almost always a minimum. For outdoor: your local last frost date is fixed. Work backwards from October 1st (Northern Hemisphere) by flowering weeks to find when you need to ensure flowering begins. Use seed banks&apos; &quot;outdoor harvest month&quot; data on StrainHub profiles as a direct guide for your climate zone.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Step 3: Set Up for the Strain&apos;s Feeding Needs</h2><p className="text-gray-600 leading-relaxed text-[17px]">High-yielding, heavy-feeding strains (Critical Mass, White Widow, GSC) require robust nutrient programs — nitrogen-heavy in veg, phosphorus/potassium-heavy in flower. Sensitive strains (many OG Kush phenotypes, some Haze varieties) are easily over-fed and show nutrient burn at doses other strains tolerate well — start at 50% of recommended doses and work up. The grow difficulty rating on StrainHub profiles reflects this sensitivity directly. If it says &quot;Difficult,&quot; plan for careful EC/PPM monitoring and conservative feeding. If it says &quot;Easy,&quot; the strain forgives beginners&apos; mistakes more readily.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Step 4: Predicting Harvest Quality from Terpene Data</h2><p className="text-gray-600 leading-relaxed text-[17px]">StrainHub&apos;s terpene profile data tells you what to expect at harvest if you grow the strain correctly. A myrcene-dominant strain should produce heavy, earthy-musky aromatics — if it&apos;s mostly lime/citrus-smelling come harvest, it&apos;s been stressed or harvested early. A limonene-dominant strain should smell intensely of citrus in late flower. Use terpene data as a quality check: growing conditions, harvest timing, and post-harvest curing all affect final terpene expression. Harvest too early and terpenes are underdeveloped. Over-dry and terpenes volatilize. Proper slow cure (60–65% RH, 2+ weeks) preserves the terpene profile the strain is bred to produce.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Step 5: Harvest Window Indicators</h2><p className="text-gray-600 leading-relaxed text-[17px]">The flowering week estimate tells you when to start checking — not when to harvest automatically. The definitive harvest indicator is trichome color viewed under a jeweler&apos;s loupe or digital microscope (60–100x): <strong>All clear/translucent:</strong> Too early — cannabinoids still developing. <strong>Mostly cloudy/milky white:</strong> Peak THC — cerebral, energetic effects. <strong>Some amber (10–30%):</strong> THC beginning to degrade to CBN — more relaxing, body-heavy, sedating. <strong>Mostly amber:</strong> Over-ripe for most users — very sedating, couch-lock. Most experienced growers harvest at mostly cloudy with 10–20% amber for a balanced experience. Check multiple bud sites — they mature at different rates on the same plant.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Week-by-Week Grow Guide</h1>          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Grow Planning Checklist</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["✓ Height fits your tent with light clearance","✓ Flowering time matched to your climate/deadline","✓ Difficulty matches your experience level","✓ Feeding sensitivity factored into nutrient plan","✓ Mold resistance matches your humidity","✓ Harvest window: trichomes mostly cloudy + 10–20% amber"].map(f=>(<li key={f} className="text-gray-600 text-xs">{f}</li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/strains" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Strains
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/strains" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Strains</Link>
+      </div></div></div>
     </div>
   );
 }

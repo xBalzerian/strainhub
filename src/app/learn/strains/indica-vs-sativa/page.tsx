@@ -1,49 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Indica vs. Sativa: The Science | StrainHub Learn",
-  description: "Comprehensive guide to indica vs. sativa: the science — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Indica vs. Sativa vs. Hybrid: The Real Science | StrainHub Learn", description: "The indica/sativa classification system is outdated — here's what modern genetics actually say and why terpenes matter more than plant taxonomy." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
-          <span className="text-black font-semibold">Indica vs. Sativa: The Science</span>
-        </div>
-          {/* Hero Image */}
-          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/learn/indica-vs-sativa.jpg"
-              alt="Hero illustration"
-              className="w-full h-56 md:h-72 object-cover"
-            />
-          </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span><span className="text-black font-semibold">Indica vs. Sativa</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#faf5ff", color: "#7e22ce" }}>🌿 Strains</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Indica vs. Sativa vs. Hybrid: The Real Science</h1><p className="text-gray-500 text-lg leading-relaxed">The dispensary shorthand of &quot;indica = sleepy, sativa = energizing&quot; is a useful simplification that the science doesn&apos;t support. Here&apos;s what genetics actually say — and what actually determines how a strain makes you feel.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">The History of the Classification</h2><p className="text-gray-600 leading-relaxed text-[17px]">The terms indica and sativa were introduced by botanists as morphological descriptors — not effect descriptors. Jean-Baptiste Lamarck coined <em>Cannabis indica</em> in 1785 to describe stocky, broad-leafed plants from India, distinguishing them from the taller, narrow-leafed hemp plants he called <em>Cannabis sativa</em> (first described by Linnaeus in 1753). The effect-based shorthand (&quot;indica = body high, couch-lock; sativa = cerebral, energetic&quot;) developed in the underground cannabis market of the 1970s–80s as a loose heuristic — not from scientific research.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">What Genetics Actually Show</h2><p className="text-gray-600 leading-relaxed text-[17px]">A 2015 study in PLOS ONE analyzing 81 cannabis strains found that strain names are poor predictors of chemical composition. Two strains sold as the same variety (e.g., &quot;OG Kush&quot; from different sources) showed greater chemical variation than two strains with completely different names. A 2021 study in Nature Plants classified cannabis genetically into three major groups: <strong>hemp varieties</strong>, <strong>drug varieties from South Asia</strong> (what we call &quot;indica&quot; morphologically), and <strong>drug varieties from Central Asia/East Asia</strong>. The modern dispensary strains are almost all complex hybrids of these groups — the genetic boundary between &quot;indica&quot; and &quot;sativa&quot; is blurry to nonexistent in most modern cultivars.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">What Actually Determines Effects</h2><p className="text-gray-600 leading-relaxed text-[17px]">The actual determinants of a strain&apos;s effect profile are: <strong>Cannabinoid ratios</strong> (THC:CBD:CBN:THCV etc.), <strong>terpene profile</strong> (myrcene produces sedation; limonene and pinene produce alertness; linalool produces calm), and <strong>individual user factors</strong> (tolerance, neurochemistry, set, setting). Myrcene — the most common cannabis terpene — is genuinely sedating at sufficient concentrations. Strains high in myrcene (many traditional &quot;indicas&quot; like OG Kush, Granddaddy Purple) do tend to produce heavier body effects. Limonene- and terpinolene-dominant strains (many &quot;sativas&quot; like Jack Herer, Super Lemon Haze) tend to be more uplifting and cerebral. The correlation is real — but it&apos;s caused by terpenes, not the indica/sativa label itself.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Why Dispensaries Still Use the Labels</h2><p className="text-gray-600 leading-relaxed text-[17px]">The indica/sativa/hybrid framework persists because it&apos;s intuitive, familiar, and gives consumers a starting point. Most dispensary staff would rather use a simple three-tier system than explain terpene pharmacology. And the correlation does hold loosely at a population level — the breeding history of &quot;indica-dominant&quot; strains does often produce higher myrcene and more relaxing profiles on average. But as a consumer, you&apos;ll make much better choices by reading the terpene profile and understanding what each major terpene does — rather than relying on the indica/sativa label alone.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Indica vs. Sativa: The Science</h1>          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">The Reality</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["Indica/sativa = morphological, not effect, terms","Modern strains are almost all complex hybrids","Terpenes drive effect differences, not taxonomy","Myrcene → sedating; Limonene/Pinene → uplifting","Strain names ≠ consistent chemical profiles","Two 'OG Kush' samples can differ dramatically"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/strains" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Strains
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/strains" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Strains</Link>
+      </div></div></div>
     </div>
   );
 }

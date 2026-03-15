@@ -1,41 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Seed Selection & Procurement | StrainHub Learn",
-  description: "Comprehensive guide to seed selection & procurement — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "How to Choose the Right Cannabis Seeds | StrainHub Learn", description: "How to select the right cannabis strain seeds for your grow environment, goals, experience level, and climate. What to look for in a breeder and seed bank." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Seed Selection & Procurement</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Seed Selection</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>🎯 Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Seed Selection Guide</h1><p className="text-gray-500 text-lg leading-relaxed">Choosing seeds is choosing your entire grow experience. The right strain for your space, climate, skill level, and goals makes everything easier. The wrong one turns a hobby into a struggle.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Match to Your Environment</h2><p className="text-gray-600 leading-relaxed text-[17px]"><strong>Indoor:</strong> Space constraints drive selection. For small tents (60x60cm), choose compact indica-dominant or autoflowering varieties that stay under 80cm. For larger spaces, any photoperiod variety works — you control the light cycle. Consider odor: some strains (Skunk genetics, Cheese) are intensely aromatic and require strong carbon filtration. <strong>Outdoor:</strong> Climate is the primary factor. In temperate climates (Northern Europe, Pacific Northwest, Canada), choose early-finishing strains (harvest September–October) — long-flowering sativas from tropical regions will not finish before frost. In warm climates (California, Mediterranean, Southern Europe, most of the Southern US), a wider range works including longer-flowering equatorial varieties. Mold resistance matters in humid climates — strains with dense buds are vulnerable to botrytis.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Match to Your Experience Level</h2><p className="text-gray-600 leading-relaxed text-[17px]"><strong>Beginners</strong> should prioritize forgiving, robust strains — not the most potent or exotic. Recommended: autoflowering feminized varieties (Northern Lights Auto, Amnesia Haze Auto), classic indica-dominant feminized strains (Northern Lights, White Widow, Blue Dream). Avoid finicky strains that require precise environmental control, very long flowering times, or complex feeding programs. <strong>Intermediate growers</strong> can tackle photoperiod sativas and OG Kush lines that reward careful technique. <strong>Advanced growers</strong> can work with regular seeds, challenging genetics (Haze, Thai, Malawi), and breeding projects.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Evaluating Seed Banks & Breeders</h2><p className="text-gray-600 leading-relaxed text-[17px]">Not all seed banks are equal. Key factors: <strong>Breeder reputation</strong> — established breeders (Sensi Seeds, DNA Genetics, Barney&apos;s Farm, Exotic Genetix, Archive Seeds) with decades of consistent results are far more reliable than &quot;flash in the pan&quot; Instagram breeders. <strong>Genetic stability</strong> — well-stabilized strains show consistent traits across multiple plants; unstable genetics produce wildly variable phenotypes. <strong>Verified lab results</strong> — reputable breeders provide third-party tested cannabinoid and terpene profiles. <strong>Community reviews</strong> — Rollitup, CannaVerse, and strain-specific forums provide unfiltered real-world grow data. <strong>Stealth shipping</strong> — matters if ordering to restrictive jurisdictions. Avoid seeds with no verifiable breeder history.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Setting Your Goals First</h2><p className="text-gray-600 leading-relaxed text-[17px]">Be honest about what you want before selecting: <strong>Maximum yield:</strong> Look for high-yielding indica-dominant hybrids (Critical Mass, Big Bud, Wedding Cake) with known commercial performance. <strong>Maximum potency:</strong> Modern gelato, runtz, and cookies-family strains regularly test 25–30%+ THC. <strong>Specific effects:</strong> Use StrainHub&apos;s strain filter — search by effect, terpene profile, or condition. <strong>Medical use:</strong> High-CBD strains (ACDC, Harlequin, Cannatonic) or 1:1 varieties for specific conditions. <strong>Flavor priority:</strong> Terpene-forward genetics like Zkittlez, Gelato, and Runtz are bred specifically for flavor profiles. Match the strain to the actual outcome you want — don&apos;t just pick the highest THC percentage.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Seed Selection & Procurement</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Selection Checklist</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["✓ Indoor/outdoor compatibility","✓ Climate match (flowering time vs. your season)","✓ Space/height constraints","✓ Experience level appropriate","✓ Reputable breeder with stable genetics","✓ Verified lab results available","✓ Community grow reports exist"].map(f=>(<li key={f} className="text-gray-600">{f}</li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }

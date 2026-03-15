@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Legal & Regulatory Aspects | StrainHub Learn",
-  description: "Comprehensive guide to legal & regulatory aspects — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Cannabis Seed Laws: Is It Legal to Buy & Grow? | StrainHub Learn", description: "The legal status of cannabis seeds in the US and internationally — seed banks, personal grows, hemp seeds, and the gray areas you need to know." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Legal & Regulatory Aspects</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Seed Legality</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>⚖️ Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Seed Laws & Legality</h1><p className="text-gray-500 text-lg leading-relaxed">Cannabis seeds exist in a unique legal gray area in many jurisdictions. Understanding the specific legal status where you are — not just for cannabis, but specifically for seeds — is essential before purchasing or growing.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Seeds in the United States</h2><p className="text-gray-600 leading-relaxed text-[17px]">Under federal law, cannabis seeds are Schedule I controlled substances — the same as the plant itself. In recreational states (24 states), adults can legally purchase seeds from licensed dispensaries and grow plants within home cultivation limits (typically 2–6 plants per household). The number of plants allowed, whether clones count separately, and whether outdoor grows are permitted varies by state. In medical-only states, seeds are typically available only to registered medical patients from licensed dispensaries. In prohibited states, seeds are fully illegal. Notably, the Farm Bill (2018) legalized hemp seeds — seeds from plants with under 0.3% THC — which are now openly sold online and in stores nationally.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Online Seed Banks: The Gray Area</h2><p className="text-gray-600 leading-relaxed text-[17px]">Hundreds of online seed banks — primarily based in the Netherlands, UK, Spain, and Canada — ship cannabis seeds internationally, including to the US. They typically market seeds as &quot;souvenirs&quot; or &quot;collectibles&quot; sold &quot;for genetic preservation purposes only, not for cultivation.&quot; This disclaimer has limited legal meaning but reduces the appearance of intentional distribution. US Customs seizes packages containing cannabis seeds regularly — most reputable seed banks offer re-ship guarantees. The practical prosecution risk for an individual receiving a small personal seed order is extremely low (no recorded US federal prosecutions for seed imports for personal use), but the legal risk is real. Purchasing from licensed dispensaries in legal states is the only legally unambiguous option in the US.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">International Seed Laws</h2><p className="text-gray-600 leading-relaxed text-[17px]">Seed legality varies dramatically internationally. <strong>Netherlands:</strong> Seeds are legal to sell and possess — the Amsterdam seed industry was built on this (Sensi Seeds, Dutch Passion, Serious Seeds all operate there). <strong>Spain:</strong> Personal cultivation for private use is decriminalized; seeds are sold openly in &quot;grow shops.&quot; <strong>UK:</strong> Seeds are in a legal gray area — possession is technically illegal under the Misuse of Drugs Act, but seeds are sold openly as &quot;collectibles&quot; with minimal enforcement. <strong>Canada:</strong> Seeds fully legal — sold in licensed stores and online from provincial retailers. <strong>Germany:</strong> As of 2024, adults can grow up to 3 plants; seeds for personal cultivation are legal. <strong>Australia:</strong> Seeds are illegal nationally but enforcement is inconsistent.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Hemp Seeds: Fully Legal</h2><p className="text-gray-600 leading-relaxed text-[17px]">Hemp seeds — from cannabis plants bred to contain under 0.3% THC (dry weight) — were fully federalized under the Agriculture Improvement Act (Farm Bill) of 2018. Hemp seeds for cultivation are legal to buy, sell, and grow in all 50 states, though state agricultural departments may require specific licenses for commercial hemp cultivation. Hemp seeds for food (hulled hemp seeds, hemp seed oil, hemp seed protein powder) are legal to sell as food under FDA oversight. This created a significant market — hemp seeds are widely sold in grocery stores, on Amazon, and through mainstream retailers. Note: germinating commercial hemp seeds for grain/fiber production is different from growing high-cannabinoid hemp flower, which faces additional regulatory scrutiny.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Legal & Regulatory Aspects</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Facts</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["24 US states: legal to buy seeds at dispensaries","Federal US: seeds = Schedule I (same as plant)","Hemp seeds (<0.3% THC): fully legal all 50 states since 2018","Netherlands: seeds fully legal to sell","Online seed banks: legal gray area, personal risk varies","Home grow limits: 2–6 plants depending on state","Never travel internationally with seeds"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 font-semibold">⚠️ Educational only. Verify current laws in your specific jurisdiction before purchasing or growing seeds.</div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }

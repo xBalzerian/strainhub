@@ -1,41 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Seed Types: Regular, Feminized & Auto | StrainHub Learn",
-  description: "Comprehensive guide to seed types: regular, feminized & auto — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Cannabis Seed Types: Regular, Feminized & Autoflowering | StrainHub Learn", description: "Complete guide to cannabis seed types — regular, feminized, autoflowering, and F1 hybrids. Which to choose for your grow, and why it matters." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Seed Types: Regular, Feminized & Auto</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Seed Types</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>🌱 Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Cannabis Seed Types</h1><p className="text-gray-500 text-lg leading-relaxed">Choosing the right seed type is the first and most consequential decision in any grow. Regular, feminized, autoflowering, and F1 hybrid seeds each have distinct advantages, limitations, and ideal use cases.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">Regular Seeds (50/50 Male/Female)</h2><p className="text-gray-600 leading-relaxed text-[17px]">Regular seeds are produced from natural pollination between a male and female plant, yielding approximately 50% male and 50% female offspring. They are the foundation of cannabis genetics and are preferred by breeders because they preserve natural genetic diversity, produce robust male plants for pollen collection, and tend to have stronger root systems than feminized plants. For cultivation-only growers, regular seeds require sexing plants in early flower (identifying and removing males before they pollinate females) — this wastes roughly half the plants and growing space. Regular seeds are essential for serious breeding work and for preserving genetic lineages.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Feminized Seeds (99%+ Female)</h2><p className="text-gray-600 leading-relaxed text-[17px]">Feminized seeds are bred to produce only female plants — the ones that produce cannabinoid-rich flowers. They are created by stressing a female plant (using colloidal silver, rodelization, or STS spray) to produce male pollen, then using that pollen to fertilize another female. Since both genetic donors are female (no Y chromosomes), offspring are overwhelmingly female. Feminized seeds are the most popular seed type for home growers and commercial cultivators — no sexing required, every plant produces, and growing space is used efficiently. The main downside: feminized plants have slightly higher hermaphrodite tendency under stress, and they are unsuitable for breeding.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Autoflowering Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">Autoflowering plants flower based on age rather than photoperiod (light cycle changes). They contain genetics from Cannabis ruderalis — a subspecies evolved in the short-summer climates of Central Asia and Russia, which flowers automatically at 3–5 weeks of age. Modern autoflowers are primarily feminized and flower in 8–11 weeks from seed to harvest, regardless of light schedule. They stay compact (often under 60cm), can be grown under 18–20 hours of light throughout, and are more forgiving for beginners. Trade-offs: lower yields than photoperiod plants, less terpene complexity, and cannot be cloned effectively. Modern &quot;fast autoflowers&quot; and &quot;super autos&quot; have dramatically improved potency and yields compared to early-generation autos.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">F1 Hybrid Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">F1 (first filial generation) hybrids are the offspring of two genetically distant, highly inbred parent lines. F1 hybrids exhibit heterosis (&quot;hybrid vigor&quot;) — they grow faster, yield more, and are more uniform and disease-resistant than either parent. This is the same principle behind F1 vegetable seeds (tomatoes, corn) used in commercial agriculture. Cannabis F1 hybrids are a newer development — companies like Sensi Seeds, Royal Queen Seeds, and several Dutch breeders now offer true F1 cannabis varieties with exceptional consistency. They cannot be bred from (F2 offspring are highly variable), which is both a feature (stable, predictable grows) and a limitation (no genetic preservation). They represent the future of commercial cannabis cultivation.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Seed Types: Regular, Feminized & Auto</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Quick Comparison</div>
+          <ul className="space-y-2 text-sm text-gray-700">{[["Regular","Best for breeding, 50% male","🔬 Breeders"],["Feminized","All female, easy grow","🌿 Most growers"],["Autoflower","Age-based, fast, compact","🚀 Beginners/stealth"],["F1 Hybrid","Uniform, high vigor","🏆 Commercial"]].map(([t,d,e])=>(<li key={t} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">{e}</span><span><strong>{t}:</strong> {d}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }

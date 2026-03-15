@@ -1,41 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Seed Storage & Longevity | StrainHub Learn",
-  description: "Comprehensive guide to seed storage & longevity — science-backed cannabis education from StrainHub.",
-};
-
+export const metadata: Metadata = { title: "Cannabis Seed Storage: How to Keep Seeds Viable for Years | StrainHub Learn", description: "How to store cannabis seeds long-term — the enemies of seed viability, ideal storage conditions, and how to preserve genetics for 5–10+ years." };
 export default function Page() {
   return (
     <div className="min-h-screen bg-[#F8F8F0]">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400">
-          <Link href="/" className="hover:text-black">Home</Link><span>/</span>
-          <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
-          <Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span>
-          <span className="text-black font-semibold">Seed Storage & Longevity</span>
-        </div>
+      <div className="border-b border-gray-200 bg-white"><div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400"><Link href="/" className="hover:text-black">Home</Link><span>/</span><Link href="/learn" className="hover:text-black">Learn</Link><span>/</span><Link href="/learn/seeds" className="hover:text-black">Seeds</Link><span>/</span><span className="text-black font-semibold">Seed Storage</span></div></div>
+      <div className="bg-white border-b-2 border-black"><div className="max-w-3xl mx-auto px-6 py-14"><div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#166534" }}>❄️ Seeds</div><h1 className="text-4xl md:text-5xl font-black text-black mb-4 leading-tight">Seed Storage Guide</h1><p className="text-gray-500 text-lg leading-relaxed">Quality cannabis seeds stored properly can remain viable for 5–10 years or longer. Stored poorly, they can fail to germinate in months. The enemies are simple: heat, light, humidity, and oxygen.</p></div></div>
+      <div className="max-w-3xl mx-auto px-6 py-12"><div className="grid md:grid-cols-3 gap-10"><div className="md:col-span-2 space-y-10">
+        <section><h2 className="text-2xl font-black text-black mb-3">The Four Enemies of Seed Viability</h2><p className="text-gray-600 leading-relaxed text-[17px]"><strong>Heat</strong> accelerates metabolic activity within the seed, depleting its stored energy reserves. Store above 25°C consistently and germination rates drop significantly within a year. <strong>Light</strong> triggers metabolic activity and can damage the embryo — always store in opaque containers or dark locations. <strong>Humidity</strong> above 8–10% triggers premature germination attempts and promotes mold growth on seed surfaces. Below 5%, seeds can desiccate. The ideal range is 5–8% relative humidity. <strong>Oxygen</strong> drives oxidative degradation of seed oils and genetic material. Reducing oxygen exposure (vacuum sealing, oxygen absorbers) significantly extends viable life. Temperature fluctuations are particularly damaging — condensation from temperature changes introduces moisture.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Short-Term Storage (Under 6 Months)</h2><p className="text-gray-600 leading-relaxed text-[17px]">For seeds you plan to use within a growing season: a cool, dark drawer or cabinet is sufficient. Keep seeds in their original breeder packaging (typically sealed envelopes or vials) or transfer to opaque film canisters or small glass jars. Add a small desiccant packet (silica gel) to control humidity. Keep away from temperature extremes — avoid areas near radiators, ovens, or in direct sunlight. Room temperature (18–22°C) with low humidity and darkness will maintain viability well for 6–12 months with minimal degradation.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Long-Term Storage (1–10 Years)</h2><p className="text-gray-600 leading-relaxed text-[17px]">For long-term preservation of genetics: use the refrigerator (3–8°C) or freezer (-18°C to -20°C) with proper preparation. <strong>Refrigerator:</strong> Place seeds in an airtight glass jar with desiccant packets, wrap jar in black tape or aluminum foil, store in the back (most stable temperature). Do not open frequently — condensation from temperature changes damages seeds. <strong>Freezer:</strong> For multi-year storage (5–10+ years), freezing is optimal. Seeds must be completely dry before freezing (6–8% RH) — freeze-thaw cycles with moisture cause ice crystal damage. Vacuum-sealed packets with oxygen absorbers inside an airtight jar provide near-optimal preservation. Bring seeds to room temperature before opening to prevent condensation.</p></section>
+        <section><h2 className="text-2xl font-black text-black mb-3">Testing Viability Before Planting</h2><p className="text-gray-600 leading-relaxed text-[17px]">Before planting stored seeds, a simple float test provides a rough viability check: place seeds in room-temperature water for 1–2 hours. Seeds that sink are generally viable (denser, with intact embryos); seeds that float may have damaged or absent embryos — though this is not definitive, and many float-test failures still germinate successfully. A more reliable test: attempt to germinate 2–3 seeds before committing to a full grow. Germination rates below 50% after 7 days suggest compromised viability. Visual inspection: healthy seeds are dark (tan, brown, gray, or mottled), hard, and symmetrical. Pale, green, or white seeds are immature; cracked or very soft seeds are likely damaged.</p></section>
       </div>
-      <div className="bg-white border-b-2 border-black">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fffbeb", color: "#92400e" }}>
-            Learn Hub
-          </div>
-          <h1 className="text-4xl font-black text-black mb-4">Seed Storage & Longevity</h1>
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+      <div className="space-y-6">
+        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Storage Quick Guide</div>
+          <ul className="space-y-2 text-sm text-gray-700">{["Under 6 months: cool dark drawer + desiccant","6–24 months: sealed jar in refrigerator (3–8°C)","2–10 years: vacuum-sealed, freezer (-18°C)","Ideal humidity: 5–8% RH","Always use desiccant packets","Never freeze wet seeds — ice crystals kill embryo","Bring frozen seeds to room temp before opening"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
         </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">🚧</div>
-          <h2 className="font-black text-lg text-black mb-2">Deep Dive Coming Soon</h2>
-          <p className="text-sm text-gray-500 mb-6">Our editorial team is preparing a comprehensive, science-backed guide on this topic.</p>
-          <Link href="/learn/seeds" className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 transition-all">
-            ← Back to Seeds
-          </Link>
-        </div>
-      </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+      </div></div></div>
     </div>
   );
 }
