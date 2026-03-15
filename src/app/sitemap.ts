@@ -76,13 +76,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
     // Paginate to get all strains (Supabase default limit is 1000)
-    let allStrains: { slug: string; updated_at?: string }[] = [];
+    let allStrains: { slug: string; created_at?: string }[] = [];
     let from = 0;
     const pageSize = 1000;
 
     while (true) {
       const res = await fetch(
-        `${supabaseUrl}/rest/v1/strains?select=slug,updated_at&order=rank_popularity.asc.nullslast&limit=${pageSize}&offset=${from}`,
+        `${supabaseUrl}/rest/v1/strains?select=slug,created_at&order=rank_popularity.asc.nullslast&limit=${pageSize}&offset=${from}`,
         {
           headers: {
             apikey: supabaseKey,
@@ -102,7 +102,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     strainUrls = allStrains.map((s) => ({
       url: `${BASE_URL}/strains/${s.slug}`,
-      lastModified: s.updated_at ? new Date(s.updated_at) : new Date(),
+      lastModified: s.created_at ? new Date(s.created_at) : new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
