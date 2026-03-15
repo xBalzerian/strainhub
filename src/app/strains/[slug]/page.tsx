@@ -387,7 +387,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   ["Difficulty", strain.grow_difficulty],
                   ["Yield", strain.grow_yield],
                   ["Height", strain.grow_height],
-                  ...(strain.breeder ? [["Breeder", strain.breeder]] : []),
+                  // breeder hidden for now
                   ...(strain.parents?.length ? [["Parents", strain.parents.slice(0, 2).join(" × ")]] : []),
                 ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between">
@@ -414,20 +414,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
 
 
 
-            {/* GREEN #4 — Breeder / Seed Bank */}
-            {strain.breeder && (
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Breeder:</span>
-                <a
-                  href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.breeder)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-lime border-2 border-black rounded-lg shadow-brutal-sm hover:bg-lime/80 transition-all"
-                >
-                  🌱 {strain.breeder} ↗
-                </a>
-              </div>
-            )}
+            {/* GREEN #4 — Breeder / Seed Bank — hidden for now */}
 
             <p className="text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
               {strain.description}
@@ -705,9 +692,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                       Find feminized, autoflowering, and regular {strain.name} seeds from trusted seed banks.
                       {strain.grow_difficulty === "Easy" ? " Great pick for first-time growers." : strain.grow_difficulty === "Moderate" ? " Solid choice for intermediate growers." : " Best for experienced cultivators."}
                     </p>
-                    {strain.breeder && (
-                      <p className="text-xs text-gray-600 mt-1">Official breeder: <strong>{strain.breeder}</strong></p>
-                    )}
+                    {/* breeder hidden for now */}
                   </div>
                   <a
                     href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.name)}`}
