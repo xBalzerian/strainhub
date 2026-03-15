@@ -12,12 +12,19 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">Long-Term Storage (1–10 Years)</h2><p className="text-gray-600 leading-relaxed text-[17px]">For long-term preservation of genetics: use the refrigerator (3–8°C) or freezer (-18°C to -20°C) with proper preparation. <strong>Refrigerator:</strong> Place seeds in an airtight glass jar with desiccant packets, wrap jar in black tape or aluminum foil, store in the back (most stable temperature). Do not open frequently — condensation from temperature changes damages seeds. <strong>Freezer:</strong> For multi-year storage (5–10+ years), freezing is optimal. Seeds must be completely dry before freezing (6–8% RH) — freeze-thaw cycles with moisture cause ice crystal damage. Vacuum-sealed packets with oxygen absorbers inside an airtight jar provide near-optimal preservation. Bring seeds to room temperature before opening to prevent condensation.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">Testing Viability Before Planting</h2><p className="text-gray-600 leading-relaxed text-[17px]">Before planting stored seeds, a simple float test provides a rough viability check: place seeds in room-temperature water for 1–2 hours. Seeds that sink are generally viable (denser, with intact embryos); seeds that float may have damaged or absent embryos — though this is not definitive, and many float-test failures still germinate successfully. A more reliable test: attempt to germinate 2–3 seeds before committing to a full grow. Germination rates below 50% after 7 days suggest compromised viability. Visual inspection: healthy seeds are dark (tan, brown, gray, or mottled), hard, and symmetrical. Pale, green, or white seeds are immature; cracked or very soft seeds are likely damaged.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Storage Quick Guide</div>
-          <ul className="space-y-2 text-sm text-gray-700">{["Under 6 months: cool dark drawer + desiccant","6–24 months: sealed jar in refrigerator (3–8°C)","2–10 years: vacuum-sealed, freezer (-18°C)","Ideal humidity: 5–8% RH","Always use desiccant packets","Never freeze wet seeds — ice crystals kill embryo","Bring frozen seeds to room temp before opening"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">🧊 Storage Guide</div>
+          <div className="space-y-2">
+            {[{period:"< 6 months",tip:"Cool dark drawer + desiccant",color:"text-green-400"},{period:"6–24 months",tip:"Sealed jar in fridge (3–8°C)",color:"text-yellow-400"},{period:"2–10 years",tip:"Vacuum-sealed, freezer (−18°C)",color:"text-orange-400"}].map(({period,tip,color})=>(<div key={period} className="p-3 rounded-xl bg-white/10 mb-2 last:mb-0"><div className={`font-black text-xs mb-1 ${color}`}>{period}</div><div className="text-gray-300 text-xs">{tip}</div></div>))}
+          </div>
+          <div className="mt-4 pt-4 border-t border-white/20 text-xs text-gray-400">Ideal humidity: <span className="text-lime-400 font-bold">5–8% RH</span></div>
         </div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4">
+          <p className="text-red-700 text-xs font-bold">⚠️ Never freeze wet seeds — ice crystals destroy the embryo.</p>
+        </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }

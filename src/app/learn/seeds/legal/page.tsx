@@ -12,13 +12,18 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">International Seed Laws</h2><p className="text-gray-600 leading-relaxed text-[17px]">Seed legality varies dramatically internationally. <strong>Netherlands:</strong> Seeds are legal to sell and possess — the Amsterdam seed industry was built on this (Sensi Seeds, Dutch Passion, Serious Seeds all operate there). <strong>Spain:</strong> Personal cultivation for private use is decriminalized; seeds are sold openly in &quot;grow shops.&quot; <strong>UK:</strong> Seeds are in a legal gray area — possession is technically illegal under the Misuse of Drugs Act, but seeds are sold openly as &quot;collectibles&quot; with minimal enforcement. <strong>Canada:</strong> Seeds fully legal — sold in licensed stores and online from provincial retailers. <strong>Germany:</strong> As of 2024, adults can grow up to 3 plants; seeds for personal cultivation are legal. <strong>Australia:</strong> Seeds are illegal nationally but enforcement is inconsistent.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">Hemp Seeds: Fully Legal</h2><p className="text-gray-600 leading-relaxed text-[17px]">Hemp seeds — from cannabis plants bred to contain under 0.3% THC (dry weight) — were fully federalized under the Agriculture Improvement Act (Farm Bill) of 2018. Hemp seeds for cultivation are legal to buy, sell, and grow in all 50 states, though state agricultural departments may require specific licenses for commercial hemp cultivation. Hemp seeds for food (hulled hemp seeds, hemp seed oil, hemp seed protein powder) are legal to sell as food under FDA oversight. This created a significant market — hemp seeds are widely sold in grocery stores, on Amazon, and through mainstream retailers. Note: germinating commercial hemp seeds for grain/fiber production is different from growing high-cannabinoid hemp flower, which faces additional regulatory scrutiny.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Facts</div>
-          <ul className="space-y-2 text-sm text-gray-700">{["24 US states: legal to buy seeds at dispensaries","Federal US: seeds = Schedule I (same as plant)","Hemp seeds (<0.3% THC): fully legal all 50 states since 2018","Netherlands: seeds fully legal to sell","Online seed banks: legal gray area, personal risk varies","Home grow limits: 2–6 plants depending on state","Never travel internationally with seeds"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">⚖️ Legal Snapshot</div>
+          <div className="space-y-2">
+            {[{flag:"🇺🇸",place:"24 US states",note:"Legal at dispensaries"},{flag:"🌿",place:"Hemp seeds",note:"Legal all 50 states (2018)"},{flag:"🇳🇱",place:"Netherlands",note:"Fully legal to sell"},{flag:"🇨🇦",place:"Canada",note:"Fully legal nationwide"},{flag:"⚠️",place:"US federal",note:"Schedule I — still illegal"}].map(({flag,place,note})=>(<div key={place} className="flex items-start gap-3 py-2 border-b border-white/10 last:border-0"><span className="text-lg">{flag}</span><div><div className="text-white font-bold text-xs">{place}</div><div className="text-gray-400 text-[11px]">{note}</div></div></div>))}
+          </div>
         </div>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 font-semibold">⚠️ Educational only. Verify current laws in your specific jurisdiction before purchasing or growing seeds.</div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4">
+          <p className="text-red-700 text-xs font-bold">⚠️ Never travel internationally with seeds — even between legal countries.</p>
+        </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }

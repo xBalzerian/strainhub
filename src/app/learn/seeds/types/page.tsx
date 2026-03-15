@@ -12,12 +12,15 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">Autoflowering Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">Autoflowering plants flower based on age rather than photoperiod (light cycle changes). They contain genetics from Cannabis ruderalis — a subspecies evolved in the short-summer climates of Central Asia and Russia, which flowers automatically at 3–5 weeks of age. Modern autoflowers are primarily feminized and flower in 8–11 weeks from seed to harvest, regardless of light schedule. They stay compact (often under 60cm), can be grown under 18–20 hours of light throughout, and are more forgiving for beginners. Trade-offs: lower yields than photoperiod plants, less terpene complexity, and cannot be cloned effectively. Modern &quot;fast autoflowers&quot; and &quot;super autos&quot; have dramatically improved potency and yields compared to early-generation autos.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">F1 Hybrid Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">F1 (first filial generation) hybrids are the offspring of two genetically distant, highly inbred parent lines. F1 hybrids exhibit heterosis (&quot;hybrid vigor&quot;) — they grow faster, yield more, and are more uniform and disease-resistant than either parent. This is the same principle behind F1 vegetable seeds (tomatoes, corn) used in commercial agriculture. Cannabis F1 hybrids are a newer development — companies like Sensi Seeds, Royal Queen Seeds, and several Dutch breeders now offer true F1 cannabis varieties with exceptional consistency. They cannot be bred from (F2 offspring are highly variable), which is both a feature (stable, predictable grows) and a limitation (no genetic preservation). They represent the future of commercial cannabis cultivation.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Quick Comparison</div>
-          <ul className="space-y-2 text-sm text-gray-700">{[["Regular","Best for breeding, 50% male","🔬 Breeders"],["Feminized","All female, easy grow","🌿 Most growers"],["Autoflower","Age-based, fast, compact","🚀 Beginners/stealth"],["F1 Hybrid","Uniform, high vigor","🏆 Commercial"]].map(([t,d,e])=>(<li key={t} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">{e}</span><span><strong>{t}:</strong> {d}</span></li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">⚡ Quick Comparison</div>
+          <div className="space-y-3">
+            {[{e:"🔬",t:"Regular",d:"Best for breeding",sub:"~50% male"},{e:"🌿",t:"Feminized",d:"All female plants",sub:"Most popular"},{e:"🚀",t:"Autoflower",d:"Age-based flowering",sub:"Fast & compact"},{e:"🏆",t:"F1 Hybrid",d:"Uniform, high vigor",sub:"Commercial grade"}].map(({e,t,d,sub})=>(<div key={t} className="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/15 transition-colors"><span className="text-xl">{e}</span><div><div className="font-bold text-sm text-white">{t}</div><div className="text-xs text-gray-300">{d}</div><div className="text-[10px] text-lime-400 font-semibold mt-0.5">{sub}</div></div></div>))}
+          </div>
         </div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }

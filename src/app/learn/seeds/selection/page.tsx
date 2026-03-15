@@ -12,12 +12,15 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">Evaluating Seed Banks & Breeders</h2><p className="text-gray-600 leading-relaxed text-[17px]">Not all seed banks are equal. Key factors: <strong>Breeder reputation</strong> — established breeders (Sensi Seeds, DNA Genetics, Barney&apos;s Farm, Exotic Genetix, Archive Seeds) with decades of consistent results are far more reliable than &quot;flash in the pan&quot; Instagram breeders. <strong>Genetic stability</strong> — well-stabilized strains show consistent traits across multiple plants; unstable genetics produce wildly variable phenotypes. <strong>Verified lab results</strong> — reputable breeders provide third-party tested cannabinoid and terpene profiles. <strong>Community reviews</strong> — Rollitup, CannaVerse, and strain-specific forums provide unfiltered real-world grow data. <strong>Stealth shipping</strong> — matters if ordering to restrictive jurisdictions. Avoid seeds with no verifiable breeder history.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">Setting Your Goals First</h2><p className="text-gray-600 leading-relaxed text-[17px]">Be honest about what you want before selecting: <strong>Maximum yield:</strong> Look for high-yielding indica-dominant hybrids (Critical Mass, Big Bud, Wedding Cake) with known commercial performance. <strong>Maximum potency:</strong> Modern gelato, runtz, and cookies-family strains regularly test 25–30%+ THC. <strong>Specific effects:</strong> Use StrainHub&apos;s strain filter — search by effect, terpene profile, or condition. <strong>Medical use:</strong> High-CBD strains (ACDC, Harlequin, Cannatonic) or 1:1 varieties for specific conditions. <strong>Flavor priority:</strong> Terpene-forward genetics like Zkittlez, Gelato, and Runtz are bred specifically for flavor profiles. Match the strain to the actual outcome you want — don&apos;t just pick the highest THC percentage.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Selection Checklist</div>
-          <ul className="space-y-2 text-sm text-gray-700">{["✓ Indoor/outdoor compatibility","✓ Climate match (flowering time vs. your season)","✓ Space/height constraints","✓ Experience level appropriate","✓ Reputable breeder with stable genetics","✓ Verified lab results available","✓ Community grow reports exist"].map(f=>(<li key={f} className="text-gray-600">{f}</li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">✅ Selection Checklist</div>
+          <div className="space-y-1">
+            {["Indoor/outdoor compatibility","Climate match for your season","Space & height constraints","Matches your experience level","Reputable, stable genetics","Lab results available","Community grow reports exist"].map(item=>(<div key={item} className="flex items-center gap-3 py-2 border-b border-white/10 last:border-0"><div className="w-4 h-4 rounded border-2 border-lime-400 flex items-center justify-center flex-shrink-0"><div className="w-2 h-2 bg-lime-400 rounded-sm"></div></div><span className="text-gray-300 text-xs">{item}</span></div>))}
+          </div>
         </div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }

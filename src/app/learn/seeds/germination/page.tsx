@@ -13,12 +13,19 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">Method 3: Rockwool Cubes / Plugs</h2><p className="text-gray-600 leading-relaxed text-[17px]">Pre-formed rockwool cubes or peat plugs (Jiffy pellets, Rapid Rooters) are popular with hydroponic growers and those who clone regularly. Soak cubes to pH 5.5–6.0, allow to drain (don&apos;t squeeze), place seed 0.5cm deep, seal the hole with a small piece of cube material. Keep at 24°C, high humidity. Seedlings emerge in 2–5 days and can be transplanted directly into hydroponic systems, coco, or soil. Rapid Rooters (made from composted bark) are particularly effective with germination rates exceeding 95% under good conditions.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">Troubleshooting Failed Germination</h2><p className="text-gray-600 leading-relaxed text-[17px]">If seeds haven&apos;t germinated after 7 days: check temperature (too cold is the most common cause — below 18°C significantly slows germination), check moisture (paper towels should be damp but not dripping), check seed age and storage quality. Seeds that float in water are sometimes described as &quot;bad&quot; — this is not reliably accurate (density varies). A hard, dark-colored seed shell is a good sign; pale, cracked, or mushy seeds are compromised. If the taproot emerges but the seedling doesn&apos;t push through soil, the seed may have been planted too deep or the soil too compacted — gently loosen the surface. A seed helmet (shell stuck to cotyledons) can be carefully removed with tweezers if left for over 24 hours with no progress.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Key Facts</div>
-          <ul className="space-y-2 text-sm text-gray-700">{["Ideal temp: 21–26°C (70–80°F)","Moisture: damp, not soaking","Germination time: 24–72 hours (healthy seeds)","Taproot ready to plant: 0.5–1cm","pH of water: 6.0–7.0","Direct soil = least transplant stress","Rockwool cubes: best for hydro growers"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">🌱 Key Numbers</div>
+          <div className="space-y-2">
+            {[{icon:"🌡️",label:"Ideal temp",val:"21–26°C"},{icon:"💧",label:"Germination",val:"24–72 hrs"},{icon:"📏",label:"Plant taproot at",val:"0.5–1 cm"},{icon:"⚗️",label:"Water pH",val:"6.0–7.0"},{icon:"🌫️",label:"Humidity",val:"70–90% RH"}].map(({icon,label,val})=>(<div key={label} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0"><div className="flex items-center gap-2"><span>{icon}</span><span className="text-gray-300 text-xs">{label}</span></div><span className="text-lime-400 font-black text-sm">{val}</span></div>))}
+          </div>
         </div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <div className="bg-lime-400 rounded-2xl p-5">
+          <div className="text-[10px] font-black uppercase tracking-widest text-black mb-3">💡 Pro Tip</div>
+          <p className="text-black text-xs leading-relaxed font-medium">Direct soil germination causes the least transplant stress. Paper towel method is faster but handle the taproot with care.</p>
+        </div>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }

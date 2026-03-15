@@ -12,12 +12,15 @@ export default function Page() {
         <section><h2 className="text-2xl font-black text-black mb-3">Backcrossing (BX)</h2><p className="text-gray-600 leading-relaxed text-[17px]">Backcrossing involves crossing an offspring back to one of its parents — typically to strengthen a specific trait that the parent expresses strongly. A BX1 (first backcross) cross is 75% parent genetics; BX3 is approximately 93.75% parent genetics. This technique is used to: lock in a specific trait from a dominant parent while introducing a single new characteristic from the other parent, stabilize a new cross more rapidly than continued F generation breeding, and create &quot;S1&quot; feminized seeds (selfed from a single parent via stress-induced pollen) that are essentially clones in seed form. Many elite modern strains are backcrosses — the &quot;BX&quot; designation in a strain name (e.g., Wedding Cake BX3) indicates this.</p></section>
         <section><h2 className="text-2xl font-black text-black mb-3">Creating Feminized Seeds</h2><p className="text-gray-600 leading-relaxed text-[17px]">Feminized seeds are produced by inducing a female plant to produce male pollen — either through: <strong>Colloidal silver</strong> (most common): a solution of silver particles in water sprayed on female flowers blocks ethylene production, causing the plant to produce male pollen sacs. This pollen contains only XX chromosomes, producing feminized offspring. <strong>Rodelization</strong>: allowing a female plant to over-mature (past peak harvest) — some plants naturally produce hermaphrodite flowers as a last-ditch reproduction attempt. Less reliable, produces stress-related hermaphrodite tendencies in offspring. <strong>STS (Silver Thiosulfate Solution)</strong>: professional/commercial standard — more effective and consistent than colloidal silver. The colloidal silver donor plant is not consumed.</p></section>
       </div>
-      <div className="space-y-6">
-        <div className="bg-white border-2 border-black rounded-2xl p-5"><div className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Breeding Terms</div>
-          <ul className="space-y-2 text-sm text-gray-700">{["F1 = Parent A × Parent B (hybrid vigor)","F2 = F1 × F1 (high variability)","F5-6 = considered stable line","IBL = Inbred Line (most consistent)","BX = Backcross to parent","S1 = Selfed (feminized from one parent)","Phenohunt = finding best plant in a pack"].map(f=>(<li key={f} className="flex items-start gap-2"><span className="text-green-500 font-bold mt-0.5">✓</span><span>{f}</span></li>))}</ul>
+      <div className="space-y-4 md:sticky md:top-6 self-start">
+        <div className="bg-black rounded-2xl p-6 text-white">
+          <div className="text-[10px] font-black uppercase tracking-widest text-lime-400 mb-4">🧬 Breeding Glossary</div>
+          <div className="space-y-2">
+            {[{k:"F1",v:"Parent A × B — hybrid vigor"},{k:"F2",v:"F1 × F1 — high variability"},{k:"F5–6",v:"Stable line"},{k:"IBL",v:"Inbred Line — most consistent"},{k:"BX",v:"Backcross to parent"},{k:"S1",v:"Selfed — one-parent feminized"},{k:"Phenohunt",v:"Finding the best plant"}].map(({k,v})=>(<div key={k} className="flex items-baseline gap-2 py-1.5 border-b border-white/10 last:border-0"><span className="text-lime-400 font-black text-xs min-w-[32px]">{k}</span><span className="text-gray-300 text-xs">{v}</span></div>))}
+          </div>
         </div>
-        <Link href="/learn/seeds" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-black transition-all">← Back to Seeds</Link>
+        <Link href="/learn/seeds" className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-black bg-white hover:bg-black hover:text-white transition-all text-sm font-bold text-black group"><span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Seeds</Link>
+      </div>
       </div></div></div>
-    </div>
   );
 }
