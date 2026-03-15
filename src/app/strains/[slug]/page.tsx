@@ -452,9 +452,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                     return (
                       <span key={parent} className="flex items-center gap-1.5 sm:gap-2">
                         {parentSlug ? (
-                          <a href={`/strains/${parentSlug}`} className="hover:scale-105 transition-transform">
+                          <Link href={`/strains/${parentSlug}`} className="hover:scale-105 transition-transform">
                             {pillInner}
-                          </a>
+                          </Link>
                         ) : pillInner}
                         {i < strain.parents.length - 1 && (
                           <span className="genetics-plus text-gray-400 font-black text-base sm:text-lg select-none">×</span>
