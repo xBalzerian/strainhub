@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { createClient } from "@supabase/supabase-js";
 import type { Strain } from "./types";
 
 // ─── Lightweight type for homepage ticker/counts (no heavy fields) ─────────
@@ -45,7 +46,18 @@ export async function getAllStrainSlugs(): Promise<{ slug: string }[]> {
 
 // Get single strain by slug
 export async function getStrainBySlug(slug: string): Promise<Strain | null> {
-  const { data, error } = await supabase
+  // Use a fresh client with no-store cache to bypass Next.js fetch cache on detail pages
+  const freshClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "",
+    {
+      global: {
+        fetch: (url, options = {}) =>
+          fetch(url, { ...options, cache: "no-store" }),
+      },
+    }
+  );
+  const { data, error } = await freshClient
     .from("strains")
     .select("*")
     .eq("slug", slug)
