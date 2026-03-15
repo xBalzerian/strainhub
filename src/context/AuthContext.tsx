@@ -10,11 +10,11 @@ export interface UserProfile {
   avatar_url: string | null;
   plan: "free" | "monthly" | "annual";
   plan_expires_at: string | null;
-  paypal_subscription_id: string | null;
-  views_today: number;
-  views_date: string | null;
-  chats_today: number;
-  chats_date: string | null;
+  paypal_subscription_id?: string | null;
+  strain_views_today: number;
+  strain_views_reset_at: string | null;
+  ai_chats_used: number;
+  ai_chats_reset_at: string | null;
   diagnose_today: number;
   diagnose_date: string | null;
   learn_views_today: number;
@@ -73,7 +73,7 @@ async function upsertProfile(user: User) {
     return data as UserProfile | null;
   } else {
     const { data } = await supabase.from("profiles")
-      .insert({ id: user.id, email: user.email, full_name: user.user_metadata?.full_name || user.user_metadata?.name || null, avatar_url: user.user_metadata?.avatar_url || null, plan: "free", views_today: 0, chats_today: 0, diagnose_today: 0, learn_views_today: 0 })
+      .insert({ id: user.id, email: user.email, full_name: user.user_metadata?.full_name || user.user_metadata?.name || null, avatar_url: user.user_metadata?.avatar_url || null, plan: "free", strain_views_today: 0, ai_chats_used: 0, diagnose_today: 0, learn_views_today: 0 })
       .select().single();
     return data as UserProfile | null;
   }
@@ -131,8 +131,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isPro = !!profile && profile.plan !== "free" && (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
 
   // ── Usage getters ──────────────────────────────────────────────────────────
-  const getViewsToday = () => { if (!profile) return guestData.views; if (!isToday(profile.views_date)) return 0; return profile.views_today || 0; };
-  const getChatsToday = () => { if (!profile) return 0; if (!isToday(profile.chats_date)) return 0; return profile.chats_today || 0; };
+  const getViewsToday = () => { if (!profile) return guestData.views; if (!isToday(profile.strain_views_reset_at)) return 0; return profile.strain_views_today || 0; };
+  const getChatsToday = () => { if (!profile) return 0; if (!isToday(profile.ai_chats_reset_at)) return 0; return profile.ai_chats_used || 0; };
   const getDiagnoseToday = () => { if (!profile) return 0; if (!isToday(profile.diagnose_date)) return 0; return profile.diagnose_today || 0; };
   const getLearnToday = () => { if (!profile) return guestData.learn; if (!isToday(profile.learn_views_date)) return 0; return profile.learn_views_today || 0; };
 
@@ -162,9 +162,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!fresh) return true;
     const isProNow = fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date());
     if (isProNow) { setProfile(fresh as UserProfile); return true; }
-    const todayViews = isToday(fresh.views_date) ? (fresh.views_today || 0) : 0;
+    const todayViews = isToday(fresh.strain_views_reset_at) ? (fresh.strain_views_today || 0) : 0;
     if (todayViews >= FREE_VIEW_LIMIT) { setProfile(fresh as UserProfile); return false; }
-    const { data: updated } = await supabase.from("profiles").update({ views_today: todayViews + 1, views_date: todayStr() }).eq("id", user.id).select().single();
+    const { data: updated } = await supabase.from("profiles").update({ strain_views_today: todayViews + 1, strain_views_reset_at: new Date().toISOString() }).eq("id", user.id).select().single();
     if (updated) setProfile(updated as UserProfile);
     return true;
   }, [user, isPro]);
@@ -176,9 +176,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!fresh) return true;
     const isProNow = fresh.plan !== "free" && (!fresh.plan_expires_at || new Date(fresh.plan_expires_at) > new Date());
     if (isProNow) { setProfile(fresh as UserProfile); return true; }
-    const todayChats = isToday(fresh.chats_date) ? (fresh.chats_today || 0) : 0;
+    const todayChats = isToday(fresh.ai_chats_reset_at) ? (fresh.ai_chats_used || 0) : 0;
     if (todayChats >= FREE_CHAT_LIMIT) { setProfile(fresh as UserProfile); return false; }
-    const { data: updated } = await supabase.from("profiles").update({ chats_today: todayChats + 1, chats_date: todayStr() }).eq("id", user.id).select().single();
+    const { data: updated } = await supabase.from("profiles").update({ ai_chats_used: todayChats + 1, ai_chats_reset_at: new Date().toISOString() }).eq("id", user.id).select().single();
     if (updated) setProfile(updated as UserProfile);
     return true;
   }, [user, isPro]);

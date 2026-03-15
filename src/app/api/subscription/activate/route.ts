@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
     const { error: dbError } = await supabase.from("profiles").update({
       plan: plan === "annual" ? "annual" : "monthly",
       plan_expires_at: expiresAt,
-      paypal_subscription_id: subscriptionId,
     }).eq("id", userId);
 
     if (dbError) {

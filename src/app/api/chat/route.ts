@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       if (admin) {
         const { data: profile } = await admin
           .from("profiles")
-          .select("plan, plan_expires_at, chats_today, chats_date")
+          .select("plan, plan_expires_at, ai_chats_used, ai_chats_reset_at")
           .eq("id", userId)
           .single();
 
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
           if (!isProUser) {
             const today = new Date().toISOString().split("T")[0];
             const isToday = (d: string | null) => !!(d && d.startsWith(today));
-            const currentChats = isToday(profile.chats_date) ? (profile.chats_today || 0) : 0;
+            const currentChats = isToday(profile.ai_chats_reset_at) ? (profile.ai_chats_used || 0) : 0;
             if (currentChats >= FREE_CHAT_LIMIT) {
               return NextResponse.json({
                 error: `You've used all ${FREE_CHAT_LIMIT} free chats for today. Upgrade to Pro for unlimited chat! 🚀`,
@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
             }
             // Increment BEFORE calling AI
             await admin.from("profiles").update({
-              chats_today: currentChats + 1,
-              chats_date: today,
+              ai_chats_used: currentChats + 1,
+              ai_chats_reset_at: new Date().toISOString(),
             }).eq("id", userId);
           }
         }

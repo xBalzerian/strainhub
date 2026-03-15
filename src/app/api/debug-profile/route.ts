@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
   const { error: updateErr } = await admin
     .from("profiles")
-    .update({ chats_today: 1, chats_date: new Date().toISOString().split("T")[0] })
+    .update({ ai_chats_used: 1, ai_chats_reset_at: new Date().toISOString() })
     .eq("id", userId);
 
   return NextResponse.json({

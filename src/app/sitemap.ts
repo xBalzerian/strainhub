@@ -61,11 +61,8 @@ const LEARN_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/learn/deficiencies`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/learn/grow-guide`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/learn/medical`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-  { url: `${BASE_URL}/learn/indica-vs-sativa`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/learn/how-thc-works`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/learn/landraces`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-  { url: `${BASE_URL}/learn/cannabinoids`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-  { url: `${BASE_URL}/learn/terpenes`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/learn/training`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
 ];
 
