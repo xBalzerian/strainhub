@@ -12,33 +12,6 @@ export const dynamic = 'force-dynamic';
 // Allow on-demand rendering for slugs not yet statically built
 export const dynamicParams = true;
 
-export async function generateStaticParams() {
-  // Use REST API with service role to bypass RLS and get all slugs at build time
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseKey =
-      process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.SERVICE_ROLE ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-    const res = await fetch(
-      `${supabaseUrl}/rest/v1/strains?select=slug&order=rank_popularity.asc.nullslast&limit=5000`,
-      {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-        },
-        cache: "no-store",
-      }
-    );
-    if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
-    const data: { slug: string }[] = await res.json();
-    return data.map((s) => ({ slug: s.slug }));
-  } catch (e) {
-    console.error("generateStaticParams failed:", e);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const strain = await getStrainBySlug(params.slug);
