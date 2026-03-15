@@ -4,7 +4,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org"
 const SITE_NAME = "StrainHub";
 
 export function strainMetadata(strain: Strain) {
-  const title = `${strain.name} Strain: Effects, Terpenes & Grow Guide | ${SITE_NAME}`;
+  const title = `${strain.name} Strain: Effects, Terpenes & Grow Guide`;
   const description = `${strain.name} is a ${strain.type} cannabis strain with ${strain.thc_min}–${strain.thc_max}% THC. Effects: ${strain.effects?.slice(0, 3).join(", ")}. Terpenes: ${strain.terpenes?.slice(0, 2).join(", ")}. ${strain.grow_difficulty} to grow.`;
 
   return {
