@@ -237,30 +237,6 @@ export default async function StrainsPage({
           </p>
         )}
       </div>
-
-      {/* Fire animation styles */}
-      <style jsx global>{`
-        @keyframes flicker {
-          0%, 100% { transform: scale(1) rotate(-2deg); }
-          25% { transform: scale(1.15) rotate(2deg); }
-          50% { transform: scale(0.95) rotate(-1deg); }
-          75% { transform: scale(1.1) rotate(3deg); }
-        }
-        @keyframes fireGlow {
-          0%, 100% { filter: drop-shadow(0 0 3px rgba(251,146,60,0.8)); }
-          50% { filter: drop-shadow(0 0 8px rgba(251,146,60,1)) drop-shadow(0 0 14px rgba(239,68,68,0.6)); }
-        }
-        .fire-active {
-          display: inline-block;
-          animation: flicker 0.6s ease-in-out infinite, fireGlow 1s ease-in-out infinite;
-          transform-origin: bottom center;
-        }
-        .fire-idle {
-          display: inline-block;
-          animation: flicker 2s ease-in-out infinite;
-          transform-origin: bottom center;
-        }
-      `}</style>
     </>
   );
 }
