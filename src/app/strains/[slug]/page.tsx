@@ -8,7 +8,7 @@ import StrainCard from "@/components/StrainCard";
 import StrainReviews, { ReviewSummary } from "@/components/StrainReviews";
 
 // Revalidate strain pages every 24h so new strains auto-appear
-export const revalidate = 86400;
+export const dynamic = 'force-dynamic';
 // Allow on-demand rendering for slugs not yet statically built
 export const dynamicParams = true;
 
