@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Cannabis Strain Database — Browse 100+ Strains | StrainHub",
   description:
     "Browse and filter 100+ cannabis strains by type, effects, terpenes, and grow difficulty. Find your perfect Indica, Sativa, or Hybrid strain.",
+  alternates: {
+    canonical: "https://www.strainhub.org/strains",
+  },
 };
 
 // Revalidate every 1 hour (ISR) — keeps data fresh without full SSR on every request

@@ -66,7 +66,8 @@ export const metadata: Metadata = {
     google: "q6kR4ix85Ga97vVPHmQA1KTNsTu_JdP80k4RpJJVu8U",
   },
   alternates: {
-    canonical: "https://www.strainhub.org",
+    // NOTE: Do NOT set a global canonical here — each page sets its own via generateMetadata
+    // Setting it here was overriding all strain/learn page canonicals to point to homepage
   },
 };
 
@@ -74,8 +75,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* Canonical domain */}
-        <link rel="canonical" href="https://www.strainhub.org" />
         {/* Preconnect for faster Supabase loads */}
         <link rel="preconnect" href="https://bfzcjunuuxzhqafuljlh.supabase.co" />
         {/* Preconnect to Google Analytics */}
