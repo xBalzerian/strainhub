@@ -24,5 +24,5 @@ export interface Strain {
   rank_popularity: number;
   breeder?: string;
   origin_region?: string;
-  created_date?: string;
+  created_at?: string;
 }

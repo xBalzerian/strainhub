@@ -205,21 +205,21 @@ export default async function HomePage() {
       </section>
 
       {/* LEARN HUB SECTION */}
-      <section className="bg-black border-y-2 border-black py-16">
+      <section className="bg-white border-y-2 border-black py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
               <div className="inline-flex items-center gap-2 bg-lime border-2 border-black px-3 py-1 rounded-full text-xs font-black mb-4">
                 📚 Free Knowledge Hub
               </div>
-              <h2 className="text-3xl font-black tracking-tight text-white">
-                Learn Everything About <span className="text-lime">Cannabis</span>
+              <h2 className="text-3xl font-black tracking-tight text-black">
+                Learn Everything About <span className="bg-lime px-1.5 rounded">Cannabis</span>
               </h2>
-              <p className="text-gray-400 mt-2 text-sm max-w-xl">
+              <p className="text-gray-500 mt-2 text-sm max-w-xl">
                 From genetics to growing, effects to law — science-backed guides written for every level. Always 100% free.
               </p>
             </div>
-            <Link href="/learn" className="text-sm font-bold border-2 border-white text-white px-4 py-2 rounded-xl hover:bg-white hover:text-black transition-all whitespace-nowrap hidden md:block">
+            <Link href="/learn" className="text-sm font-bold border-2 border-black text-black px-4 py-2 rounded-xl hover:bg-lime transition-all whitespace-nowrap hidden md:block">
               All Topics →
             </Link>
           </div>
@@ -229,7 +229,7 @@ export default async function HomePage() {
               <Link
                 key={cat.title}
                 href={cat.href}
-                className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime/50 rounded-2xl p-5 transition-all hover:-translate-y-1"
+                className="group bg-black hover:bg-gray-900 border-2 border-black rounded-2xl p-5 transition-all hover:-translate-y-1 shadow-brutal hover:shadow-brutal-lg"
               >
                 <span className="text-3xl block mb-3">{cat.emoji}</span>
                 <h3 className="text-white font-black text-base mb-1.5 group-hover:text-lime transition-colors">{cat.title}</h3>
@@ -251,13 +251,13 @@ export default async function HomePage() {
               <Link
                 key={article.href}
                 href={article.href}
-                className="group flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime/40 rounded-2xl p-4 transition-all"
+                className="group flex items-center gap-4 bg-black hover:bg-gray-900 border-2 border-black rounded-2xl p-4 transition-all shadow-brutal-sm hover:shadow-brutal"
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-[10px] font-black text-lime uppercase tracking-widest mb-1">{article.tag}</div>
                   <div className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-lime transition-colors">{article.title}</div>
                 </div>
-                <span className="text-gray-500 group-hover:text-lime group-hover:translate-x-1 transition-all flex-shrink-0">→</span>
+                <span className="text-gray-400 group-hover:text-lime group-hover:translate-x-1 transition-all flex-shrink-0">→</span>
               </Link>
             ))}
           </div>

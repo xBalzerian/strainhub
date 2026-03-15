@@ -31,7 +31,7 @@ const TABS = [
 async function getStrains(type?: string, effect?: string, sort?: string, page = 1): Promise<{ strains: Strain[]; total: number }> {
   let countQuery = supabase.from("strains").select("id", { count: "exact", head: true });
   let dataQuery = supabase.from("strains").select(
-    "id, name, slug, type, thc_min, thc_max, cbd_min, cbd_max, effects, flavors, terpenes, helps_with, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity, created_date"
+    "id, name, slug, type, thc_min, thc_max, cbd_min, cbd_max, effects, flavors, terpenes, helps_with, description, grow_difficulty, flowering_weeks_max, image_url, rank_popularity, created_at"
   );
 
   if (type) { countQuery = countQuery.eq("type", type); dataQuery = dataQuery.eq("type", type); }
@@ -39,7 +39,7 @@ async function getStrains(type?: string, effect?: string, sort?: string, page = 
 
   if (sort === "thc_high") dataQuery = dataQuery.order("thc_max", { ascending: false });
   else if (sort === "az") dataQuery = dataQuery.order("name", { ascending: true });
-  else if (sort === "new") dataQuery = dataQuery.order("created_date", { ascending: false });
+  else if (sort === "new") dataQuery = dataQuery.order("created_at", { ascending: false });
   else dataQuery = dataQuery.order("rank_popularity", { ascending: true });
 
   const from = (page - 1) * PAGE_SIZE;
