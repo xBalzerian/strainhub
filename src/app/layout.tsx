@@ -72,9 +72,47 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.strainhub.org/#website",
+        "url": "https://www.strainhub.org",
+        "name": "StrainHub",
+        "description": "The most comprehensive cannabis strain database — 70,000+ strains with terpenes, genetics, and grow guides.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.strainhub.org/strains?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.strainhub.org/#organization",
+        "name": "StrainHub",
+        "url": "https://www.strainhub.org",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.strainhub.org/og-image.png",
+          "width": 1200,
+          "height": 630
+        },
+        "sameAs": []
+      }
+    ]
+  };
+
   return (
     <html lang="en" className={inter.variable}>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {/* Preconnect for faster Supabase loads */}
         <link rel="preconnect" href="https://bfzcjunuuxzhqafuljlh.supabase.co" />
         {/* Preconnect to Google Analytics */}
