@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Legal Guide — US Federal, State & International Laws | StrainHub",
   description: "Complete cannabis legal guide: US federal law, all 50 states, international frameworks, industry regulation, consumer rights. Updated monthly with current legal status.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/legal" },
+  alternates: { canonical: "https://www.strainhub.org/learn/legal" },
 };
 
 const US_STATUS = [

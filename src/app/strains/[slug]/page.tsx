@@ -263,7 +263,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
   const experienceLevel = getExperienceLevel(strain.thc_max, strain.grow_difficulty);
 
   // Share URL (built server-side, no window needed)
-  const shareUrl = `https://strainhub.org/strains/${strain.slug}`;
+  const shareUrl = `https://www.strainhub.org/strains/${strain.slug}`;
   const shareText = `Check out ${strain.name} on StrainHub — ${strain.type}, ${strain.thc_max}% THC`;
 
   return (

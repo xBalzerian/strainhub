@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Deficiency Guide — Yellow Leaves, Brown Spots, Curling Tips | StrainHub",
   description: "Diagnose cannabis nutrient deficiencies, toxicities, and environmental stress. Yellow leaves, brown spots, purple stems, curling tips — find the cause and fix it fast.",
-  alternates: { canonical: "https://strainhub.com/learn/deficiencies" },
+  alternates: { canonical: "https://www.strainhub.org/learn/deficiencies" },
 };
 
 const ISSUES = [

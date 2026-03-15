@@ -44,6 +44,7 @@ export default function NavBar() {
     { href: "/chat", label: "💬 AI Chat" },
     { href: "/diagnose", label: "🔬 Diagnose" },
     { href: "/learn", label: "Learn" },
+    { href: "/pricing", label: "Pricing" },
   ];
 
   return (

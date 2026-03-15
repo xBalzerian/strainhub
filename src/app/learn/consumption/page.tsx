@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Consumption Methods Guide — Bioavailability, Onset & Health Impact | StrainHub",
   description: "Every cannabis consumption method compared: smoking, vaporizing, edibles, tinctures, topicals. Bioavailability percentages, onset times, health impacts, and cost analysis.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/consumption" },
+  alternates: { canonical: "https://www.strainhub.org/learn/consumption" },
 };
 
 const METHODS = [

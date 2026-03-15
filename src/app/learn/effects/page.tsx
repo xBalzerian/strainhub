@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Effects & Pharmacology — Complete Science Guide | StrainHub",
   description: "Deep dive into cannabis pharmacology: cannabinoid mechanisms, terpene science, acute psychoactive effects, therapeutic applications, long-term health, and drug interactions.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/effects" },
+  alternates: { canonical: "https://www.strainhub.org/learn/effects" },
 };
 
 const SECTIONS = [

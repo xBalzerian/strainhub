@@ -38,15 +38,15 @@ export function ArticleJsonLd({
         author: {
           "@type": "Organization",
           name: "StrainHub",
-          url: "https://strainhub.org",
+          url: "https://www.strainhub.org",
         },
         publisher: {
           "@type": "Organization",
           name: "StrainHub",
-          url: "https://strainhub.org",
+          url: "https://www.strainhub.org",
           logo: {
             "@type": "ImageObject",
-            url: "https://strainhub.org/images/logo.png",
+            url: "https://www.strainhub.org/images/logo.png",
           },
         },
       }}

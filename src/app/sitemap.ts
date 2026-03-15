@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = "https://strainhub.vercel.app";
+const BASE_URL = "https://www.strainhub.org";
 
 // All learn hub pages - indexed for Google/Bing SEO
 const LEARN_PAGES = [

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Landrace Cannabis Strains — The Ancient Origins of Every Modern Strain | StrainHub",
   description:
     "Landrace cannabis strains are the ancient, geographically pure originals — Afghani, Thai, Colombian Gold, Hindu Kush, Durban Poison. Learn their history, traits, and which modern strains descended from them.",
-  alternates: { canonical: "https://strainhub.com/learn/landraces" },
+  alternates: { canonical: "https://www.strainhub.org/learn/landraces" },
 };
 
 const LANDRACES = [

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Cannabis Plant Diagnosis AI | StrainHub",
     description: "Upload a photo and get AI-powered diagnosis of cannabis plant problems — deficiencies, pests, and more.",
   },
-  alternates: { canonical: "https://strainhub.vercel.app/diagnose" },
+  alternates: { canonical: "https://www.strainhub.org/diagnose" },
 };
 
 export default function DiagnoseLayout({ children }: { children: React.ReactNode }) {

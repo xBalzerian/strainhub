@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "Cannabis Training Techniques — LST, Topping, SCROG, SOG & More | StrainHub",
   description: "Complete guide to cannabis plant training techniques: LST, topping, FIMming, SCROG, SOG, mainlining, and supercropping. Increase yields and control plant shape.",
   keywords: "cannabis training, LST low stress training, topping cannabis, SCROG setup, SOG technique, mainlining cannabis, supercropping",
-  alternates: { canonical: "https://strainhub.org/learn/training" },
+  alternates: { canonical: "https://www.strainhub.org/learn/training" },
   openGraph: {
     title: "Cannabis Training Techniques Guide | StrainHub",
     description: "Every training method explained: LST, topping, SCROG, SOG, mainlining, and more.",
-    url: "https://strainhub.org/learn/training",
+    url: "https://www.strainhub.org/learn/training",
     type: "article",
   },
 };

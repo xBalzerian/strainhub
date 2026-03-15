@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     title: "StrainHub Pro | Unlimited Cannabis Knowledge",
     description: "Upgrade for $2.99/month — unlimited strains, AI chat, plant diagnosis, and more.",
   },
-  alternates: { canonical: "https://strainhub.vercel.app/pro" },
+  alternates: { canonical: "https://www.strainhub.org/pro" },
 };
 
 export default function ProLayout({ children }: { children: React.ReactNode }) {

@@ -4,8 +4,8 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Terpenes — Complete Science Guide to 20+ Terpenes | StrainHub",
   description: "The definitive cannabis terpene reference: myrcene, limonene, caryophyllene, linalool, pinene, terpinolene — mechanisms, effects, boiling points, strains, and entourage interactions.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/effects/terpenes" },
-  openGraph: { title: "Cannabis Terpenes: Complete Science Guide", description: "Every cannabis terpene explained — pharmacology, effects, aroma, boiling points, representative strains.", url: "https://strainhub.vercel.app/learn/effects/terpenes" },
+  alternates: { canonical: "https://www.strainhub.org/learn/effects/terpenes" },
+  openGraph: { title: "Cannabis Terpenes: Complete Science Guide", description: "Every cannabis terpene explained — pharmacology, effects, aroma, boiling points, representative strains.", url: "https://www.strainhub.org/learn/effects/terpenes" },
 };
 
 const TERPENES = [
@@ -35,9 +35,9 @@ export default function TerpenesPage() {
           "@type": "Article",
           headline: "Cannabis Terpenes — Complete Science Guide",
           description: "Comprehensive reference covering 20+ cannabis terpenes including mechanisms, effects, boiling points, and representative strains.",
-          url: "https://strainhub.vercel.app/learn/effects/terpenes",
+          url: "https://www.strainhub.org/learn/effects/terpenes",
           author: { "@type": "Organization", name: "StrainHub" },
-          publisher: { "@type": "Organization", name: "StrainHub", url: "https://strainhub.vercel.app" },
+          publisher: { "@type": "Organization", name: "StrainHub", url: "https://www.strainhub.org" },
         },
         {
           "@context": "https://schema.org",

@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis History & Culture — From Ancient Origins to Legalization | StrainHub",
   description: "10,000 years of cannabis history: ancient origins, colonial spread, prohibition, racial injustice, religious traditions, cultural movements, and the modern legalization era.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/history" },
+  alternates: { canonical: "https://www.strainhub.org/learn/history" },
 };
 
 const TIMELINE = [

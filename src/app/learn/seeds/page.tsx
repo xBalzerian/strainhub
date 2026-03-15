@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Marijuana Seeds Guide — Biology, Germination, Storage & Breeding | StrainHub",
   description: "Complete marijuana seeds guide: seed types (regular, feminized, auto), germination methods, long-term storage, breeding programs, and legal procurement.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/seeds" },
+  alternates: { canonical: "https://www.strainhub.org/learn/seeds" },
 };
 
 const SECTIONS = [

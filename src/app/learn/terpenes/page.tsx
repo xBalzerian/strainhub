@@ -4,12 +4,12 @@ export const metadata = {
   description: "Comprehensive guide to cannabis terpenes: myrcene, limonene, caryophyllene, linalool, pinene and more. Effects, strains, and science.",
   keywords: "cannabis terpenes, myrcene, limonene, caryophyllene, terpene effects",
   alternates: {
-    canonical: "https://strainhub.vercel.app/learn/terpenes",
+    canonical: "https://www.strainhub.org/learn/terpenes",
   },
   openGraph: {
     title: "Cannabis Terpenes — Complete Guide to All Terpenes | StrainHub",
     description: "Comprehensive guide to cannabis terpenes: myrcene, limonene, caryophyllene, linalool, pinene and more. Effects, strains, and science.",
-    url: "https://strainhub.vercel.app/learn/terpenes",
+    url: "https://www.strainhub.org/learn/terpenes",
     type: "article",
   },
 };

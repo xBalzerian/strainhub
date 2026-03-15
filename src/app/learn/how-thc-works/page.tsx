@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "How THC Works in Your Brain — The Endocannabinoid System Explained | StrainHub",
   description:
     "How does THC get you high? The science of the endocannabinoid system, CB1 and CB2 receptors, anandamide, and how cannabis interacts with your brain and body — fully explained.",
-  alternates: { canonical: "https://strainhub.com/learn/how-thc-works" },
+  alternates: { canonical: "https://www.strainhub.org/learn/how-thc-works" },
 };
 
 export default function HowThcWorksPage() {
@@ -25,7 +25,7 @@ export default function HowThcWorksPage() {
     "@type": "Article",
     "headline": "How THC Works in the Brain: The Endocannabinoid System Explained",
     "description": "A complete scientific explanation of how THC interacts with CB1 and CB2 receptors, anandamide, and the endocannabinoid system.",
-    "url": "https://strainhub.com/learn/how-thc-works",
+    "url": "https://www.strainhub.org/learn/how-thc-works",
     "author": { "@type": "Organization", "name": "StrainHub" },
   };
 

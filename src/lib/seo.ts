@@ -1,6 +1,6 @@
 import type { Strain } from "./types";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://strainhub.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org";
 const SITE_NAME = "StrainHub";
 
 export function strainMetadata(strain: Strain) {

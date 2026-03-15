@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cannabis Medical Use Index — Strains for Anxiety, Pain, Sleep & More | StrainHub",
   description: "Cannabis strains organized by condition: anxiety, chronic pain, insomnia, depression, PTSD, nausea, and inflammation. User-reported benefits with cannabinoid and terpene guidance.",
-  alternates: { canonical: "https://strainhub.com/learn/medical" },
+  alternates: { canonical: "https://www.strainhub.org/learn/medical" },
 };
 
 const CONDITIONS = [

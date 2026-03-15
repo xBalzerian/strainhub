@@ -4,8 +4,8 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Marijuana Strains Guide — Taxonomy, Genetics & Effects | StrainHub",
   description: "Complete marijuana strain education: indica vs sativa science, terpene-driven categories, cannabinoid profiles, effect classifications, cultivation traits, and geographic origins.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/strains" },
-  openGraph: { title: "Marijuana Strains Guide", description: "Comprehensive strain education covering taxonomy, genetics, effects, and cultivation.", url: "https://strainhub.vercel.app/learn/strains" },
+  alternates: { canonical: "https://www.strainhub.org/learn/strains" },
+  openGraph: { title: "Marijuana Strains Guide", description: "Comprehensive strain education covering taxonomy, genetics, effects, and cultivation.", url: "https://www.strainhub.org/learn/strains" },
 };
 
 const SECTIONS = [

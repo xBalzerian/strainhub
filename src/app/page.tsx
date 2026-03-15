@@ -7,16 +7,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "StrainHub — #1 Cannabis Strain Database",
     description: "Discover 100+ cannabis strains with full terpene profiles, effects, genetics, and grow guides. Free forever.",
-    url: "https://strainhub.vercel.app",
+    url: "https://www.strainhub.org",
     type: "website",
-    images: [{ url: "https://strainhub.vercel.app/og-image.jpg", width: 1200, height: 630, alt: "StrainHub Cannabis Strain Database" }],
+    images: [{ url: "https://www.strainhub.org/og-image.jpg", width: 1200, height: 630, alt: "StrainHub Cannabis Strain Database" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "StrainHub — Cannabis Strain Database",
     description: "Explore 100+ cannabis strains with genetics, terpenes, effects, and grow guides.",
   },
-  alternates: { canonical: "https://strainhub.vercel.app" },
+  alternates: { canonical: "https://www.strainhub.org" },
 };
 
 import Link from "next/link";

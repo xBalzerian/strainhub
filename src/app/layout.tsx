@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: "StrainHub — #1 Cannabis Strain Database | Effects, Genetics & Grow Info",
   },
   description: "Explore 100+ cannabis strains with full terpene profiles, effects, genetics, and grow guides. Find the perfect strain — free forever.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://strainhub.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org"),
   openGraph: { siteName: "StrainHub", type: "website" },
   robots: {
     index: true, follow: true,

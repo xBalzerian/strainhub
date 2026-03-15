@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   title: "Cannabis Grow Guide — Week by Week from Seed to Harvest | StrainHub",
   description: "The complete cannabis grow guide: germination, seedling, vegetative, flowering, and harvest stages week by week. Nutrients, light schedules, and expert tips.",
   keywords: "cannabis grow guide, how to grow weed, cannabis growing stages, week by week grow, cannabis harvest guide",
-  alternates: { canonical: "https://strainhub.org/learn/grow-guide" },
+  alternates: { canonical: "https://www.strainhub.org/learn/grow-guide" },
   openGraph: {
     title: "Cannabis Grow Guide — Seed to Harvest | StrainHub",
     description: "Week-by-week cannabis growing from germination to harvest.",
-    url: "https://strainhub.org/learn/grow-guide",
+    url: "https://www.strainhub.org/learn/grow-guide",
     type: "article",
   },
 };
@@ -215,9 +215,9 @@ export default function GrowGuidePage() {
       <ArticleJsonLd
         title="Cannabis Grow Guide — Seed to Harvest"
         description="Every stage of the cannabis lifecycle explained with week-by-week tasks, environmental targets, and common mistakes to avoid."
-        url="https://strainhub.org/learn/grow-guide"
+        url="https://www.strainhub.org/learn/grow-guide"
       />
-      <BreadcrumbJsonLd items={[{"name": "Home", "url": "https://strainhub.org"}, {"name": "Learn", "url": "https://strainhub.org/learn"}, {"name": "Grow Guide", "url": "https://strainhub.org/learn/grow-guide"}]} />
+      <BreadcrumbJsonLd items={[{"name": "Home", "url": "https://www.strainhub.org"}, {"name": "Learn", "url": "https://www.strainhub.org/learn"}, {"name": "Grow Guide", "url": "https://www.strainhub.org/learn/grow-guide"}]} />
       <FaqJsonLd questions={[{"q": "How long does it take to grow cannabis?", "a": "Autoflowers: 8\u201312 weeks. Photoperiod indicas: 14\u201318 weeks. Photoperiod sativas: 18\u201328 weeks."}, {"q": "What's the best lighting schedule for cannabis?", "a": "Vegetative: 18/6 (18 hours on, 6 off). Flowering: 12/12 (12 hours on, 12 off). Autoflowers flower regardless of light schedule."}, {"q": "How do I know when cannabis is ready to harvest?", "a": "Check trichomes with a 60\u2013100x loupe. When 70\u201380% are milky/cloudy and 10\u201320% amber, THC is at peak potency."}]} />
       <nav className="border-b border-gray-200 bg-white" aria-label="Breadcrumb">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-2 text-sm text-gray-400">

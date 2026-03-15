@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "The Entourage Effect Explained — Cannabis Synergy Science | StrainHub",
   description: "What is the entourage effect? How cannabinoids and terpenes work together for effects greater than isolated compounds. The science, the evidence, and the debate.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn/effects/entourage-effect" },
+  alternates: { canonical: "https://www.strainhub.org/learn/effects/entourage-effect" },
 };
 
 const FAQ = [

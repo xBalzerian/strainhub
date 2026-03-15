@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   title: "Cannabis Education Hub — Learn Everything About Marijuana | StrainHub",
   description:
     "The most comprehensive cannabis learning resource online. Strains, effects, pharmacology, growing, seeds, legal guides, history, and culture. Free forever.",
-  alternates: { canonical: "https://strainhub.vercel.app/learn" },
+  alternates: { canonical: "https://www.strainhub.org/learn" },
   openGraph: {
     title: "Cannabis Education Hub — Learn Everything About Marijuana | StrainHub",
     description: "Free cannabis education covering strains, terpenes, cannabinoids, growing, effects, legal status, history and culture. Built for beginners to experts.",
-    url: "https://strainhub.vercel.app/learn",
+    url: "https://www.strainhub.org/learn",
     type: "website",
   },
   other: {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       name: "StrainHub Learn",
-      url: "https://strainhub.vercel.app/learn",
+      url: "https://www.strainhub.org/learn",
       description: "Comprehensive cannabis education platform covering strains, effects, growing, legal status, history, and pharmacology.",
       knowsAbout: [
         "Cannabis Strains","Terpenes","Cannabinoids","Cannabis Cultivation",
@@ -193,12 +193,12 @@ export default function LearnPage() {
               "@type": "WebPage",
               name: "Cannabis Education Hub",
               description: "Comprehensive cannabis learning resource covering strains, effects, pharmacology, growing, legal status, history and culture.",
-              url: "https://strainhub.vercel.app/learn",
+              url: "https://www.strainhub.org/learn",
               breadcrumb: {
                 "@type": "BreadcrumbList",
                 itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Home", item: "https://strainhub.vercel.app" },
-                  { "@type": "ListItem", position: 2, name: "Learn", item: "https://strainhub.vercel.app/learn" },
+                  { "@type": "ListItem", position: 1, name: "Home", item: "https://www.strainhub.org" },
+                  { "@type": "ListItem", position: 2, name: "Learn", item: "https://www.strainhub.org/learn" },
                 ],
               },
             },
