@@ -325,7 +325,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 380px"
-                  className="object-cover"
+                  className="object-contain bg-white"
                 />
               </div>
             ) : (
