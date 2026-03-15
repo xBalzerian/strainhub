@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -12,6 +13,8 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter",
 });
+
+const GA_ID = "G-JDYK0CE3K1";
 
 export const metadata: Metadata = {
   title: {
@@ -59,9 +62,8 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  // Google Search Console verification — insert your code from GSC here
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
+    google: "q6kR4ix85Ga97vVPHmQA1KTNsTu_JdP80k4RpJJVu8U",
   },
   alternates: {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org",
@@ -72,12 +74,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* Canonical domain — ensures www is preferred */}
+        {/* Canonical domain */}
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org"} />
-        {/* Preconnect to Supabase for faster image/data loads */}
+        {/* Preconnect for faster Supabase loads */}
         <link rel="preconnect" href="https://bfzcjunuuxzhqafuljlh.supabase.co" />
+        {/* Preconnect to Google Analytics */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
       </head>
       <body className="min-h-screen flex flex-col antialiased font-sans">
+        {/* Google Analytics — loads after page is interactive */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}', {
+              page_path: window.location.pathname,
+              send_page_view: true,
+            });
+          `}
+        </Script>
+
         <AuthProvider>
           <AuthCodeHandler />
           <NavBar />
