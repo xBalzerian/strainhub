@@ -1,6 +1,6 @@
 import type { Strain } from "./types";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org";
+const SITE_URL = "https://www.strainhub.org";
 const SITE_NAME = "StrainHub";
 
 function potencyLabel(thc: number): string {

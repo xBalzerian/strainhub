@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Explore 70,000+ cannabis strains with full terpene profiles, cannabinoid data, genetics, grow guides, and effects. The most comprehensive marijuana strain database — free forever.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org"),
+  metadataBase: new URL("https://www.strainhub.org"),
   keywords: [
     "cannabis strains", "marijuana strains", "weed strains", "strain database",
     "terpene profiles", "THC content", "CBD strains", "indica sativa hybrid",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     google: "q6kR4ix85Ga97vVPHmQA1KTNsTu_JdP80k4RpJJVu8U",
   },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org",
+    canonical: "https://www.strainhub.org",
   },
 };
 
@@ -75,7 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <head>
         {/* Canonical domain */}
-        <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || "https://www.strainhub.org"} />
+        <link rel="canonical" href="https://www.strainhub.org" />
         {/* Preconnect for faster Supabase loads */}
         <link rel="preconnect" href="https://bfzcjunuuxzhqafuljlh.supabase.co" />
         {/* Preconnect to Google Analytics */}
