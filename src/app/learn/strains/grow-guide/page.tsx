@@ -23,6 +23,8 @@ export default function Page() {
             Learn Hub
           </div>
           <h1 className="text-4xl font-black text-black mb-4">Week-by-Week Grow Guide</h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/a52bc50f4_grow-guide.jpg" alt="Cannabis growth stages illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
           <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
         </div>
       </div>

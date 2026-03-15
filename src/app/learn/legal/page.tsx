@@ -36,6 +36,8 @@ export default function LegalLearnPage() {
         <div className="max-w-4xl mx-auto px-6 py-14">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fff7ed", color: "#b45309" }}>⚖️ Legal & Regulatory</div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black mb-4">Cannabis Law —<br />Complete Guide</h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/2bd028e10_legal.jpg" alt="Cannabis legal status illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
           <p className="text-gray-500 text-lg max-w-xl leading-relaxed mb-4">Federal law, all 50 states, international frameworks, and your rights as a consumer or business. Updated monthly.</p>
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-800 font-medium max-w-xl">
             ⚠️ This is educational information only — not legal advice. Laws change frequently. Consult an attorney for specific situations.

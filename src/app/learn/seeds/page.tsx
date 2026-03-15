@@ -37,6 +37,10 @@ export default function SeedsLearnPage() {
           </div>
         </div>
       </div>
+              <div className="mt-6 rounded-2xl overflow-hidden border border-gray-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/9f24ea2a7_seeds.jpg" alt="seeds illustration" className="w-full h-56 object-cover" />
+              </div>
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="space-y-3">
           {SECTIONS.map((s, i) => (

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-const CATEGORIES = [
+const CATEGORIES: { id: string; icon: string; label: string; title: string; desc: string; color: string; bg: string; border: string; count: string; href: string; image?: string; featured: {title: string; href: string}[] }[] = [
   {
     id: "strains",
     icon: "🌿",
@@ -218,7 +218,7 @@ export default function LearnPage() {
       <div className="min-h-screen bg-[#F8F8F0]">
 
         {/* ── HERO ─────────────────────────────────────────────────────── */}
-        <section className="border-b-2 border-black bg-white">
+        <section className="border-b-2 border-black bg-white overflow-hidden relative">
           <div className="max-w-5xl mx-auto px-6 py-20 text-center">
             <div className="inline-flex items-center gap-2 border border-gray-200 bg-gray-50 rounded-full px-4 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
               Free Forever · No Account Required
@@ -229,6 +229,8 @@ export default function LearnPage() {
                 Learning Hub
               </span>
             </h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/cb7109309_learn-hub.jpg" alt="Cannabis Learning Hub illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
             <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">
               Science-backed cannabis education for everyone — from first-time curious to expert cultivator.
               Six comprehensive topic areas, hundreds of detailed guides.
@@ -283,6 +285,12 @@ export default function LearnPage() {
                       </div>
                     ))}
                   </div>
+                  {cat.image && (
+                    <div className="mt-4 rounded-xl overflow-hidden border border-gray-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={cat.image} alt={cat.title} className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  )}
                 </Link>
               ))}
             </div>

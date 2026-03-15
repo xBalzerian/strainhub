@@ -46,6 +46,8 @@ export default function HistoryLearnPage() {
         <div className="max-w-4xl mx-auto px-6 py-14">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#fff1f2", color: "#be123c" }}>📜 History & Culture</div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black mb-4">10,000 Years of<br />Cannabis History</h1>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/691e664f8_history.jpg" alt="Cannabis history timeline illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
           <p className="text-gray-500 text-lg max-w-xl leading-relaxed mb-6">From Neolithic hemp farms to modern dispensaries — the full story of humanity's oldest cultivated plant.</p>
         </div>
       </div>
