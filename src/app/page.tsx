@@ -24,13 +24,11 @@ import Image from "next/image";
 import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
 import StrainCard from "@/components/StrainCard";
 
-// ISR: rebuild page every 6 hours — no Supabase hit on every visitor
 export const revalidate = 21600;
 
 export default async function HomePage() {
-  // Two fast parallel queries — no more getAllStrains() fetching every field for all 100 strains
   const [topStrains, strainsMeta] = await Promise.all([
-    getTopStrains(12),
+    getTopStrains(20),
     getAllStrainsMeta(),
   ]);
 
@@ -41,6 +39,17 @@ export default async function HomePage() {
   };
 
   const tickerStrains = strainsMeta.slice(0, 20);
+
+  const learnCategories = [
+    { emoji: "🌿", title: "Strains", desc: "Indica vs. Sativa, terpene categories, effect guides", href: "/learn/strains", color: "bg-green-50", accent: "text-green-700", border: "border-green-200" },
+    { emoji: "🌱", title: "Seeds", desc: "Feminized, autoflower, germination, storage", href: "/learn/seeds", color: "bg-lime-50", accent: "text-lime-700", border: "border-lime-200" },
+    { emoji: "⚗️", title: "Effects & Science", desc: "Cannabinoids, terpenes, entourage effect", href: "/learn/effects", color: "bg-purple-50", accent: "text-purple-700", border: "border-purple-200" },
+    { emoji: "💨", title: "Consumption", desc: "Edibles, vaporization, bioavailability", href: "/learn/consumption", color: "bg-blue-50", accent: "text-blue-700", border: "border-blue-200" },
+    { emoji: "🌱", title: "Grow Guide", desc: "Week-by-week stages, training, deficiencies", href: "/learn/grow-guide", color: "bg-yellow-50", accent: "text-yellow-700", border: "border-yellow-200" },
+    { emoji: "⚖️", title: "Legal", desc: "State laws, federal law, international guide", href: "/learn/legal", color: "bg-orange-50", accent: "text-orange-700", border: "border-orange-200" },
+    { emoji: "📜", title: "History", desc: "Ancient origins, prohibition, social justice", href: "/learn/history", color: "bg-amber-50", accent: "text-amber-700", border: "border-amber-200" },
+    { emoji: "🏥", title: "Medical Use", desc: "Conditions, dosing, research", href: "/learn/medical", color: "bg-red-50", accent: "text-red-700", border: "border-red-200" },
+  ];
 
   return (
     <>
@@ -60,16 +69,10 @@ export default async function HomePage() {
               Genetics, terpenes, effects, grow guides — the most detailed cannabis strain database on the internet. Free forever.
             </p>
             <div className="flex gap-3 mb-8">
-              <Link
-                href="/strains"
-                className="bg-lime border-2 border-black font-black text-base px-6 py-3.5 rounded-xl shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all"
-              >
+              <Link href="/strains" className="bg-lime border-2 border-black font-black text-base px-6 py-3.5 rounded-xl shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
                 Browse All Strains →
               </Link>
-              <Link
-                href="/learn"
-                className="bg-white border-2 border-black font-black text-base px-6 py-3.5 rounded-xl hover:bg-black hover:text-white transition-all"
-              >
+              <Link href="/learn" className="bg-white border-2 border-black font-black text-base px-6 py-3.5 rounded-xl hover:bg-black hover:text-white transition-all">
                 Learn 📚
               </Link>
             </div>
@@ -89,7 +92,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero preview cards — next/image for optimization */}
+          {/* Hero preview cards */}
           <div className="hidden lg:grid grid-cols-2 gap-4">
             {topStrains.slice(0, 4).map((s, i) => (
               <Link
@@ -99,14 +102,7 @@ export default async function HomePage() {
               >
                 {s.image_url && (
                   <div className="relative w-full aspect-square">
-                    <Image
-                      src={s.image_url}
-                      alt={s.name}
-                      fill
-                      sizes="200px"
-                      className="object-contain p-1"
-                      priority={i < 2}
-                    />
+                    <Image src={s.image_url} alt={s.name} fill sizes="200px" className="object-contain p-1" priority={i < 2} />
                   </div>
                 )}
                 <div className="p-3">
@@ -143,15 +139,11 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { type: "Indica", emoji: "🍇", desc: "Body relaxation, deep sleep, pain relief. Best for evenings and unwinding after a long day. Classic couch-lock vibes.", bg: "bg-indica-bg", border: "border-indica/30", name_color: "text-indica" },
-            { type: "Sativa", emoji: "☀️", desc: "Energetic, creative, uplifting. Perfect for daytime use, social situations, and getting creative projects done.", bg: "bg-sativa-bg", border: "border-sativa/30", name_color: "text-sativa" },
-            { type: "Hybrid", emoji: "⚡", desc: "Best of both worlds. Balanced effects shaped by genetics. The most diverse category — every hybrid is unique.", bg: "bg-hybrid-bg", border: "border-hybrid/30", name_color: "text-hybrid" },
+            { type: "Indica", emoji: "🍇", desc: "Body relaxation, deep sleep, pain relief. Best for evenings and unwinding after a long day.", bg: "bg-indica-bg", border: "border-indica/30", name_color: "text-indica" },
+            { type: "Sativa", emoji: "☀️", desc: "Energetic, creative, uplifting. Perfect for daytime use, social situations, and creative projects.", bg: "bg-sativa-bg", border: "border-sativa/30", name_color: "text-sativa" },
+            { type: "Hybrid", emoji: "⚡", desc: "Best of both worlds. Balanced effects shaped by genetics. The most diverse category.", bg: "bg-hybrid-bg", border: "border-hybrid/30", name_color: "text-hybrid" },
           ].map((t) => (
-            <Link
-              key={t.type}
-              href={`/strains?type=${t.type}`}
-              className={`${t.bg} border-2 border-black rounded-2xl p-7 cursor-pointer shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all block`}
-            >
+            <Link key={t.type} href={`/strains?type=${t.type}`} className={`${t.bg} border-2 border-black rounded-2xl p-7 cursor-pointer shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all block`}>
               <span className="text-4xl block mb-3">{t.emoji}</span>
               <h3 className={`text-2xl font-black mb-2 ${t.name_color}`}>{t.type}</h3>
               <p className="text-sm text-gray-500 leading-relaxed mb-4">{t.desc}</p>
@@ -165,13 +157,7 @@ export default async function HomePage() {
 
       {/* AD BANNERS */}
       <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Crop King Seeds */}
-        <a
-          href="https://www.cropkingseeds.com"
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
-        >
+        <a href="https://www.cropkingseeds.com" target="_blank" rel="noopener noreferrer sponsored" className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group">
           <img src="/cropking-logo.png" alt="Crop King Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
@@ -180,18 +166,9 @@ export default async function HomePage() {
             </div>
             <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">80% germination guarantee · Ships worldwide</span>
           </div>
-          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
-            Shop Seeds →
-          </span>
+          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">Shop Seeds →</span>
         </a>
-
-        {/* Rocket Seeds */}
-        <a
-          href="https://www.rocketseeds.com"
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group"
-        >
+        <a href="https://www.rocketseeds.com" target="_blank" rel="noopener noreferrer sponsored" className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group">
           <img src="/rocket-logo.svg" alt="Rocket Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
@@ -200,23 +177,18 @@ export default async function HomePage() {
             </div>
             <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">Free shipping over $200 · 10 free seeds on $420+</span>
           </div>
-          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">
-            Shop Seeds →
-          </span>
+          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">Shop Seeds →</span>
         </a>
       </div>
 
-      {/* TOP STRAINS */}
+      {/* TOP STRAINS — 20 on homepage */}
       <section className="max-w-7xl mx-auto px-6 py-14">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-3xl font-black tracking-tight">🔥 Top <span className="bg-lime px-1.5 rounded">Strains</span></h2>
             <p className="text-gray-500 mt-1.5 text-sm">The most popular strains right now — click any for the full breakdown</p>
           </div>
-          <Link
-            href="/strains"
-            className="text-sm font-bold border-2 border-black px-4 py-2 rounded-xl hover:bg-lime transition-all whitespace-nowrap"
-          >
+          <Link href="/strains" className="text-sm font-bold border-2 border-black px-4 py-2 rounded-xl hover:bg-lime transition-all whitespace-nowrap">
             See All →
           </Link>
         </div>
@@ -224,6 +196,77 @@ export default async function HomePage() {
           {topStrains.map((s, idx) => (
             <StrainCard key={s.slug} strain={s} priority={idx < 4} />
           ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link href="/strains" className="inline-flex items-center gap-2 bg-black text-white font-black px-8 py-4 rounded-2xl border-2 border-black shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all text-base">
+            Browse All {strainsMeta.length}+ Strains →
+          </Link>
+        </div>
+      </section>
+
+      {/* LEARN HUB SECTION */}
+      <section className="bg-black border-y-2 border-black py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-lime border-2 border-black px-3 py-1 rounded-full text-xs font-black mb-4">
+                📚 Free Knowledge Hub
+              </div>
+              <h2 className="text-3xl font-black tracking-tight text-white">
+                Learn Everything About <span className="text-lime">Cannabis</span>
+              </h2>
+              <p className="text-gray-400 mt-2 text-sm max-w-xl">
+                From genetics to growing, effects to law — science-backed guides written for every level. Always 100% free.
+              </p>
+            </div>
+            <Link href="/learn" className="text-sm font-bold border-2 border-white text-white px-4 py-2 rounded-xl hover:bg-white hover:text-black transition-all whitespace-nowrap hidden md:block">
+              All Topics →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            {learnCategories.map((cat) => (
+              <Link
+                key={cat.title}
+                href={cat.href}
+                className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime/50 rounded-2xl p-5 transition-all hover:-translate-y-1"
+              >
+                <span className="text-3xl block mb-3">{cat.emoji}</span>
+                <h3 className="text-white font-black text-base mb-1.5 group-hover:text-lime transition-colors">{cat.title}</h3>
+                <p className="text-gray-400 text-xs leading-relaxed">{cat.desc}</p>
+                <div className="mt-4 flex items-center gap-1 text-lime text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                  Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Featured articles row */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { tag: "🔬 Science", title: "What Does THC Actually Do to Your Brain?", href: "/learn/effects/cannabinoids" },
+              { tag: "🌿 Strains", title: "Indica vs. Sativa: Does It Actually Matter?", href: "/learn/strains/indica-vs-sativa" },
+              { tag: "🍪 Consumption", title: "How Long Do Edibles Really Last?", href: "/learn/consumption/edibles" },
+            ].map((article) => (
+              <Link
+                key={article.href}
+                href={article.href}
+                className="group flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-lime/40 rounded-2xl p-4 transition-all"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-black text-lime uppercase tracking-widest mb-1">{article.tag}</div>
+                  <div className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-lime transition-colors">{article.title}</div>
+                </div>
+                <span className="text-gray-500 group-hover:text-lime group-hover:translate-x-1 transition-all flex-shrink-0">→</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-6 text-center md:hidden">
+            <Link href="/learn" className="inline-flex items-center gap-2 bg-lime border-2 border-black font-black px-6 py-3 rounded-xl text-sm">
+              All Topics →
+            </Link>
+          </div>
         </div>
       </section>
     </>
