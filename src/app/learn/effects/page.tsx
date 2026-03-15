@@ -36,12 +36,17 @@ export default function EffectsLearnPage() {
             <span>7 sections</span><span>·</span><span>~117 min total</span><span>·</span>
             <span className="font-semibold" style={{ color: "#6d28d9" }}>Science-backed</span>
           </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/effects.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
+          </div>
         </div>
       </div>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-gray-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/3345162a2_effects.jpg" alt="effects illustration" className="w-full h-56 object-cover" />
-              </div>
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="space-y-3">
           {SECTIONS.map((s, i) => (

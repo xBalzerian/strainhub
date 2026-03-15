@@ -228,10 +228,7 @@ export default function LearnPage() {
               <span style={{ background: "#AAFF00", paddingLeft: 8, paddingRight: 8, borderRadius: 8 }}>
                 Learning Hub
               </span>
-            </h1>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/cb7109309_learn-hub.jpg" alt="Cannabis Learning Hub illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
-            <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">
+            </h1>            <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">
               Science-backed cannabis education for everyone — from first-time curious to expert cultivator.
               Six comprehensive topic areas, hundreds of detailed guides.
             </p>
@@ -431,6 +428,15 @@ export default function LearnPage() {
           </section>
 
         </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/learn-hub.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
+          </div>
       </div>
     </>
   );

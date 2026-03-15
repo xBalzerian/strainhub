@@ -118,10 +118,6 @@ export default function StrainsLearnPage() {
             </div>
           </div>
         </div>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-gray-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/95996edd2_strains.jpg" alt="strains illustration" className="w-full h-56 object-cover" />
-              </div>
 
         <div className="max-w-4xl mx-auto px-6 py-12 space-y-14">
 
@@ -171,6 +167,15 @@ export default function StrainsLearnPage() {
           {/* Back to hub */}
           <div className="pt-4 border-t border-gray-200">
             <Link href="/learn" className="text-sm font-bold text-gray-400 hover:text-black flex items-center gap-2">← Back to Learning Hub</Link>
+          </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/strains.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
           </div>
         </div>
       </div>

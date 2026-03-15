@@ -35,12 +35,17 @@ export default function SeedsLearnPage() {
             <span>6 sections</span><span>·</span><span>~69 min total</span><span>·</span>
             <span className="font-semibold" style={{ color: "#92400e" }}>Beginner to Expert</span>
           </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/seeds.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
+          </div>
         </div>
       </div>
-              <div className="mt-6 rounded-2xl overflow-hidden border border-gray-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/9f24ea2a7_seeds.jpg" alt="seeds illustration" className="w-full h-56 object-cover" />
-              </div>
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="space-y-3">
           {SECTIONS.map((s, i) => (

@@ -34,14 +34,20 @@ export default function ConsumptionLearnPage() {
           <Link href="/learn" className="hover:text-black">Learn</Link><span>/</span>
           <span className="text-black font-semibold">Consumption Methods</span>
         </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/consumption.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
+          </div>
       </div>
       <div className="bg-white border-b-2 border-black">
         <div className="max-w-4xl mx-auto px-6 py-14">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0f9ff", color: "#0369a1" }}>💨 Consumption Methods</div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black mb-4">How to Consume<br />Cannabis</h1>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/2ecc8ab6b_consumption.jpg" alt="Cannabis consumption methods illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
-          <p className="text-gray-500 text-lg max-w-xl leading-relaxed mb-6">Every method compared by bioavailability, onset time, duration, health impact, and cost — so you can make informed choices.</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black mb-4">How to Consume<br />Cannabis</h1>          <p className="text-gray-500 text-lg max-w-xl leading-relaxed mb-6">Every method compared by bioavailability, onset time, duration, health impact, and cost — so you can make informed choices.</p>
         </div>
       </div>
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">

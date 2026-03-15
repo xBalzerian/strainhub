@@ -16,16 +16,22 @@ export default function Page() {
           <Link href="/learn/strains" className="hover:text-black">Strains</Link><span>/</span>
           <span className="text-black font-semibold">Indica vs. Sativa: The Science</span>
         </div>
+          {/* Hero Image */}
+          <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/learn/indica-vs-sativa.jpg"
+              alt="Hero illustration"
+              className="w-full h-56 md:h-72 object-cover"
+            />
+          </div>
       </div>
       <div className="bg-white border-b-2 border-black">
         <div className="max-w-3xl mx-auto px-6 py-14">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4" style={{ background: "#f0fdf4", color: "#16a34a" }}>
             Learn Hub
           </div>
-          <h1 className="text-4xl font-black text-black mb-4">Indica vs. Sativa: The Science</h1>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://base44.app/api/apps/69b215547e21a09debcd5b78/files/public/69b215547e21a09debcd5b78/4a9d99ce0_indica-vs-sativa.jpg" alt="Indica vs Sativa comparison illustration" className="w-full h-56 md:h-72 object-cover rounded-2xl border border-gray-100 mt-6 mb-2" />
-          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
+          <h1 className="text-4xl font-black text-black mb-4">Indica vs. Sativa: The Science</h1>          <p className="text-gray-500 text-lg">This comprehensive guide is coming soon. In the meantime, explore related topics in our Learn Hub.</p>
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-12">
