@@ -8,7 +8,7 @@ import StrainCard from "@/components/StrainCard";
 import StrainReviews, { ReviewSummary } from "@/components/StrainReviews";
 
 // ISR: rebuild each strain page at most once every 24 hours
-export const revalidate = 86400;
+export const revalidate = 3600;
 // Allow on-demand rendering for slugs not yet statically built (new strains)
 export const dynamicParams = true;
 
@@ -306,6 +306,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   priority
                   sizes="(max-width: 1024px) 100vw, 380px"
                   className="object-contain bg-white"
+                  unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
                 />
               </div>
             ) : (
