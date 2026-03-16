@@ -7,10 +7,16 @@ import { strainMetadata, strainJsonLd } from "@/lib/seo";
 import StrainCard from "@/components/StrainCard";
 import StrainReviews, { ReviewSummary } from "@/components/StrainReviews";
 
-// Revalidate strain pages every 24h so new strains auto-appear
-export const dynamic = 'force-dynamic';
-// Allow on-demand rendering for slugs not yet statically built
+// ISR: rebuild each strain page at most once every 24 hours
+export const revalidate = 86400;
+// Allow on-demand rendering for slugs not yet statically built (new strains)
 export const dynamicParams = true;
+
+// Pre-build all known strain pages at deploy time
+export async function generateStaticParams() {
+  const slugs = await getAllStrainSlugs();
+  return slugs.map((s) => ({ slug: s.slug }));
+}
 
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
