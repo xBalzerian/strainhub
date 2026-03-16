@@ -12,7 +12,7 @@ const TYPE_STYLES = {
 const TYPE_EMOJI = { Indica: "🍇", Sativa: "☀️", Hybrid: "⚡" };
 const MOOD_EMOJI: Record<string, string> = {
   Relaxed: "😌", Happy: "😄", Euphoric: "🤩", Creative: "🎨",
-  Energetic: "⚡", Sleepy: "😴", Uplifted: "🚀", Focused: "🎯",
+  Energetic: "⚡", Sleepy: "😴", Uplifted: "🚀", Uplifting: "🚀", Focused: "🎯",
   Giggly: "😂", Hungry: "🍔", Tingly: "✨",
 };
 const DIFF_DOT: Record<string, string> = {

@@ -38,6 +38,7 @@ const EFFECT_DESC: Record<string, string> = {
   Energetic: "Boosts energy, motivation, and physical activity. Great for daytime use and exercise.",
   Sleepy: "Promotes drowsiness and helps you fall asleep faster and stay asleep longer.",
   Uplifted: "Lifts your spirits and leaves you feeling positive, optimistic, and sociable.",
+  Uplifting: "Lifts your spirits and leaves you feeling positive, optimistic, and sociable.",
   Focused: "Sharpens mental clarity and concentration. Helps you stay on task without distraction.",
   Hungry: "Stimulates appetite strongly. Also known as 'the munchies.' Great for appetite loss.",
   Giggly: "Induces laughter and a lighthearted, playful, social mood.",
@@ -46,7 +47,7 @@ const EFFECT_DESC: Record<string, string> = {
 
 const MOOD_EMOJI: Record<string, string> = {
   Relaxed: "😌", Happy: "😄", Euphoric: "🤩", Creative: "🎨",
-  Energetic: "⚡", Sleepy: "😴", Uplifted: "🚀", Focused: "🎯",
+  Energetic: "⚡", Sleepy: "😴", Uplifted: "🚀", Uplifting: "🚀", Focused: "🎯",
   Giggly: "😂", Hungry: "🍔", Tingly: "✨",
 };
 
