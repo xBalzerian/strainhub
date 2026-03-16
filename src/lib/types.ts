@@ -1,5 +1,10 @@
 export type StrainType = "Indica" | "Sativa" | "Hybrid";
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface Strain {
   id: string;
   name: string;
@@ -25,4 +30,19 @@ export interface Strain {
   breeder?: string;
   origin_region?: string;
   created_at?: string;
+  // Enriched columns
+  faq?: FaqItem[];
+  negative_effects?: string[];
+  indica_pct?: number;
+  sativa_pct?: number;
+  ruderalis_pct?: number;
+  cbg_min?: number;
+  cbg_max?: number;
+  cbc_min?: number;
+  cbc_max?: number;
+  thcv_min?: number;
+  thcv_max?: number;
+  cbn_min?: number;
+  cbn_max?: number;
+  cannabinoid_data_source?: string;
 }

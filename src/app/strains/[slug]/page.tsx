@@ -262,11 +262,23 @@ export default async function StrainPage({ params }: { params: { slug: string } 
     ? "text-sativa bg-sativa-bg border-sativa-border"
     : "text-hybrid bg-hybrid-bg border-hybrid-border";
 
-  const negativeEffects = derivedNegativeEffects(strain.thc_max, strain.effects || [], strain.type);
-  const ratio = getStrainRatio(strain.type, strain.effects || []);
+  const negativeEffects = (strain.negative_effects && strain.negative_effects.length > 0)
+    ? strain.negative_effects
+    : derivedNegativeEffects(strain.thc_max, strain.effects || [], strain.type);
+  const ratio = (strain.indica_pct != null && strain.sativa_pct != null)
+    ? { indica: strain.indica_pct, sativa: strain.sativa_pct,
+        label: strain.indica_pct > strain.sativa_pct ? "Indica-Dom" : strain.indica_pct < strain.sativa_pct ? "Sativa-Dom" : "Balanced" }
+    : getStrainRatio(strain.type, strain.effects || []);
   const { aromas, flavors: flavorList } = separateAromaFlavor(strain.flavors || []);
   const { environments, pests } = getGrowEnvironment(strain.type, strain.grow_difficulty);
-  const minorCannabinoids = getMinorCannabinoids(strain.thc_max, strain.cbd_max, strain.type);
+  const _derivedCann = getMinorCannabinoids(strain.thc_max, strain.cbd_max, strain.type);
+  const minorCannabinoids = {
+    cbn: strain.cbn_max ?? _derivedCann.cbn,
+    cbg: strain.cbg_max ?? _derivedCann.cbg,
+    thcv: strain.thcv_max ?? _derivedCann.thcv,
+    cbc: strain.cbc_max ?? _derivedCann.cbc,
+  };
+  const cannabinoidSource = strain.cannabinoid_data_source || "estimated";
   const consumptionMethods = getConsumptionMethods(strain.type, strain.thc_max, strain.effects || []);
   const experienceLevel = getExperienceLevel(strain.thc_max, strain.grow_difficulty);
 
@@ -489,7 +501,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   </div>
                 ))}
               </div>
-              <p className="text-[10px] text-gray-400 mt-3">* Minor cannabinoid values (~) are estimated ranges. Exact levels vary by batch and grow conditions.</p>
+              <p className="text-[10px] text-gray-400 mt-3">* {cannabinoidSource === "lab_verified" ? "Lab-verified cannabinoid data." : "Cannabinoid values are AI-estimated based on genetics."} Exact levels vary by batch and grow conditions.</p>
             </div>
 
             {/* RED #1 — Positive Effects */}
@@ -691,32 +703,16 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             <div className="mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">❓ People Also Ask About {strain.name}</h2>
               <div className="flex flex-col gap-3">
-                {[
-                  {
-                    q: `What are the effects of ${strain.name}?`,
-                    a: `${strain.name} is commonly reported to produce ${(strain.effects || []).join(", ")} effects. As a ${strain.type} strain, it's versatile for day or evening use.`,
-                  },
-                  {
-                    q: `How strong is ${strain.name}?`,
-                    a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${potency.replace(/[🔴🟠🟡🟢]/g, "").trim()} potency. ${strain.thc_max >= 22 ? "Best for experienced consumers." : "Great for beginners."}`,
-                  },
-                  {
-                    q: `What does ${strain.name} taste like?`,
-                    a: `${strain.name} features a ${flavorList.join(", ")} flavor profile. The dominant terpene ${strain.terpenes?.[0]} contributes its signature aroma${strain.terpenes?.length > 1 ? `, alongside ${strain.terpenes.slice(1).join(" and ")}` : ""}.`,
-                  },
-                  {
-                    q: `What are the side effects of ${strain.name}?`,
-                    a: `Like most cannabis strains, ${strain.name} may cause ${negativeEffects.join(", ")} especially in higher doses. Start low and go slow if you're new to this strain.`,
-                  },
-                  {
-                    q: `How do I consume ${strain.name}?`,
-                    a: `${strain.name} can be enjoyed through smoking, vaporizing, edibles, or concentrates. ${strain.thc_max >= 22 ? "Given its high THC, start with a small amount and wait before consuming more." : "It's forgiving and works well across all consumption methods."}`,
-                  },
-                  {
-                    q: `What is ${strain.name} good for?`,
-                    a: `Users report ${strain.name} helps with ${(strain.helps_with || []).join(", ")}. It's popular throughout the day depending on the desired effect.`,
-                  },
-                ].map(({ q, a }) => (
+                {(strain.faq && strain.faq.length > 0
+                  ? strain.faq.map(item => ({ q: item.question, a: item.answer }))
+                  : [
+                      { q: `What are the effects of ${strain.name}?`, a: `${strain.name} is commonly reported to produce ${(strain.effects || []).join(", ")} effects. As a ${strain.type} strain, it offers a versatile experience.` },
+                      { q: `How strong is ${strain.name}?`, a: `${strain.name} contains ${strain.thc_min}–${strain.thc_max}% THC — rated ${potency.replace(/[🔴🟠🟡🟢]/g, "").trim()} potency. ${strain.thc_max >= 22 ? "Best for experienced consumers." : "Great for beginners."}` },
+                      { q: `What does ${strain.name} taste like?`, a: `${strain.name} features a ${flavorList.join(", ")} flavor profile with ${strain.terpenes?.[0] || "complex"} terpenes leading the aroma.` },
+                      { q: `What are the side effects of ${strain.name}?`, a: `Like most cannabis strains, ${strain.name} may cause ${negativeEffects.join(", ")} especially in higher doses.` },
+                      { q: `What is ${strain.name} good for?`, a: `Users report ${strain.name} helps with ${(strain.helps_with || []).join(", ")}.` },
+                    ]
+                ).map(({ q, a }) => (
                   <div key={q} className="bg-white border-2 border-black rounded-xl p-4 shadow-brutal-sm">
                     <div className="font-black text-sm mb-1.5">🔍 {q}</div>
                     <div className="text-gray-600 text-xs leading-relaxed">{a}</div>
