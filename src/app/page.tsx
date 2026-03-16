@@ -24,7 +24,7 @@ import Image from "next/image";
 import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
 import StrainCard from "@/components/StrainCard";
 
-export const revalidate = 21600;
+export const revalidate = 60;
 
 export default async function HomePage() {
   const [topStrains, strainsMeta] = await Promise.all([
