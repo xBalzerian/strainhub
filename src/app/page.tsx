@@ -233,14 +233,14 @@ export default async function HomePage() {
               <Link
                 key={cat.title}
                 href={cat.href}
-                className="group bg-black hover:bg-gray-900 border-2 border-black rounded-2xl p-5 transition-all hover:-translate-y-1 shadow-brutal hover:shadow-brutal-lg"
+                className="group flex items-center gap-3 bg-white hover:bg-lime border-2 border-black rounded-xl px-4 py-3.5 transition-all hover:-translate-y-0.5 shadow-brutal-sm hover:shadow-brutal"
               >
-                <span className="text-3xl block mb-3">{cat.emoji}</span>
-                <h3 className="text-white font-black text-base mb-1.5 group-hover:text-lime transition-colors">{cat.title}</h3>
-                <p className="text-gray-400 text-xs leading-relaxed">{cat.desc}</p>
-                <div className="mt-4 flex items-center gap-1 text-lime text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                <span className="text-2xl flex-shrink-0">{cat.emoji}</span>
+                <div className="min-w-0">
+                  <h3 className="font-black text-sm text-black leading-tight">{cat.title}</h3>
+                  <p className="text-gray-500 text-xs leading-snug truncate">{cat.desc}</p>
                 </div>
+                <span className="ml-auto text-gray-400 group-hover:text-black group-hover:translate-x-0.5 transition-all flex-shrink-0 text-sm">→</span>
               </Link>
             ))}
           </div>
@@ -255,13 +255,13 @@ export default async function HomePage() {
               <Link
                 key={article.href}
                 href={article.href}
-                className="group flex items-center gap-4 bg-black hover:bg-gray-900 border-2 border-black rounded-2xl p-4 transition-all shadow-brutal-sm hover:shadow-brutal"
+                className="group flex items-center gap-3 bg-white hover:bg-lime border-2 border-black rounded-xl p-4 transition-all shadow-brutal-sm hover:shadow-brutal hover:-translate-y-0.5"
               >
                 <div className="flex-1 min-w-0">
-                  <div className="text-[10px] font-black text-lime uppercase tracking-widest mb-1">{article.tag}</div>
-                  <div className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-lime transition-colors">{article.title}</div>
+                  <div className="text-[10px] font-black text-black uppercase tracking-widest mb-1 opacity-50">{article.tag}</div>
+                  <div className="text-black font-bold text-sm leading-snug line-clamp-2">{article.title}</div>
                 </div>
-                <span className="text-gray-400 group-hover:text-lime group-hover:translate-x-1 transition-all flex-shrink-0">→</span>
+                <span className="text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all flex-shrink-0">→</span>
               </Link>
             ))}
           </div>
