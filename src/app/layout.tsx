@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: "StrainHub — #1 Cannabis Strain Database | Effects, Genetics & Grow Info",
   },
   description:
-    "Explore 70,000+ cannabis strains with full terpene profiles, cannabinoid data, genetics, grow guides, and effects. The most comprehensive marijuana strain database — free forever.",
+    "Search 290+ cannabis strains with full terpene profiles, cannabinoid data, genetics, grow guides, and effects. The most detailed marijuana strain database — free forever.",
   metadataBase: new URL("https://www.strainhub.org"),
   keywords: [
     "cannabis strains", "marijuana strains", "weed strains", "strain database",
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         "@id": "https://www.strainhub.org/#website",
         "url": "https://www.strainhub.org",
         "name": "StrainHub",
-        "description": "The most comprehensive cannabis strain database — 70,000+ strains with terpenes, genetics, and grow guides.",
+        "description": "The most detailed cannabis strain database — 290+ strains with full terpenes, genetics, and grow guides.",
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
