@@ -25,7 +25,7 @@ const FREE_FEATURES = [
 ];
 
 const PRO_FEATURES = [
-  { icon: "♾️", label: "Unlimited strain views", note: "Browse all 70,000+ strains" },
+  { icon: "♾️", label: "Unlimited strain views", note: "Browse all cannabis strains" },
   { icon: "♾️", label: "Unlimited Learn Hub pages", note: "Read as much as you want" },
   { icon: "♾️", label: "Unlimited AI chats", note: "Deep dive into any topic" },
   { icon: "♾️", label: "Unlimited plant diagnoses", note: "Upload & diagnose every day" },
