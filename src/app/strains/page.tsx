@@ -5,8 +5,8 @@ import StrainCard from "@/components/StrainCard";
 import type { Strain } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Cannabis Strain Database — Browse 100+ Strains | StrainHub",
-  description: "Browse and filter 100+ cannabis strains by type, effects, terpenes, and grow difficulty. Find your perfect Indica, Sativa, or Hybrid strain.",
+  title: "Cannabis Strain Database — Browse all Strains | StrainHub",
+  description: "Browse and filter cannabis strains by type, effects, terpenes, and grow difficulty. Find your perfect Indica, Sativa, or Hybrid strain.",
   alternates: { canonical: "https://www.strainhub.org/strains" },
 };
 
