@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "StrainHub — Cannabis Strain Database | Effects, Genetics & Terpenes",
-  description: "Search 290+ cannabis strains with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides. The most detailed marijuana strain database — free forever.",
+  description: "The complete cannabis strain database. Search every strain with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides — free forever.",
   keywords: [
     "cannabis strain database", "marijuana strains", "weed strains",
     "cannabis effects", "terpene profiles", "THC CBD levels",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "StrainHub — Cannabis Strain Database",
-    description: "Search 290+ cannabis strains with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides. Free forever.",
+    description: "The complete cannabis strain database. Search every strain with full terpene profiles, effects, genetics, and grow guides. Free forever.",
     url: "https://www.strainhub.org",
     type: "website",
     images: [{ url: "https://www.strainhub.org/og-image.png", width: 1200, height: 630, alt: "StrainHub Cannabis Strain Database" }],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "StrainHub — Cannabis Strain Database",
-    description: "Search 290+ cannabis strains with genetics, terpenes, effects, and grow guides. Free forever.",
+    description: "The complete cannabis strain database — search every strain with genetics, terpenes, effects, and grow guides. Free forever.",
   },
   alternates: { canonical: "https://www.strainhub.org" },
 };
