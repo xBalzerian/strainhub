@@ -82,7 +82,7 @@ export default function TerpenesPage() {
               </p>
               <div className="grid grid-cols-3 gap-4 mt-6">
                 {[
-                  { num: "200+", label: "Terpenes identified in cannabis" },
+                  { num: "150+", label: "Terpenes identified in cannabis" },
                   { num: "50%+", label: "Often just myrcene alone" },
                   { num: "1", label: "Terpene that activates CB2 receptors (β-caryophyllene)" },
                 ].map(s => (
