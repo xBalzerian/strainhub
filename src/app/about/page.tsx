@@ -23,7 +23,7 @@ export default function AboutPage() {
         <div className="bg-white border-2 border-black rounded-3xl shadow-brutal-sm p-8 mb-6 space-y-4">
           <h2 className="font-black text-xl">What We Cover</h2>
           <ul className="space-y-2 text-gray-600">
-            {["70,000+ cannabis strains with detailed profiles", "Full genetic lineages back to landrace strains", "Terpene profiles with effect breakdowns", "Grow guides: difficulty, yield, flowering times", "AI-powered strain finder and plant diagnosis", "Learning hub: free educational content for everyone"].map(item => (
+            {["cannabis strains with detailed profiles", "Full genetic lineages back to landrace strains", "Terpene profiles with effect breakdowns", "Grow guides: difficulty, yield, flowering times", "AI-powered strain finder and plant diagnosis", "Learning hub: free educational content for everyone"].map(item => (
               <li key={item} className="flex items-start gap-2"><span className="text-brand font-black mt-0.5">✓</span>{item}</li>
             ))}
           </ul>
