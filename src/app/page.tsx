@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "StrainHub — #1 Cannabis Strain Database | Effects, Genetics & Grow Info",
-  description: "Discover 100+ cannabis strains with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides. The most complete cannabis strain database — free forever.",
-  keywords: ["cannabis strains", "marijuana strains", "strain database", "THC", "CBD", "terpenes", "cannabis effects", "grow guide", "best cannabis strains", "indica sativa hybrid"],
+  title: "StrainHub — Cannabis Strain Database | Effects, Genetics & Terpenes",
+  description: "Search 290+ cannabis strains with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides. The most detailed marijuana strain database — free forever.",
+  keywords: [
+    "cannabis strain database", "marijuana strains", "weed strains",
+    "cannabis effects", "terpene profiles", "THC CBD levels",
+    "strain genetics", "indica sativa hybrid", "grow guide", "best cannabis strains"
+  ],
   openGraph: {
-    title: "StrainHub — #1 Cannabis Strain Database",
-    description: "Discover 100+ cannabis strains with full terpene profiles, effects, genetics, and grow guides. Free forever.",
+    title: "StrainHub — Cannabis Strain Database",
+    description: "Search 290+ cannabis strains with full terpene profiles, THC/CBD levels, effects, genetics, and grow guides. Free forever.",
     url: "https://www.strainhub.org",
     type: "website",
-    images: [{ url: "https://www.strainhub.org/og-image.jpg", width: 1200, height: 630, alt: "StrainHub Cannabis Strain Database" }],
+    images: [{ url: "https://www.strainhub.org/og-image.png", width: 1200, height: 630, alt: "StrainHub Cannabis Strain Database" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "StrainHub — Cannabis Strain Database",
-    description: "Explore 100+ cannabis strains with genetics, terpenes, effects, and grow guides.",
+    description: "Search 290+ cannabis strains with genetics, terpenes, effects, and grow guides. Free forever.",
   },
   alternates: { canonical: "https://www.strainhub.org" },
 };
