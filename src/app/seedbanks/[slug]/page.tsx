@@ -20,13 +20,20 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const location = [sb.city, sb.state_province, sb.country].filter(Boolean).join(", ");
   const seedTypes = Array.isArray(sb.seed_types) ? sb.seed_types.join(", ") : "cannabis";
   const year = new Date().getFullYear();
-  const title = `${sb.name} Review ${year} — ${seedTypes} Seeds, Strains & Info | StrainHub`;
+  // Use primary seed type only to keep title short
+  const primaryType = Array.isArray(sb.seed_types) && sb.seed_types.length > 0
+    ? sb.seed_types[0]
+    : "Cannabis";
+  // Title format: "[Name] Review 2026 — [Type] Seeds | StrainHub" (~60-70 chars)
+  const titleText = `${sb.name} Review ${year} — ${primaryType} Seeds`;
   const desc = sb.short_bio
     ? `${sb.short_bio} Shop ${seedTypes} seeds${location ? ` — ${location}` : ""}. Full profile: ratings, strains, social & reviews on StrainHub.`
     : `${sb.name} seed bank — ${seedTypes} seeds. Ratings, strains, shipping info and grower reviews on StrainHub.`;
 
   return {
-    title,
+    title: {
+      absolute: `${titleText} | StrainHub`,
+    },
     description: desc,
     keywords: [
       sb.name,
@@ -40,14 +47,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       ...(Array.isArray(sb.seed_types) ? sb.seed_types.map((t: string) => `buy ${t.toLowerCase()} seeds`) : []),
     ],
     openGraph: {
-      title,
+      title: `${titleText} | StrainHub`,
       description: desc,
       url: `https://www.strainhub.org/seedbanks/${params.slug}`,
       type: "website",
       siteName: "StrainHub",
       images: sb.logo_url ? [{ url: sb.logo_url, width: 400, height: 400, alt: `${sb.name} logo` }] : [],
     },
-    twitter: { card: "summary_large_image", title, description: desc },
+    twitter: { card: "summary_large_image", title: `${titleText} | StrainHub`, description: desc },
     alternates: { canonical: `https://www.strainhub.org/seedbanks/${params.slug}` },
   };
 }
