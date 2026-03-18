@@ -160,31 +160,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* AD BANNERS */}
-      <div className="max-w-7xl mx-auto px-6 mb-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <a href="https://www.cropkingseeds.com" target="_blank" rel="noopener noreferrer sponsored" className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group">
-          <img src="/cropking-logo.png" alt="Crop King Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-sm font-black truncate">Crop King Seeds</span>
-              <span className="text-[8px] text-gray-400 border border-gray-200 px-1 py-0.5 rounded flex-shrink-0">AD</span>
-            </div>
-            <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">80% germination guarantee · Ships worldwide</span>
-          </div>
-          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">Shop Seeds →</span>
-        </a>
-        <a href="https://www.rocketseeds.com" target="_blank" rel="noopener noreferrer sponsored" className="bg-white border-2 border-black rounded-2xl px-4 py-3 flex items-center gap-3 shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all group">
-          <img src="/rocket-logo.svg" alt="Rocket Seeds" className="h-10 w-10 rounded-xl object-contain flex-shrink-0 border border-gray-100" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-sm font-black truncate">Rocket Seeds</span>
-              <span className="text-[8px] text-gray-400 border border-gray-200 px-1 py-0.5 rounded flex-shrink-0">AD</span>
-            </div>
-            <span className="text-[11px] text-gray-500 leading-tight line-clamp-1">Free shipping over $200 · 10 free seeds on $420+</span>
-          </div>
-          <span className="flex-shrink-0 bg-lime border-2 border-black font-black text-[11px] px-3 py-2 rounded-xl shadow-brutal-sm group-hover:shadow-brutal transition-all whitespace-nowrap">Shop Seeds →</span>
-        </a>
-      </div>
+
 
       {/* TOP STRAINS — 20 on homepage */}
       <section className="max-w-7xl mx-auto px-6 py-14">
@@ -373,6 +349,29 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* SPONSOR AD SLOTS — reserved for future advertisers */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl px-4 py-5 flex items-center gap-3 opacity-40">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <div className="h-3 bg-gray-200 rounded w-32" />
+              <div className="h-2 bg-gray-100 rounded w-48" />
+            </div>
+            <div className="w-24 h-8 bg-gray-100 rounded-xl flex-shrink-0" />
+          </div>
+          <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl px-4 py-5 flex items-center gap-3 opacity-40">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <div className="h-3 bg-gray-200 rounded w-32" />
+              <div className="h-2 bg-gray-100 rounded w-48" />
+            </div>
+            <div className="w-24 h-8 bg-gray-100 rounded-xl flex-shrink-0" />
+          </div>
+        </div>
+      </div>
+
     </>
   );
 }
