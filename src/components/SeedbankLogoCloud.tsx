@@ -2,7 +2,52 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const BANKS = [{"slug": "compound-genetics", "name": "Compound Genetics"}, {"slug": "cookies-fam-genetics", "name": "Cookies Fam"}, {"slug": "seed-junky-genetics", "name": "Seed Junky"}, {"slug": "ethos-genetics", "name": "Ethos Genetics"}, {"slug": "barneys-farm", "name": "Barney's Farm"}, {"slug": "ilgm", "name": "ILGM"}, {"slug": "royal-queen-seeds", "name": "Royal Queen Seeds"}, {"slug": "seedsman", "name": "Seedsman"}, {"slug": "crop-king-seeds", "name": "Crop King Seeds"}, {"slug": "mephisto-genetics", "name": "Mephisto Genetics"}, {"slug": "dutch-passion", "name": "Dutch Passion"}, {"slug": "fast-buds", "name": "Fast Buds"}];
+const BANKS = [
+  {
+    "slug": "ethos-genetics",
+    "name": "Ethos Genetics"
+  },
+  {
+    "slug": "barneys-farm",
+    "name": "Barney's Farm"
+  },
+  {
+    "slug": "ilgm",
+    "name": "ILGM"
+  },
+  {
+    "slug": "royal-queen-seeds",
+    "name": "Royal Queen Seeds"
+  },
+  {
+    "slug": "seedsman",
+    "name": "Seedsman"
+  },
+  {
+    "slug": "crop-king-seeds",
+    "name": "Crop King Seeds"
+  },
+  {
+    "slug": "mephisto-genetics",
+    "name": "Mephisto Genetics"
+  },
+  {
+    "slug": "dutch-passion",
+    "name": "Dutch Passion"
+  },
+  {
+    "slug": "fast-buds",
+    "name": "Fast Buds"
+  },
+  {
+    "slug": "rocket-seeds",
+    "name": "Rocket Seeds"
+  },
+  {
+    "slug": "gtr-seeds",
+    "name": "GTR Seeds"
+  }
+];
 
 function BankLogo({ slug, name }: { slug: string; name: string }) {
   const [err, setErr] = useState(false);
