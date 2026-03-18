@@ -162,23 +162,36 @@ export function strainJsonLd(strain: Strain) {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Drug",
+        "@type": "Thing",
         "@id": strainUrl,
         name: strain.name,
         description: strain.description,
         url: strainUrl,
         image: strain.image_url,
-        drugClass: `Cannabis ${strain.type}`,
-        activeIngredient: [
-          `THC ${thcRange}`,
-          strain.cbd_max ? `CBD ${strain.cbd_max}%` : null,
-        ].filter(Boolean).join(", "),
+        alternateName: `${strain.name} cannabis strain`,
         ...(strain.terpenes?.length && {
-          additionalProperty: strain.terpenes.map(t => ({
-            "@type": "PropertyValue",
-            name: "Terpene",
-            value: t,
-          })),
+          additionalProperty: [
+            {
+              "@type": "PropertyValue",
+              name: "Type",
+              value: strain.type,
+            },
+            {
+              "@type": "PropertyValue",
+              name: "THC Content",
+              value: `${thcRange}%`,
+            },
+            ...(strain.cbd_max ? [{
+              "@type": "PropertyValue",
+              name: "CBD Content",
+              value: `${strain.cbd_max}%`,
+            }] : []),
+            ...strain.terpenes.map(t => ({
+              "@type": "PropertyValue",
+              name: "Terpene",
+              value: t,
+            })),
+          ],
         }),
       },
       {
