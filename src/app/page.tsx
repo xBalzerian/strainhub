@@ -27,6 +27,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
 import StrainCard from "@/components/StrainCard";
+import SeedbankLogoCloud from "@/components/SeedbankLogoCloud";
 
 export const revalidate = 60;
 
@@ -231,41 +232,7 @@ export default async function HomePage() {
           {/* Floating logo cloud — top 8 */}
           <div className="relative mb-10">
             {/* Scrollable logo row — mobile horizontal scroll, desktop wraps */}
-            <div className="flex gap-3 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible scrollbar-hide snap-x snap-mandatory">
-              {[
-                { slug: "compound-genetics",    name: "Compound Genetics",    country: "USA" },
-                { slug: "cookies-fam-genetics",  name: "Cookies Fam",          country: "USA" },
-                { slug: "seed-junky-genetics",   name: "Seed Junky",           country: "USA" },
-                { slug: "ethos-genetics",        name: "Ethos Genetics",       country: "USA" },
-                { slug: "royal-queen-seeds",     name: "Royal Queen Seeds",    country: "NL"  },
-                { slug: "barneys-farm",          name: "Barney's Farm",        country: "NL"  },
-                { slug: "seedsman",              name: "Seedsman",             country: "ES"  },
-                { slug: "crop-king-seeds",       name: "Crop King Seeds",      country: "CA"  },
-                { slug: "ilgm",                  name: "ILGM",                 country: "USA" },
-                { slug: "mephisto-genetics",     name: "Mephisto Genetics",    country: "USA" },
-              ].map((bank) => (
-                <Link
-                  key={bank.slug}
-                  href={`/seedbanks/${bank.slug}`}
-                  className="flex-shrink-0 snap-start group flex flex-col items-center gap-2 bg-white border-2 border-brand/15 hover:border-lime rounded-2xl px-4 py-4 shadow-sm hover:shadow-brutal-sm transition-all hover:-translate-y-0.5 w-[90px] sm:w-[100px]"
-                >
-                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-off-white border border-brand/10 flex-shrink-0">
-                    <img
-                      src={`https://raw.githubusercontent.com/xBalzerian/strainhub/main/public/images/logos/${bank.slug}.png`}
-                      alt={bank.name}
-                      className="w-full h-full object-contain p-1"
-                      loading="lazy"
-                      onError={(e) => {
-                        const t = e.target as HTMLImageElement;
-                        t.style.display="none";
-                        t.parentElement!.innerHTML = `<span class="w-full h-full flex items-center justify-center text-xl font-black text-lime">${bank.name.charAt(0)}</span>`;
-                      }}
-                    />
-                  </div>
-                  <span className="text-[10px] font-black text-brand text-center leading-tight line-clamp-2">{bank.name}</span>
-                </Link>
-              ))}
-            </div>
+            <SeedbankLogoCloud />
           </div>
 
           {/* Main CTA card */}

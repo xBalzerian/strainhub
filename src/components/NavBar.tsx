@@ -155,9 +155,9 @@ export default function NavBar() {
 
   const navLinks = [
     { href: "/strains", label: "Strains" },
-    { href: "/seedbanks", label: "🌱 Seed Banks" },
-    { href: "/chat", label: "💬 AI Chat" },
-    { href: "/diagnose", label: "🔬 Diagnose" },
+    { href: "/seedbanks", label: "Seed Banks" },
+    { href: "/chat", label: "AI Chat" },
+    { href: "/diagnose", label: "Diagnose" },
     { href: "/pricing", label: "Pricing" },
   ];
 
@@ -277,7 +277,7 @@ export default function NavBar() {
                 <div className="border-t border-gray-100 bg-gray-50 px-6 py-3 flex items-center gap-6">
                   {[
                     { label: "🌡️ Deficiency Diagnosis", href: "/learn/deficiencies" },
-                    { label: "📚 Growing Guide", href: "/learn/grow-guide" },
+                    { label: " Growing Guide", href: "/learn/grow-guide" },
                     { label: "🌍 Landrace Strains", href: "/learn/landraces" },
                   ].map((l) => (
                     <Link
