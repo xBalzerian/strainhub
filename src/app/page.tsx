@@ -209,7 +209,106 @@ export default async function HomePage() {
         </div>
       </section>
 
-{/* LEARN HUB SECTION */}
+
+      {/* ── SEED BANKS ─────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-[#F7FFF0]">
+        <div className="max-w-6xl mx-auto">
+
+          {/* Header */}
+          <div className="text-center mb-10 sm:mb-12">
+            <div className="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-1.5 rounded-full text-xs font-semibold text-gray-500 mb-5 shadow-sm">
+              Verified Seed Banks
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-brand leading-tight mb-3">
+              Find the Best{" "}
+              <span className="bg-lime px-2 rounded-lg">Seed Banks</span>
+            </h2>
+            <p className="text-gray-500 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
+              40+ vetted breeders and retailers — from boutique US genetics houses to world-famous international seed banks.
+            </p>
+          </div>
+
+          {/* Logo cloud */}
+          <div className="mb-10 sm:mb-12">
+            <SeedbankLogoCloud />
+          </div>
+
+          {/* CTA card */}
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-lime via-green-400 to-lime" />
+            <div className="grid grid-cols-1 md:grid-cols-2">
+
+              {/* Left col */}
+              <div className="p-6 sm:p-8 md:border-r border-gray-100">
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  {([
+                    { num: "40+",  label: "Verified Banks", bg: "bg-lime/30" },
+                    { num: "14",   label: "Countries",       bg: "bg-blue-50" },
+                    { num: "5+",   label: "Seed Types",      bg: "bg-green-50" },
+                    { num: "4.5★", label: "Avg Rating",      bg: "bg-yellow-50" },
+                  ] as {num:string;label:string;bg:string}[]).map(s => (
+                    <div key={s.label} className={`${s.bg} rounded-2xl p-4`}>
+                      <div className="text-2xl font-black text-brand leading-none mb-0.5">{s.num}</div>
+                      <div className="text-[11px] text-gray-500 font-medium">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-2 mb-6">
+                  {["Feminized, Auto, Regular & more", "US domestic + worldwide shipping", "Boutique breeders to global retailers", "Socials, reviews & strain profiles"].map(f => (
+                    <div key={f} className="flex items-center gap-2.5 text-sm text-gray-600">
+                      <span className="w-4 h-4 rounded-full bg-lime flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+                <Link href="/seedbanks" className="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-brand text-lime font-black px-6 py-3 rounded-xl text-sm hover:bg-brand/90 transition-colors">
+                  Browse All Seed Banks →
+                </Link>
+              </div>
+
+              {/* Right col */}
+              <div className="p-6 sm:p-8 bg-gray-50/60">
+                <h3 className="text-base font-black text-brand mb-1">Shop by Region</h3>
+                <p className="text-gray-400 text-xs mb-4">Find banks that ship to you</p>
+                <div className="grid grid-cols-2 gap-2 mb-6">
+                  {([
+                    { label: "🇺🇸 USA",           href: "/seedbanks?country=USA",           count: "34 banks" },
+                    { label: "🇨🇦 Canada",         href: "/seedbanks?country=Canada",         count: "8 banks"  },
+                    { label: "🇳🇱 Netherlands",    href: "/seedbanks?country=Netherlands",    count: "7 banks"  },
+                    { label: "🇪🇸 Spain",          href: "/seedbanks?country=Spain",          count: "5 banks"  },
+                    { label: "🌍 Ships Worldwide", href: "/seedbanks?shipping=International", count: "42 banks" },
+                    { label: "✓ Verified Only",    href: "/seedbanks?verified=true",          count: "20 banks" },
+                  ] as {label:string;href:string;count:string}[]).map(r => (
+                    <Link key={r.label} href={r.href} className="group flex flex-col gap-0.5 bg-white hover:bg-lime border border-gray-100 hover:border-lime rounded-xl px-3 py-2.5 transition-all">
+                      <span className="text-xs font-semibold text-brand leading-tight">{r.label}</span>
+                      <span className="text-[10px] text-gray-400 group-hover:text-brand/70">{r.count}</span>
+                    </Link>
+                  ))}
+                </div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Seed Types</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { label: "Feminized", color: "bg-pink-50 text-pink-700 border-pink-100",      href: "/seedbanks?type=Feminized" },
+                    { label: "Auto",      color: "bg-blue-50 text-blue-700 border-blue-100",      href: "/seedbanks?type=Auto" },
+                    { label: "Regular",   color: "bg-amber-50 text-amber-700 border-amber-100",   href: "/seedbanks?type=Regular" },
+                    { label: "CBD",       color: "bg-green-50 text-green-700 border-green-100",   href: "/seedbanks?type=CBD" },
+                    { label: "F1 Hybrid", color: "bg-purple-50 text-purple-700 border-purple-100",href: "/seedbanks?type=F1+Hybrid" },
+                  ] as {label:string;color:string;href:string}[]).map(t => (
+                    <Link key={t.label} href={t.href} className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all hover:scale-105 ${t.color}`}>{t.label}</Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* LEARN HUB SECTION */}
       <section className="bg-white border-y-2 border-black py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
