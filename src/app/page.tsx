@@ -97,27 +97,105 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero preview cards */}
-          <div className="hidden lg:grid grid-cols-2 gap-4">
-            {topStrains.slice(0, 4).map((s, i) => (
-              <Link
-                key={s.slug}
-                href={`/strains/${s.slug}`}
-                className={`group bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-x-0.5 hover:-translate-y-1 transition-all ${i % 2 === 0 ? "mt-6" : "-mt-3"}`}
-              >
-                {s.image_url && (
-                  <div className="relative w-full aspect-square">
-                    <Image src={s.image_url} alt={s.name} fill sizes="200px" className="object-contain p-1" priority={i < 2} />
+          {/* Hero — premium asymmetric strain showcase */}
+          <div className="hidden lg:flex gap-4 items-end h-[520px]">
+            {/* Col 1 — tall featured card */}
+            {topStrains[0] && (
+              <Link href={`/strains/${topStrains[0].slug}`} className="group flex-[1.2] h-full flex flex-col bg-brand border-2 border-black rounded-3xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all relative">
+                <div className="absolute top-3 left-3 z-10 bg-lime border border-brand rounded-full px-2.5 py-0.5 text-[10px] font-black text-brand uppercase tracking-widest">#1 Popular</div>
+                <div className="flex-1 relative">
+                  {topStrains[0].image_url && (
+                    <Image src={topStrains[0].image_url} alt={topStrains[0].name} fill sizes="260px" className="object-contain p-4" priority />
+                  )}
+                </div>
+                <div className="p-4 bg-brand border-t-2 border-white/10">
+                  <div className="font-black text-white text-base leading-tight">{topStrains[0].name}</div>
+                  <div className={`text-xs font-bold mt-0.5 ${topStrains[0].type === "Indica" ? "text-purple-300" : topStrains[0].type === "Sativa" ? "text-yellow-300" : "text-lime"}`}>
+                    {topStrains[0].type} · THC {topStrains[0].thc_max}%
                   </div>
-                )}
-                <div className="p-3">
-                  <div className="font-black text-sm">{s.name}</div>
-                  <div className={`text-xs font-bold mt-0.5 ${s.type === "Indica" ? "text-indica" : s.type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
-                    {s.type} · THC {s.thc_max}%
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {(topStrains[0].effects || []).slice(0,3).map((e:string)=>(
+                      <span key={e} className="text-[9px] font-bold bg-white/10 text-white/70 px-2 py-0.5 rounded-full">{e}</span>
+                    ))}
                   </div>
                 </div>
               </Link>
-            ))}
+            )}
+
+            {/* Col 2 — two stacked + terpene strip */}
+            <div className="flex-1 flex flex-col gap-3 h-full">
+              {topStrains[1] && (
+                <Link href={`/strains/${topStrains[1].slug}`} className="group flex-1 flex bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
+                  <div className="relative w-28 flex-shrink-0 border-r-2 border-black">
+                    {topStrains[1].image_url && <Image src={topStrains[1].image_url} alt={topStrains[1].name} fill sizes="112px" className="object-contain p-2" />}
+                  </div>
+                  <div className="p-3 flex flex-col justify-center">
+                    <div className="font-black text-sm leading-tight">{topStrains[1].name}</div>
+                    <div className={`text-xs font-bold mt-0.5 ${topStrains[1].type === "Indica" ? "text-indica" : topStrains[1].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
+                      {topStrains[1].type} · THC {topStrains[1].thc_max}%
+                    </div>
+                    <div className="mt-1.5 flex gap-1 flex-wrap">
+                      {(topStrains[1].effects||[]).slice(0,2).map((e:string)=>(
+                        <span key={e} className="text-[9px] bg-lime/30 text-brand font-bold px-1.5 py-0.5 rounded-full">{e}</span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              )}
+              {topStrains[2] && (
+                <Link href={`/strains/${topStrains[2].slug}`} className="group flex-1 flex bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
+                  <div className="relative w-28 flex-shrink-0 border-r-2 border-black">
+                    {topStrains[2].image_url && <Image src={topStrains[2].image_url} alt={topStrains[2].name} fill sizes="112px" className="object-contain p-2" />}
+                  </div>
+                  <div className="p-3 flex flex-col justify-center">
+                    <div className="font-black text-sm leading-tight">{topStrains[2].name}</div>
+                    <div className={`text-xs font-bold mt-0.5 ${topStrains[2].type === "Indica" ? "text-indica" : topStrains[2].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
+                      {topStrains[2].type} · THC {topStrains[2].thc_max}%
+                    </div>
+                    <div className="mt-1.5 flex gap-1 flex-wrap">
+                      {(topStrains[2].effects||[]).slice(0,2).map((e:string)=>(
+                        <span key={e} className="text-[9px] bg-lime/30 text-brand font-bold px-1.5 py-0.5 rounded-full">{e}</span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              )}
+              {/* Terpene mini-strip */}
+              <div className="bg-lime border-2 border-black rounded-2xl px-4 py-3 shadow-brutal-sm flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[9px] font-black uppercase tracking-widest text-brand/60">Most Common Terpene</div>
+                  <div className="font-black text-brand text-sm">Myrcene · Caryophyllene</div>
+                  <div className="text-[10px] text-brand/60 mt-0.5">in top strains this week</div>
+                </div>
+                <span className="text-2xl">🧬</span>
+              </div>
+            </div>
+
+            {/* Col 3 — one card + live badge */}
+            <div className="flex flex-col gap-3 w-44 flex-shrink-0">
+              {topStrains[3] && (
+                <Link href={`/strains/${topStrains[3].slug}`} className="group flex-1 flex flex-col bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
+                  <div className="relative flex-1">
+                    {topStrains[3].image_url && <Image src={topStrains[3].image_url} alt={topStrains[3].name} fill sizes="176px" className="object-contain p-2" />}
+                  </div>
+                  <div className="p-3 border-t-2 border-black">
+                    <div className="font-black text-xs leading-tight">{topStrains[3].name}</div>
+                    <div className={`text-[10px] font-bold mt-0.5 ${topStrains[3].type === "Indica" ? "text-indica" : topStrains[3].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
+                      {topStrains[3].type} · THC {topStrains[3].thc_max}%
+                    </div>
+                  </div>
+                </Link>
+              )}
+              {/* live indicator */}
+              <div className="bg-brand border-2 border-black rounded-2xl px-3 py-3 shadow-brutal-sm text-center">
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-lime">Live DB</span>
+                </div>
+                <div className="text-white font-black text-lg leading-none">{topStrains.length}+</div>
+                <div className="text-white/50 text-[10px] mt-0.5">strains &amp; growing</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -350,27 +428,48 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SPONSOR AD SLOTS — reserved for future advertisers */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl px-4 py-5 flex items-center gap-3 opacity-40">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
-            <div className="flex-1 space-y-1.5">
-              <div className="h-3 bg-gray-200 rounded w-32" />
-              <div className="h-2 bg-gray-100 rounded w-48" />
+      {/* ADVERTISE CTA — inviting to brand owners */}
+      <section className="max-w-7xl mx-auto px-6 py-10">
+        <Link href="/advertise" className="group block w-full">
+          <div className="relative overflow-hidden bg-brand border-2 border-brand rounded-3xl shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all duration-200">
+            {/* dot grid bg */}
+            <div className="absolute inset-0 opacity-[0.06]" style={{backgroundImage:"radial-gradient(circle, #AAFF00 1px, transparent 1px)",backgroundSize:"28px 28px"}} />
+            <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6 px-8 py-8 sm:py-7">
+              {/* Left — headline */}
+              <div className="flex items-center gap-5 flex-1 min-w-0">
+                <div className="hidden sm:flex flex-shrink-0 w-14 h-14 rounded-2xl bg-lime/15 border border-lime/30 items-center justify-center text-2xl">📢</div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-lime/60">Advertising</span>
+                    <span className="w-1 h-1 rounded-full bg-lime/40 inline-block" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-lime/60">100K+ Monthly Visitors</span>
+                  </div>
+                  <h3 className="text-white font-black text-lg sm:text-xl leading-tight">
+                    Your brand deserves to be here.{" "}
+                    <span className="text-lime">Partner with StrainHub.</span>
+                  </h3>
+                  <p className="text-white/50 text-sm mt-1 hidden sm:block">Reach growers, patients &amp; connoisseurs actively searching for products like yours.</p>
+                </div>
+              </div>
+              {/* Right — stats + CTA */}
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="hidden md:flex gap-4 text-center">
+                  {[["100K+","Monthly Visitors"],["5:20","Avg Session"],["62","Seed Banks"]].map(([n,l])=>(
+                    <div key={l}>
+                      <div className="text-lime font-black text-lg leading-none">{n}</div>
+                      <div className="text-white/40 text-[10px] font-bold mt-0.5 whitespace-nowrap">{l}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-10 w-px bg-white/10 hidden md:block" />
+                <span className="flex-shrink-0 bg-lime text-brand font-black text-sm px-5 py-3 rounded-xl border border-brand group-hover:bg-lime/90 transition-all shadow-md">
+                  Advertise with Us →
+                </span>
+              </div>
             </div>
-            <div className="w-24 h-8 bg-gray-100 rounded-xl flex-shrink-0" />
           </div>
-          <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl px-4 py-5 flex items-center gap-3 opacity-40">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
-            <div className="flex-1 space-y-1.5">
-              <div className="h-3 bg-gray-200 rounded w-32" />
-              <div className="h-2 bg-gray-100 rounded w-48" />
-            </div>
-            <div className="w-24 h-8 bg-gray-100 rounded-xl flex-shrink-0" />
-          </div>
-        </div>
-      </div>
+        </Link>
+      </section>
 
     </>
   );
