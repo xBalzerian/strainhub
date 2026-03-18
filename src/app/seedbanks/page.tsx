@@ -11,10 +11,10 @@ const supabase = createClient(
 );
 
 export const metadata: Metadata = {
-  title: "Best Cannabis Seed Banks 2026 | Reviews & Rankings | StrainHub",
+  title: "Best Cannabis Seed Banks | Reviews, Ratings & Rankings | StrainHub",
   description: "Browse 60+ top cannabis seed banks — US, Canada & international. Compare ratings, seed types, shipping info, and genetics. Find your perfect seed source.",
   openGraph: {
-    title: "Best Cannabis Seed Banks 2026 | StrainHub",
+    title: "Best Cannabis Seed Banks | Reviews, Ratings & Rankings | StrainHub",
     description: "60+ top cannabis seed banks ranked by the community.",
     type: "website",
   },
