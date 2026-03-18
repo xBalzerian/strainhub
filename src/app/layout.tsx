@@ -141,8 +141,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <AuthCodeHandler />
           <NavBar />
-          <AdvertiseBanner />
           <main className="flex-1 pt-16">
+            <AdvertiseBanner />
             {children}
           </main>
           <Footer />
