@@ -6,18 +6,47 @@ import { supabase } from "@/lib/supabase";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-async function getSeedbank(slug: string) {
+interface FaqItem { question: string; answer: string; }
+interface SeedbankDetail {
+  id: string;
+  name: string;
+  slug: string;
+  country: string;
+  state_province: string;
+  city: string;
+  founded_year: number;
+  website: string;
+  description: string;
+  short_bio: string;
+  logo_url: string | null;
+  notable_strains: string[];
+  seed_types: string[];
+  shipping_regions: string[];
+  payment_methods: string[];
+  rating: number;
+  review_count: number;
+  social_instagram: string | null;
+  social_twitter: string | null;
+  is_verified: boolean;
+  rank_popularity: number;
+  faq: FaqItem[];
+}
+
+async function getSeedbank(slug: string): Promise<SeedbankDetail | null> {
   const { data } = await supabase
     .from("seedbanks")
     .select("*")
     .eq("slug", slug)
     .single();
-  return data;
+  return data as SeedbankDetail | null;
 }
 
-async function getAllSeedbankSlugs() {
-  const { data } = await supabase.from("seedbanks").select("slug").eq("is_active", true);
-  return (data || []).map(s => ({ slug: s.slug }));
+async function getAllSeedbankSlugs(): Promise<{ slug: string }[]> {
+  const { data } = await supabase
+    .from("seedbanks")
+    .select("slug")
+    .eq("is_active", true);
+  return (data || []).map(s => ({ slug: s.slug as string }));
 }
 
 export async function generateStaticParams() {
@@ -29,7 +58,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!sb) return { title: "Seed Bank Not Found" };
   return {
     title: `${sb.name} — Cannabis Seed Bank Profile | StrainHub`,
-    description: sb.short_bio || `${sb.name} is a cannabis seed bank based in ${sb.city}, ${sb.state_province}. Learn about their genetics, notable strains, shipping, and reviews.`,
+    description: sb.short_bio || `${sb.name} is a cannabis seed bank based in ${sb.city}, ${sb.state_province}.`,
     alternates: { canonical: `https://www.strainhub.org/seedbanks/${sb.slug}` },
     openGraph: {
       title: `${sb.name} | StrainHub`,
@@ -42,7 +71,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
-      {[1,2,3,4,5].map(i => (
+      {[1, 2, 3, 4, 5].map(i => (
         <span key={i} className={`text-lg ${i <= Math.round(rating) ? "text-yellow-400" : "text-gray-200"}`}>★</span>
       ))}
     </div>
@@ -55,7 +84,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
 
   const flag = sb.country === "USA" ? "🇺🇸" : "🇨🇦";
 
-  // JSON-LD schema
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -68,11 +96,13 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
       "addressRegion": sb.state_province,
       "addressCountry": sb.country,
     },
-    "aggregateRating": sb.rating ? {
-      "@type": "AggregateRating",
-      "ratingValue": sb.rating,
-      "reviewCount": sb.review_count,
-    } : undefined,
+    ...(sb.rating ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": sb.rating,
+        "reviewCount": sb.review_count,
+      }
+    } : {}),
     "description": sb.description,
   };
 
@@ -84,7 +114,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
       />
 
       <div className="min-h-screen bg-[#f5f5f0]">
-        {/* Hero header */}
         <div className="bg-black text-white py-12 px-4">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center gap-2 text-sm text-gray-400 mb-5">
@@ -96,7 +125,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
             </div>
 
             <div className="flex items-start gap-5">
-              {/* Logo */}
               {sb.logo_url ? (
                 <img src={sb.logo_url} alt={sb.name} className="w-20 h-20 rounded-2xl object-cover bg-white shrink-0" />
               ) : (
@@ -128,7 +156,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </div>
             </div>
 
-            {/* Quick stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8">
               <div className="bg-white/10 rounded-xl p-3 text-center">
                 <div className="text-[#aaff00] font-black text-xl">{sb.rating?.toFixed(1)}</div>
@@ -144,34 +171,30 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
                 <div className="text-gray-400 text-xs mt-0.5">Founded</div>
               </div>
               <div className="bg-white/10 rounded-xl p-3 text-center">
-                <div className="text-[#aaff00] font-black text-xl">{sb.seed_types?.length || 0}</div>
+                <div className="text-[#aaff00] font-black text-xl">{sb.seed_types?.length ?? 0}</div>
                 <div className="text-gray-400 text-xs mt-0.5">Seed Types</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main content */}
         <div className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: main content */}
           <div className="lg:col-span-2 space-y-7">
-            {/* About */}
             <section className="bg-white rounded-2xl p-6 border border-gray-100">
               <h2 className="text-xl font-black mb-3">About {sb.name}</h2>
               <p className="text-gray-700 leading-relaxed">{sb.description}</p>
             </section>
 
-            {/* Notable Strains */}
             {sb.notable_strains && sb.notable_strains.length > 0 && (
               <section className="bg-white rounded-2xl p-6 border border-gray-100">
                 <h2 className="text-xl font-black mb-4">🌿 Notable Strains</h2>
                 <div className="flex flex-wrap gap-2">
                   {sb.notable_strains.map((strain: string) => {
-                    const slug = strain.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                    const strainSlug = strain.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
                     return (
                       <Link
                         key={strain}
-                        href={`/strains/${slug}`}
+                        href={`/strains/${strainSlug}`}
                         className="bg-gray-50 hover:bg-[#aaff00] hover:text-black border border-gray-200 hover:border-[#aaff00] text-gray-700 px-3 py-1.5 rounded-xl text-sm font-medium transition-all"
                       >
                         {strain}
@@ -182,12 +205,11 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </section>
             )}
 
-            {/* FAQ */}
             {sb.faq && sb.faq.length > 0 && (
               <section className="bg-white rounded-2xl p-6 border border-gray-100">
                 <h2 className="text-xl font-black mb-4">❓ Frequently Asked Questions</h2>
                 <div className="space-y-4">
-                  {sb.faq.map((item: any, i: number) => (
+                  {sb.faq.map((item: FaqItem, i: number) => (
                     <div key={i} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
                       <h3 className="font-bold text-gray-900 mb-1">{item.question}</h3>
                       <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
@@ -198,15 +220,13 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
             )}
           </div>
 
-          {/* Right: sidebar */}
           <div className="space-y-5">
-            {/* Quick info card */}
             <div className="bg-white rounded-2xl p-5 border border-gray-100">
               <h3 className="font-black text-base mb-4">📋 Quick Info</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-start">
                   <span className="text-gray-500">Country</span>
-                  <span className="font-semibold text-right">{flag} {sb.country}</span>
+                  <span className="font-semibold">{flag} {sb.country}</span>
                 </div>
                 <div className="flex justify-between items-start">
                   <span className="text-gray-500">Location</span>
@@ -220,9 +240,7 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
                   <div className="flex justify-between items-start">
                     <span className="text-gray-500">Website</span>
                     <a href={sb.website} target="_blank" rel="noopener noreferrer"
-                      className="text-[#aaff00] font-semibold hover:underline text-right max-w-[150px] truncate">
-                      Visit ↗
-                    </a>
+                      className="text-[#aaff00] font-semibold hover:underline">Visit ↗</a>
                   </div>
                 )}
                 {sb.social_instagram && (
@@ -234,7 +252,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </div>
             </div>
 
-            {/* Seed types */}
             {sb.seed_types && sb.seed_types.length > 0 && (
               <div className="bg-white rounded-2xl p-5 border border-gray-100">
                 <h3 className="font-black text-base mb-3">🌱 Seed Types</h3>
@@ -246,7 +263,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </div>
             )}
 
-            {/* Shipping */}
             {sb.shipping_regions && sb.shipping_regions.length > 0 && (
               <div className="bg-white rounded-2xl p-5 border border-gray-100">
                 <h3 className="font-black text-base mb-3">🚚 Ships To</h3>
@@ -258,7 +274,6 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </div>
             )}
 
-            {/* Payment methods */}
             {sb.payment_methods && sb.payment_methods.length > 0 && (
               <div className="bg-white rounded-2xl p-5 border border-gray-100">
                 <h3 className="font-black text-base mb-3">💳 Payment Methods</h3>
@@ -270,15 +285,13 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
               </div>
             )}
 
-            {/* Visit CTA */}
             {sb.website && (
-              <a href={sb.website} target="_blank" rel="noopener noreferrer sponsored"
+              <a href={sb.website} target="_blank" rel="noopener noreferrer"
                 className="block bg-[#aaff00] text-black text-center font-black py-4 rounded-2xl hover:bg-[#99ee00] transition-colors text-sm">
                 Visit {sb.name} ↗
               </a>
             )}
 
-            {/* Back link */}
             <Link href="/seedbanks"
               className="block text-center text-sm text-gray-500 hover:text-black transition-colors">
               ← Back to all Seed Banks

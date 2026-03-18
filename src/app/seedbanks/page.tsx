@@ -10,7 +10,25 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600;
 
-async function getSeedbanks(country?: string) {
+interface SeedbankRow {
+  id: string;
+  name: string;
+  slug: string;
+  country: string;
+  state_province: string;
+  city: string;
+  founded_year: number;
+  short_bio: string;
+  logo_url: string | null;
+  notable_strains: string[];
+  seed_types: string[];
+  rating: number;
+  review_count: number;
+  is_verified: boolean;
+  rank_popularity: number;
+}
+
+async function getSeedbanks(country?: string): Promise<SeedbankRow[]> {
   let query = supabase
     .from("seedbanks")
     .select("id, name, slug, country, state_province, city, founded_year, short_bio, logo_url, notable_strains, seed_types, rating, review_count, is_verified, rank_popularity")
@@ -19,7 +37,7 @@ async function getSeedbanks(country?: string) {
   if (country) query = query.eq("country", country);
   const { data, error } = await query;
   if (error) { console.error(error); return []; }
-  return data || [];
+  return (data || []) as SeedbankRow[];
 }
 
 export default async function SeedbanksPage({
@@ -29,8 +47,6 @@ export default async function SeedbanksPage({
 }) {
   const country = searchParams.country || "";
   const seedbanks = await getSeedbanks(country || undefined);
-  const usCount   = seedbanks.filter(s => !country && s.country === "USA").length    || (country === "USA"    ? seedbanks.length : 0);
-  const caCount   = seedbanks.filter(s => !country && s.country === "Canada").length || (country === "Canada" ? seedbanks.length : 0);
 
   return (
     <div className="min-h-screen bg-[#f5f5f0]">
@@ -111,7 +127,7 @@ export default async function SeedbanksPage({
                       {sb.name}
                     </h2>
                     {sb.is_verified && (
-                      <span className="text-[#aaff00] text-xs">✓</span>
+                      <span className="text-[#aaff00] text-xs shrink-0">✓</span>
                     )}
                   </div>
                   <p className="text-gray-400 text-xs">
@@ -124,7 +140,6 @@ export default async function SeedbanksPage({
               <div className="p-4">
                 <p className="text-gray-600 text-sm line-clamp-2 mb-3">{sb.short_bio}</p>
 
-                {/* Seed types */}
                 {sb.seed_types && sb.seed_types.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {sb.seed_types.map(t => (
@@ -133,7 +148,6 @@ export default async function SeedbanksPage({
                   </div>
                 )}
 
-                {/* Notable strains */}
                 {sb.notable_strains && sb.notable_strains.length > 0 && (
                   <div className="mb-3">
                     <p className="text-xs text-gray-400 mb-1 font-medium">Notable Strains</p>
@@ -143,7 +157,6 @@ export default async function SeedbanksPage({
                   </div>
                 )}
 
-                {/* Rating + CTA */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                   <div className="flex items-center gap-1">
                     <span className="text-yellow-400 text-sm">★</span>
@@ -157,7 +170,6 @@ export default async function SeedbanksPage({
           ))}
         </div>
 
-        {/* Empty state */}
         {seedbanks.length === 0 && (
           <div className="text-center py-20 text-gray-400">No seed banks found.</div>
         )}
