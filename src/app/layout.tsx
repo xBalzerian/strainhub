@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import AdvertiseBanner from "@/components/AdvertiseBanner";
 import Footer from "@/components/Footer";
 import AuthCodeHandler from "@/components/AuthCodeHandler";
 import { AuthProvider } from "@/context/AuthContext";
@@ -142,7 +141,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthCodeHandler />
           <NavBar />
           <main className="flex-1 pt-16">
-            <AdvertiseBanner />
             {children}
           </main>
           <Footer />
