@@ -6,7 +6,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 async function getSeedbankMeta(slug: string) {
   const res = await fetch(
-    `${supabaseUrl}/rest/v1/seedbanks?slug=eq.${slug}&select=name,short_bio,description,country,state_province,city,seed_types,rating,review_count,logo_url&limit=1`,
+    `${supabaseUrl}/rest/v1/seedbanks?slug=eq.${slug}&select=name,short_bio,country,state_province,city,seed_types,rating,review_count,logo_url&limit=1`,
     { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` }, next: { revalidate: 86400 } }
   );
   const data = await res.json();
@@ -17,18 +17,17 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const sb = await getSeedbankMeta(params.slug);
   if (!sb) return { title: "Seed Bank | StrainHub" };
 
-  const location = [sb.city, sb.state_province, sb.country].filter(Boolean).join(", ");
-  const seedTypes = Array.isArray(sb.seed_types) ? sb.seed_types.join(", ") : "cannabis";
-  const year = new Date().getFullYear();
-  // Use primary seed type only to keep title short
-  const primaryType = Array.isArray(sb.seed_types) && sb.seed_types.length > 0
-    ? sb.seed_types[0]
+  const country = sb.country || "";
+  const seedTypes = Array.isArray(sb.seed_types) && sb.seed_types.length > 0
+    ? sb.seed_types.slice(0, 3).join(", ")
     : "Cannabis";
-  // Title format: "[Name] Review 2026 — [Type] Seeds | StrainHub" (~60-70 chars)
-  const titleText = `${sb.name} Review ${year} — ${primaryType} Seeds`;
-  const desc = sb.short_bio
-    ? `${sb.short_bio} Shop ${seedTypes} seeds${location ? ` — ${location}` : ""}. Full profile: ratings, strains, social & reviews on StrainHub.`
-    : `${sb.name} seed bank — ${seedTypes} seeds. Ratings, strains, shipping info and grower reviews on StrainHub.`;
+
+  // Title: "[Name] | Seed Bank Reviews, Strains & Shipping Info"
+  // Leafly pattern — timeless, no year, clean pipe separator
+  const titleText = `${sb.name} | Seed Bank Reviews, Strains & Shipping Info`;
+
+  // Description: ~140-160 chars, action-oriented, mirrors Leafly style
+  const desc = `Explore ${sb.name} on StrainHub. Find ${seedTypes} seeds, read grower reviews, browse top strains, and discover shipping options${country ? ` for ${country}` : ""}.`;
 
   return {
     title: {
@@ -39,12 +38,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       sb.name,
       `${sb.name} review`,
       `${sb.name} seeds`,
-      `${sb.name} coupon ${year}`,
-      `best seed bank ${sb.country}`,
-      "buy cannabis seeds online",
-      "marijuana seed bank",
-      "cannabis seed bank review",
-      ...(Array.isArray(sb.seed_types) ? sb.seed_types.map((t: string) => `buy ${t.toLowerCase()} seeds`) : []),
+      `${sb.name} seed bank`,
+      `${sb.name} shipping`,
+      `best seed bank ${country}`,
+      "cannabis seed bank",
+      "buy marijuana seeds",
+      "seed bank reviews",
+      ...(Array.isArray(sb.seed_types) ? sb.seed_types.map((t: string) => `${t.toLowerCase()} seeds`) : []),
     ],
     openGraph: {
       title: `${titleText} | StrainHub`,
