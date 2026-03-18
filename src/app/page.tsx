@@ -208,6 +208,169 @@ export default async function HomePage() {
         </div>
       </section>
 
+
+      {/* ═══════════════════════════════════════════════
+           SEED BANKS SECTION — light, fresh, mobile-first
+          ═══════════════════════════════════════════════ */}
+      <section className="py-16 px-4 sm:px-6 bg-gradient-to-b from-[#F9FFF0] to-[#F4F4F0]">
+        <div className="max-w-7xl mx-auto">
+
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-white border-2 border-brand px-4 py-1.5 rounded-full text-xs font-black text-brand shadow-brutal-sm mb-5">
+              🏦 62 Verified Seed Banks
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-brand leading-tight mb-3">
+              Find the Best <span className="bg-lime px-2 rounded-lg">Seed Banks</span>
+            </h2>
+            <p className="text-gray-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              Vetted breeders and retailers — from boutique US genetics houses to world-famous international seed banks.
+            </p>
+          </div>
+
+          {/* Floating logo cloud — top 8 */}
+          <div className="relative mb-10">
+            {/* Scrollable logo row — mobile horizontal scroll, desktop wraps */}
+            <div className="flex gap-3 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center sm:overflow-visible scrollbar-hide snap-x snap-mandatory">
+              {[
+                { slug: "compound-genetics",    name: "Compound Genetics",    country: "USA" },
+                { slug: "cookies-fam-genetics",  name: "Cookies Fam",          country: "USA" },
+                { slug: "seed-junky-genetics",   name: "Seed Junky",           country: "USA" },
+                { slug: "ethos-genetics",        name: "Ethos Genetics",       country: "USA" },
+                { slug: "royal-queen-seeds",     name: "Royal Queen Seeds",    country: "NL"  },
+                { slug: "barneys-farm",          name: "Barney's Farm",        country: "NL"  },
+                { slug: "seedsman",              name: "Seedsman",             country: "ES"  },
+                { slug: "crop-king-seeds",       name: "Crop King Seeds",      country: "CA"  },
+                { slug: "ilgm",                  name: "ILGM",                 country: "USA" },
+                { slug: "mephisto-genetics",     name: "Mephisto Genetics",    country: "USA" },
+              ].map((bank) => (
+                <Link
+                  key={bank.slug}
+                  href={`/seedbanks/${bank.slug}`}
+                  className="flex-shrink-0 snap-start group flex flex-col items-center gap-2 bg-white border-2 border-brand/15 hover:border-lime rounded-2xl px-4 py-4 shadow-sm hover:shadow-brutal-sm transition-all hover:-translate-y-0.5 w-[90px] sm:w-[100px]"
+                >
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-off-white border border-brand/10 flex-shrink-0">
+                    <img
+                      src={`https://raw.githubusercontent.com/xBalzerian/strainhub/main/public/images/logos/${bank.slug}.png`}
+                      alt={bank.name}
+                      className="w-full h-full object-contain p-1"
+                      loading="lazy"
+                      onError={(e) => {
+                        const t = e.target as HTMLImageElement;
+                        t.style.display="none";
+                        t.parentElement!.innerHTML = `<span class="w-full h-full flex items-center justify-center text-xl font-black text-lime">${bank.name.charAt(0)}</span>`;
+                      }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-black text-brand text-center leading-tight line-clamp-2">{bank.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Main CTA card */}
+          <div className="relative rounded-3xl overflow-hidden border-2 border-brand/20 bg-white shadow-brutal">
+            {/* Decorative top bar */}
+            <div className="h-1.5 bg-gradient-to-r from-lime via-lime-dark to-green-500" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              {/* Left: stats */}
+              <div className="p-7 sm:p-10 border-b-2 md:border-b-0 md:border-r-2 border-brand/10">
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  {[
+                    { num: "62",    label: "Verified Banks",  icon: "✓", color: "bg-lime" },
+                    { num: "14",    label: "Countries",        icon: "🌍", color: "bg-blue-50" },
+                    { num: "5+",    label: "Seed Types",       icon: "🌱", color: "bg-green-50" },
+                    { num: "4.5★",  label: "Avg Rating",       icon: "⭐", color: "bg-yellow-50" },
+                  ].map(s => (
+                    <div key={s.label} className={`${s.color} border border-brand/10 rounded-2xl p-4`}>
+                      <div className="text-2xl font-black text-brand leading-none mb-1">{s.num}</div>
+                      <div className="text-[11px] text-gray-500 font-semibold leading-tight">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2.5 mb-7">
+                  {[
+                    "Feminized, Auto, Regular & more",
+                    "US domestic + worldwide shipping",
+                    "Boutique breeders to global retailers",
+                    "Full profiles: social, reviews, strains",
+                  ].map(f => (
+                    <div key={f} className="flex items-center gap-2.5 text-sm text-gray-600">
+                      <span className="w-5 h-5 rounded-full bg-lime border border-brand flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  href="/seedbanks"
+                  className="inline-flex items-center gap-2 bg-lime hover:bg-lime-dark text-brand font-black px-6 py-3.5 rounded-xl border-2 border-brand shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto justify-center"
+                >
+                  Browse All Seed Banks →
+                </Link>
+              </div>
+
+              {/* Right: region filter pills */}
+              <div className="p-7 sm:p-10 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xl font-black text-brand mb-1">Shop by Region</h3>
+                  <p className="text-gray-500 text-xs mb-6">Find seed banks that ship to your location</p>
+
+                  <div className="grid grid-cols-2 gap-2.5 mb-6">
+                    {[
+                      { label: "🇺🇸 USA",           href: "/seedbanks?country=USA",         count: "34 banks" },
+                      { label: "🇨🇦 Canada",         href: "/seedbanks?country=Canada",       count: "8 banks"  },
+                      { label: "🇳🇱 Netherlands",    href: "/seedbanks?country=Netherlands",  count: "7 banks"  },
+                      { label: "🇪🇸 Spain",          href: "/seedbanks?country=Spain",        count: "5 banks"  },
+                      { label: "🌍 Ships Worldwide", href: "/seedbanks?shipping=International", count: "42 banks" },
+                      { label: "🔖 Verified Only",   href: "/seedbanks?verified=true",        count: "20 banks" },
+                    ].map(r => (
+                      <Link
+                        key={r.label}
+                        href={r.href}
+                        className="group flex flex-col gap-0.5 bg-off-white hover:bg-lime border border-brand/15 hover:border-brand rounded-xl px-3.5 py-2.5 transition-all"
+                      >
+                        <span className="text-xs font-black text-brand leading-tight">{r.label}</span>
+                        <span className="text-[10px] text-gray-400 group-hover:text-brand/70">{r.count}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Mini seed type pills */}
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2.5">Seed Types</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { label: "Feminized",  color: "bg-pink-50 border-pink-200 text-pink-700",   href: "/seedbanks?type=Feminized" },
+                      { label: "Auto",       color: "bg-blue-50 border-blue-200 text-blue-700",    href: "/seedbanks?type=Auto" },
+                      { label: "Regular",    color: "bg-amber-50 border-amber-200 text-amber-700", href: "/seedbanks?type=Regular" },
+                      { label: "CBD",        color: "bg-green-50 border-green-200 text-green-700", href: "/seedbanks?type=CBD" },
+                      { label: "F1 Hybrid",  color: "bg-purple-50 border-purple-200 text-purple-700", href: "/seedbanks?type=F1+Hybrid" },
+                    ].map(t => (
+                      <Link
+                        key={t.label}
+                        href={t.href}
+                        className={`text-[11px] font-bold px-2.5 py-1 rounded-full border transition-all hover:-translate-y-0.5 ${t.color}`}
+                      >
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* LEARN HUB SECTION */}
       <section className="bg-white border-y-2 border-black py-16">
         <div className="max-w-7xl mx-auto px-6">
