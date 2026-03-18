@@ -97,105 +97,41 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero — premium asymmetric strain showcase */}
-          <div className="hidden lg:flex gap-4 items-end h-[520px]">
-            {/* Col 1 — tall featured card */}
-            {topStrains[0] && (
-              <Link href={`/strains/${topStrains[0].slug}`} className="group flex-[1.2] h-full flex flex-col bg-brand border-2 border-black rounded-3xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all relative">
-                <div className="absolute top-3 left-3 z-10 bg-lime border border-brand rounded-full px-2.5 py-0.5 text-[10px] font-black text-brand uppercase tracking-widest">#1 Popular</div>
-                <div className="flex-1 relative">
-                  {topStrains[0].image_url && (
-                    <Image src={topStrains[0].image_url} alt={topStrains[0].name} fill sizes="260px" className="object-contain p-4" priority />
+          {/* Hero strain cards — 2x2 compact premium grid */}
+          <div className="hidden lg:grid grid-cols-2 gap-3">
+            {topStrains.slice(0, 4).map((s, i) => (
+              <Link
+                key={s.slug}
+                href={`/strains/${s.slug}`}
+                className={`group bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col ${i === 0 ? "mt-5" : i === 1 ? "mt-0" : i === 2 ? "mt-0" : "mt-5"}`}
+              >
+                {/* image */}
+                <div className="relative w-full aspect-square bg-off-white">
+                  {s.image_url ? (
+                    <Image src={s.image_url} alt={s.name} fill sizes="240px" className="object-contain p-3" priority={i < 2} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl">🌿</div>
+                  )}
+                  {i === 0 && (
+                    <span className="absolute top-2 left-2 bg-lime border border-brand text-brand text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">#1</span>
                   )}
                 </div>
-                <div className="p-4 bg-brand border-t-2 border-white/10">
-                  <div className="font-black text-white text-base leading-tight">{topStrains[0].name}</div>
-                  <div className={`text-xs font-bold mt-0.5 ${topStrains[0].type === "Indica" ? "text-purple-300" : topStrains[0].type === "Sativa" ? "text-yellow-300" : "text-lime"}`}>
-                    {topStrains[0].type} · THC {topStrains[0].thc_max}%
+                {/* info */}
+                <div className="px-3 py-2.5 border-t-2 border-black">
+                  <div className="font-black text-sm leading-tight truncate">{s.name}</div>
+                  <div className={`text-[11px] font-bold mt-0.5 ${s.type === "Indica" ? "text-indica" : s.type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
+                    {s.type} · THC {s.thc_max}%
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {(topStrains[0].effects || []).slice(0,3).map((e:string)=>(
-                      <span key={e} className="text-[9px] font-bold bg-white/10 text-white/70 px-2 py-0.5 rounded-full">{e}</span>
-                    ))}
-                  </div>
+                  {(s.effects || []).length > 0 && (
+                    <div className="flex gap-1 mt-1.5 flex-wrap">
+                      {(s.effects as string[]).slice(0, 2).map((e) => (
+                        <span key={e} className="text-[9px] font-bold bg-lime/30 text-brand px-1.5 py-0.5 rounded-full leading-none">{e}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Link>
-            )}
-
-            {/* Col 2 — two stacked + terpene strip */}
-            <div className="flex-1 flex flex-col gap-3 h-full">
-              {topStrains[1] && (
-                <Link href={`/strains/${topStrains[1].slug}`} className="group flex-1 flex bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
-                  <div className="relative w-28 flex-shrink-0 border-r-2 border-black">
-                    {topStrains[1].image_url && <Image src={topStrains[1].image_url} alt={topStrains[1].name} fill sizes="112px" className="object-contain p-2" />}
-                  </div>
-                  <div className="p-3 flex flex-col justify-center">
-                    <div className="font-black text-sm leading-tight">{topStrains[1].name}</div>
-                    <div className={`text-xs font-bold mt-0.5 ${topStrains[1].type === "Indica" ? "text-indica" : topStrains[1].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
-                      {topStrains[1].type} · THC {topStrains[1].thc_max}%
-                    </div>
-                    <div className="mt-1.5 flex gap-1 flex-wrap">
-                      {(topStrains[1].effects||[]).slice(0,2).map((e:string)=>(
-                        <span key={e} className="text-[9px] bg-lime/30 text-brand font-bold px-1.5 py-0.5 rounded-full">{e}</span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              )}
-              {topStrains[2] && (
-                <Link href={`/strains/${topStrains[2].slug}`} className="group flex-1 flex bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
-                  <div className="relative w-28 flex-shrink-0 border-r-2 border-black">
-                    {topStrains[2].image_url && <Image src={topStrains[2].image_url} alt={topStrains[2].name} fill sizes="112px" className="object-contain p-2" />}
-                  </div>
-                  <div className="p-3 flex flex-col justify-center">
-                    <div className="font-black text-sm leading-tight">{topStrains[2].name}</div>
-                    <div className={`text-xs font-bold mt-0.5 ${topStrains[2].type === "Indica" ? "text-indica" : topStrains[2].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
-                      {topStrains[2].type} · THC {topStrains[2].thc_max}%
-                    </div>
-                    <div className="mt-1.5 flex gap-1 flex-wrap">
-                      {(topStrains[2].effects||[]).slice(0,2).map((e:string)=>(
-                        <span key={e} className="text-[9px] bg-lime/30 text-brand font-bold px-1.5 py-0.5 rounded-full">{e}</span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              )}
-              {/* Terpene mini-strip */}
-              <div className="bg-lime border-2 border-black rounded-2xl px-4 py-3 shadow-brutal-sm flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[9px] font-black uppercase tracking-widest text-brand/60">Most Common Terpene</div>
-                  <div className="font-black text-brand text-sm">Myrcene · Caryophyllene</div>
-                  <div className="text-[10px] text-brand/60 mt-0.5">in top strains this week</div>
-                </div>
-                <span className="text-2xl">🧬</span>
-              </div>
-            </div>
-
-            {/* Col 3 — one card + live badge */}
-            <div className="flex flex-col gap-3 w-44 flex-shrink-0">
-              {topStrains[3] && (
-                <Link href={`/strains/${topStrains[3].slug}`} className="group flex-1 flex flex-col bg-off-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all">
-                  <div className="relative flex-1">
-                    {topStrains[3].image_url && <Image src={topStrains[3].image_url} alt={topStrains[3].name} fill sizes="176px" className="object-contain p-2" />}
-                  </div>
-                  <div className="p-3 border-t-2 border-black">
-                    <div className="font-black text-xs leading-tight">{topStrains[3].name}</div>
-                    <div className={`text-[10px] font-bold mt-0.5 ${topStrains[3].type === "Indica" ? "text-indica" : topStrains[3].type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
-                      {topStrains[3].type} · THC {topStrains[3].thc_max}%
-                    </div>
-                  </div>
-                </Link>
-              )}
-              {/* live indicator */}
-              <div className="bg-brand border-2 border-black rounded-2xl px-3 py-3 shadow-brutal-sm text-center">
-                <div className="flex items-center justify-center gap-1.5 mb-1">
-                  <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-lime">Live DB</span>
-                </div>
-                <div className="text-white font-black text-lg leading-none">{topStrains.length}+</div>
-                <div className="text-white/50 text-[10px] mt-0.5">strains &amp; growing</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
