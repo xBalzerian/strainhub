@@ -155,6 +155,7 @@ export default function NavBar() {
 
   const navLinks = [
     { href: "/strains", label: "Strains" },
+    { href: "/seedbanks", label: "🌱 Seed Banks" },
     { href: "/chat", label: "💬 AI Chat" },
     { href: "/diagnose", label: "🔬 Diagnose" },
     { href: "/pricing", label: "Pricing" },
