@@ -97,42 +97,59 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero strain cards — 2x2 compact premium grid */}
-          <div className="hidden lg:grid grid-cols-2 gap-3">
-            {topStrains.slice(0, 4).map((s, i) => (
-              <Link
-                key={s.slug}
-                href={`/strains/${s.slug}`}
-                className={`group bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col ${i === 0 ? "mt-5" : i === 1 ? "mt-0" : i === 2 ? "mt-0" : "mt-5"}`}
-              >
-                {/* image */}
-                <div className="relative w-full aspect-square bg-off-white">
-                  {s.image_url ? (
-                    <Image src={s.image_url} alt={s.name} fill sizes="240px" className="object-contain p-3" priority={i < 2} />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl">🌿</div>
-                  )}
-                  {i === 0 && (
-                    <span className="absolute top-2 left-2 bg-lime border border-brand text-brand text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">#1</span>
-                  )}
-                </div>
-                {/* info */}
-                <div className="px-3 py-2.5 border-t-2 border-black">
-                  <div className="font-black text-sm leading-tight truncate">{s.name}</div>
-                  <div className={`text-[11px] font-bold mt-0.5 ${s.type === "Indica" ? "text-indica" : s.type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
-                    {s.type} · THC {s.thc_max}%
-                  </div>
-                  {(s.effects || []).length > 0 && (
-                    <div className="flex gap-1 mt-1.5 flex-wrap">
-                      {(s.effects as string[]).slice(0, 2).map((e) => (
-                        <span key={e} className="text-[9px] font-bold bg-lime/30 text-brand px-1.5 py-0.5 rounded-full leading-none">{e}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
+          {/* Hero strain cards — 3x2 compact grid with rank badges */}
+          {(() => {
+            const BADGES: Record<number, { label: string; bg: string; text: string; border: string }> = {
+              1: { label: "🥇 #1", bg: "bg-amber-400",   text: "text-amber-900",  border: "border-amber-600" },
+              2: { label: "🥈 #2", bg: "bg-slate-300",   text: "text-slate-800",  border: "border-slate-500" },
+              3: { label: "🥉 #3", bg: "bg-orange-400",  text: "text-orange-900", border: "border-orange-600" },
+              4: { label: "💎 #4", bg: "bg-cyan-300",    text: "text-cyan-900",   border: "border-cyan-500"  },
+              5: { label: "⭐ #5", bg: "bg-purple-300",  text: "text-purple-900", border: "border-purple-500"},
+              6: { label: "🌿 #6", bg: "bg-lime",        text: "text-brand",      border: "border-brand"     },
+            };
+            return (
+              <div className="hidden lg:grid grid-cols-3 gap-2.5">
+                {topStrains.slice(0, 6).map((s, i) => {
+                  const rank = i + 1;
+                  const badge = BADGES[rank];
+                  return (
+                    <Link
+                      key={s.slug}
+                      href={`/strains/${s.slug}`}
+                      className={`group bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col ${i % 2 === 0 ? "mt-4" : "mt-0"}`}
+                    >
+                      {/* image */}
+                      <div className="relative w-full bg-off-white" style={{aspectRatio:"1/1"}}>
+                        {s.image_url ? (
+                          <Image src={s.image_url} alt={s.name} fill sizes="180px" className="object-contain p-2" priority={i < 3} />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-3xl">🌿</div>
+                        )}
+                        {/* rank badge */}
+                        <span className={`absolute top-1.5 left-1.5 ${badge.bg} ${badge.text} ${badge.border} border text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none whitespace-nowrap`}>
+                          {badge.label}
+                        </span>
+                      </div>
+                      {/* info */}
+                      <div className="px-2.5 py-2 border-t-2 border-black">
+                        <div className="font-black text-[11px] leading-tight truncate">{s.name}</div>
+                        <div className={`text-[10px] font-bold mt-0.5 ${s.type === "Indica" ? "text-indica" : s.type === "Sativa" ? "text-sativa" : "text-hybrid"}`}>
+                          {s.type} · THC {s.thc_max}%
+                        </div>
+                        {(s.effects || []).length > 0 && (
+                          <div className="flex gap-1 mt-1 flex-wrap">
+                            {(s.effects as string[]).slice(0, 1).map((e) => (
+                              <span key={e} className="text-[8px] font-bold bg-lime/30 text-brand px-1 py-0.5 rounded-full leading-none">{e}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       </section>
 
