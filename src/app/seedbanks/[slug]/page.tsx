@@ -119,7 +119,12 @@ export default async function SeedbankDetailPage({ params }: { params: { slug: s
             <div className="flex items-center gap-2 text-sm text-gray-400 mb-5">
               <Link href="/" className="hover:text-white">Home</Link>
               <span>/</span>
-              <Link href="/seedbanks" className="hover:text-white">Seed Banks</Link>
+              <Link href={`/seedbanks/claim?name=${encodeURIComponent(sb.name)}`}
+              className="block text-center text-sm bg-gray-50 border border-gray-200 text-gray-600 hover:border-[#aaff00] hover:text-black font-semibold py-3 rounded-2xl transition-colors">
+              🏷️ Claim This Listing
+            </Link>
+
+            <Link href="/seedbanks" className="hover:text-white">Seed Banks</Link>
               <span>/</span>
               <span className="text-white">{sb.name}</span>
             </div>
