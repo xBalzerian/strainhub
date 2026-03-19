@@ -22,21 +22,11 @@ function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function ArticleCard({ article, priority }: { article: Article; priority?: boolean }) {
-  const pill = CAT_PILL[article.category] || CAT_PILL.News;
+function ArticleCard({ article, eager }: { article: Article; eager?: boolean }) {
+  const pill = CAT_PILL[article.category] || "bg-gray-700 text-white";
   const grad = GRAD[article.category] || GRAD.News;
   const [imgError, setImgError] = useState(false);
-
-  // Cache-bust: append ?v= last segment of URL (version number) so browser re-fetches on URL change
-  // e.g. hero-v6.png → ?v=6, hero.png → ?v=1
-  const imgSrc = (() => {
-    if (!article.hero_image_url || imgError) return null;
-    const url = article.hero_image_url;
-    // extract version from filename e.g. -v6, -v5; default to timestamp for stability
-    const vMatch = url.match(/-v(\d+)\.png$/);
-    const v = vMatch ? vMatch[1] : "1";
-    return `${url}?v=${v}`;
-  })();
+  const src = article.hero_image_url && !imgError ? article.hero_image_url : null;
 
   return (
     <Link href={`/news/${article.slug}`} className="group block h-full">
@@ -44,23 +34,17 @@ function ArticleCard({ article, priority }: { article: Article; priority?: boole
 
         {/* IMAGE */}
         <div className="relative w-full h-[220px] flex-shrink-0 overflow-hidden bg-brand">
-          {imgSrc ? (
+          {src ? (
             <img
-              src={imgSrc}
+              src={src}
               alt={article.title}
               className="absolute inset-0 w-full h-full object-cover"
-              loading={priority ? "eager" : "lazy"}
-              decoding="async"
+              loading={eager ? "eager" : "lazy"}
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className={`absolute inset-0 bg-gradient-to-br ${grad} flex items-end p-4`}>
-              <span className="text-white/30 text-6xl font-black uppercase leading-none">
-                {article.category}
-              </span>
-            </div>
+            <div className={`absolute inset-0 bg-gradient-to-br ${grad}`} />
           )}
-          {/* Category badge */}
           <div className="absolute top-3 left-3 z-10">
             <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide shadow-sm ${pill}`}>
               {article.category}
@@ -70,12 +54,8 @@ function ArticleCard({ article, priority }: { article: Article; priority?: boole
 
         {/* TEXT */}
         <div className="flex flex-col flex-1 px-4 pt-4 pb-4 gap-2">
-          <h2 className="font-black text-brand text-base leading-snug line-clamp-3">
-            {article.title}
-          </h2>
-          <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">
-            {article.summary}
-          </p>
+          <h2 className="font-black text-brand text-base leading-snug line-clamp-3">{article.title}</h2>
+          <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">{article.summary}</p>
           <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
             <span className="text-[11px] font-bold text-gray-400">📅 {formatDate(article.published_at)}</span>
             <span className="text-[11px] font-bold text-gray-400">⏱ {article.reading_time} min read</span>
@@ -91,15 +71,15 @@ export default function NewsListing({ articles }: { articles: Article[] }) {
   if (!articles.length) return (
     <div className="text-center py-24 bg-white border-2 border-black rounded-2xl shadow-brutal">
       <div className="text-5xl mb-4">📰</div>
-      <h2 className="text-2xl font-black text-brand mb-2">First edition drops at 9am ET</h2>
-      <p className="text-gray-400 text-sm">Fresh cannabis stories every morning.</p>
+      <h2 className="text-2xl font-black text-brand mb-2">No stories in this category yet</h2>
+      <p className="text-gray-400 text-sm">Check back soon — new articles drop daily.</p>
     </div>
   );
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {articles.map((a, i) => (
-        <ArticleCard key={`${a.slug}-${a.hero_image_url}`} article={a} priority={i < 3} />
+        <ArticleCard key={a.slug} article={a} eager={i < 3} />
       ))}
     </div>
   );
