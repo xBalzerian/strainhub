@@ -33,12 +33,11 @@ function ArticleCard({ article }: { article: Article }) {
         {/* ── IMAGE + CATEGORY BADGE ── */}
         <div className="relative w-full h-[200px] flex-shrink-0 overflow-hidden bg-brand">
           {article.hero_image_url ? (
-            <Image
+            <img
               src={article.hero_image_url}
               alt={article.title}
-              fill
-              className="object-cover"
-              sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+              className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
             <div className={`absolute inset-0 bg-gradient-to-br ${grad}`} />
