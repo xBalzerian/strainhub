@@ -181,7 +181,12 @@ export default function ArticlePage({article}:{article:Article}) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2">
           <figure className="relative w-full rounded-2xl overflow-hidden border-2 border-black shadow-brutal bg-brand"
             style={{height:"min(56vw,480px)"}}>
-            <img src={article.hero_image_url} alt={article.title} className="w-full h-full object-cover absolute inset-0"/>
+            {(() => {
+              const url = article.hero_image_url || "";
+              const vMatch = url.match(/-v(\d+)\.png$/);
+              const v = vMatch ? vMatch[1] : "1";
+              return <img src={`${url}?v=${v}`} alt={article.title} className="w-full h-full object-cover absolute inset-0" loading="eager" />;
+            })()}
           </figure>
         </div>
       )}
