@@ -26,7 +26,7 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
+    minimumCacheTTL: 60 * 60, // 1 hour — allow image URL updates to propagate
     deviceSizes: [640, 828, 1080, 1920],
     imageSizes: [64, 128, 256, 384],
     dangerouslyAllowSVG: true,
@@ -41,7 +41,7 @@ const nextConfig = {
       },
       {
         source: "/_next/image(.*)",
-        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }],
+        headers: [{ key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" }],
       },
       {
         source: "/(.*)\\.(png|jpg|jpeg|svg|ico|webp|avif)",
