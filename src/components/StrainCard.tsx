@@ -64,6 +64,36 @@ function StrainImg({
   );
 }
 
+
+// ── GEM RANK BADGES ──────────────────────────────────────────────────────────
+const GEM_BADGES: Record<number, { gem: string; label: string; bg: string; text: string; border: string; glow: string }> = {
+  1:  { gem: "💎", label: "#1",  bg: "linear-gradient(135deg,#b9f2ff,#e0f7ff,#7dd3fc)", text: "text-sky-900",    border: "border-sky-400",    glow: "shadow-[0_0_8px_rgba(125,211,252,0.8)]" },
+  2:  { gem: "🥇", label: "#2",  bg: "linear-gradient(135deg,#fde68a,#fbbf24,#f59e0b)", text: "text-amber-900",  border: "border-amber-400",  glow: "shadow-[0_0_8px_rgba(251,191,36,0.8)]"  },
+  3:  { gem: "🥈", label: "#3",  bg: "linear-gradient(135deg,#e5e7eb,#d1d5db,#9ca3af)", text: "text-slate-800",  border: "border-slate-400",  glow: "shadow-[0_0_8px_rgba(156,163,175,0.7)]" },
+  4:  { gem: "🥉", label: "#4",  bg: "linear-gradient(135deg,#fed7aa,#fb923c,#ea580c)", text: "text-orange-900", border: "border-orange-400", glow: "shadow-[0_0_8px_rgba(251,146,60,0.8)]"  },
+  5:  { gem: "🔮", label: "#5",  bg: "linear-gradient(135deg,#e9d5ff,#a855f7,#7c3aed)", text: "text-purple-100", border: "border-purple-400", glow: "shadow-[0_0_8px_rgba(168,85,247,0.8)]"  },
+  6:  { gem: "💙", label: "#6",  bg: "linear-gradient(135deg,#bfdbfe,#3b82f6,#1d4ed8)", text: "text-white",      border: "border-blue-400",   glow: "shadow-[0_0_8px_rgba(59,130,246,0.8)]"  },
+  7:  { gem: "❤️", label: "#7",  bg: "linear-gradient(135deg,#fecaca,#ef4444,#b91c1c)", text: "text-white",      border: "border-red-400",    glow: "shadow-[0_0_8px_rgba(239,68,68,0.8)]"   },
+  8:  { gem: "🌟", label: "#8",  bg: "linear-gradient(135deg,#fef9c3,#facc15,#ca8a04)", text: "text-yellow-900", border: "border-yellow-400", glow: "shadow-[0_0_6px_rgba(250,204,21,0.7)]"  },
+  9:  { gem: "🩶", label: "#9",  bg: "linear-gradient(135deg,#f3f4f6,#e5e7eb,#d1d5db)", text: "text-gray-700",   border: "border-gray-300",   glow: ""                                        },
+  10: { gem: "💚", label: "#10", bg: "linear-gradient(135deg,#bbf7d0,#4ade80,#16a34a)", text: "text-green-900",  border: "border-green-400",  glow: "shadow-[0_0_6px_rgba(74,222,128,0.7)]"  },
+};
+
+function GemBadge({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) {
+  const b = GEM_BADGES[rank];
+  if (!b) return null;
+  const pad = size === "sm" ? "px-1.5 py-0.5 text-[8px]" : "px-2 py-0.5 text-[10px]";
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 font-black rounded-full border ${b.text} ${b.border} ${b.glow} ${pad} leading-none`}
+      style={{ background: b.bg }}
+    >
+      <span className="leading-none">{b.gem}</span>
+      <span>{b.label}</span>
+    </span>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 export default function StrainCard({
   strain,
   priority = false,
@@ -93,8 +123,8 @@ export default function StrainCard({
             {/* Image — top-left, fixed width */}
             <div className="relative flex-shrink-0 w-[130px] self-stretch">
               {strain.rank_popularity <= 10 && (
-                <span className="absolute top-2 left-2 z-10 bg-lime border-2 border-black text-[10px] font-black px-1.5 py-0.5 rounded-lg shadow-brutal-sm">
-                  #{Math.round(strain.rank_popularity)}
+                <span className="absolute top-2 left-2 z-10">
+                  <GemBadge rank={Math.round(strain.rank_popularity)} size="sm" />
                 </span>
               )}
               <StrainImg strain={strain} priority={priority} className="w-full h-full min-h-[130px]" />
@@ -183,8 +213,8 @@ export default function StrainCard({
         <div className="hidden sm:flex flex-col flex-1">
           <div className="relative w-full aspect-square border-b-2 border-black">
             {strain.rank_popularity <= 10 && (
-              <span className="absolute top-2.5 left-2.5 z-10 bg-lime border-2 border-black text-[11px] font-black px-2 py-0.5 rounded-lg shadow-brutal-sm">
-                #{Math.round(strain.rank_popularity)}
+              <span className="absolute top-2.5 left-2.5 z-10">
+                <GemBadge rank={Math.round(strain.rank_popularity)} />
               </span>
             )}
             <span className={`absolute top-2.5 right-2.5 z-10 text-[10px] font-bold px-2 py-0.5 rounded-lg border ${t.bg} ${t.border} ${t.text}`}>

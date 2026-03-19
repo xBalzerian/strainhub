@@ -99,19 +99,21 @@ export default async function HomePage() {
 
           {/* Hero strain cards — 3x2 compact grid with rank badges */}
           {(() => {
-            const BADGES: Record<number, { label: string; bg: string; text: string; border: string }> = {
-              1: { label: "🥇 #1", bg: "bg-amber-400",   text: "text-amber-900",  border: "border-amber-600" },
-              2: { label: "🥈 #2", bg: "bg-slate-300",   text: "text-slate-800",  border: "border-slate-500" },
-              3: { label: "🥉 #3", bg: "bg-orange-400",  text: "text-orange-900", border: "border-orange-600" },
-              4: { label: "💎 #4", bg: "bg-cyan-300",    text: "text-cyan-900",   border: "border-cyan-500"  },
-              5: { label: "⭐ #5", bg: "bg-purple-300",  text: "text-purple-900", border: "border-purple-500"},
-              6: { label: "🌿 #6", bg: "bg-lime",        text: "text-brand",      border: "border-brand"     },
+            // Diamond → Gold → Silver → Bronze → Amethyst → Sapphire
+            type BadgeCfg = { gem: string; label: string; bg: string; text: string; border: string; glow: string };
+            const BADGES: Record<number, BadgeCfg> = {
+              1: { gem: "💎", label: "#1", bg: "linear-gradient(135deg,#b9f2ff,#e0f7ff,#7dd3fc)", text: "text-sky-900",    border: "border-sky-400",    glow: "shadow-[0_0_8px_rgba(125,211,252,0.9)]" },
+              2: { gem: "🥇", label: "#2", bg: "linear-gradient(135deg,#fde68a,#fbbf24,#f59e0b)", text: "text-amber-900",  border: "border-amber-400",  glow: "shadow-[0_0_8px_rgba(251,191,36,0.9)]"  },
+              3: { gem: "🥈", label: "#3", bg: "linear-gradient(135deg,#e5e7eb,#d1d5db,#9ca3af)", text: "text-slate-800",  border: "border-slate-400",  glow: "shadow-[0_0_8px_rgba(156,163,175,0.8)]" },
+              4: { gem: "🥉", label: "#4", bg: "linear-gradient(135deg,#fed7aa,#fb923c,#ea580c)", text: "text-orange-900", border: "border-orange-400", glow: "shadow-[0_0_8px_rgba(251,146,60,0.9)]"  },
+              5: { gem: "🔮", label: "#5", bg: "linear-gradient(135deg,#e9d5ff,#a855f7,#7c3aed)", text: "text-purple-100", border: "border-purple-400", glow: "shadow-[0_0_8px_rgba(168,85,247,0.9)]"  },
+              6: { gem: "💙", label: "#6", bg: "linear-gradient(135deg,#bfdbfe,#3b82f6,#1d4ed8)", text: "text-white",      border: "border-blue-400",   glow: "shadow-[0_0_8px_rgba(59,130,246,0.9)]"  },
             };
             return (
               <div className="hidden lg:grid grid-cols-3 gap-2.5">
                 {topStrains.slice(0, 6).map((s, i) => {
                   const rank = i + 1;
-                  const badge = BADGES[rank];
+                  const badge = BADGES[rank] as BadgeCfg;
                   return (
                     <Link
                       key={s.slug}
@@ -125,9 +127,13 @@ export default async function HomePage() {
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-3xl">🌿</div>
                         )}
-                        {/* rank badge */}
-                        <span className={`absolute top-1.5 left-1.5 ${badge.bg} ${badge.text} ${badge.border} border text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none whitespace-nowrap`}>
-                          {badge.label}
+                        {/* rank badge — gem style */}
+                        <span
+                          className={`absolute top-1.5 left-1.5 inline-flex items-center gap-0.5 font-black rounded-full border text-[8px] px-1.5 py-0.5 leading-none whitespace-nowrap ${badge.text} ${badge.border} ${badge.glow}`}
+                          style={{ background: badge.bg }}
+                        >
+                          <span>{badge.gem}</span>
+                          <span>{badge.label}</span>
                         </span>
                       </div>
                       {/* info */}
