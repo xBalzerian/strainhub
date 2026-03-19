@@ -121,14 +121,14 @@ function SeedbankLogo({slug,name}:{slug:string;name:string}) {
   const logo=`${GH_RAW}/public/images/logos/${slug}.png`;
   return (
     <Link href={`/seedbanks/${slug}`}
-      className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-lime/20 transition-all group border border-transparent hover:border-black">
+      className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-lime transition-all group border border-transparent hover:border-black">
       <div className="w-8 h-8 rounded-lg border border-gray-200 overflow-hidden flex-shrink-0 bg-white flex items-center justify-center">
         {!err
           ? <Image src={logo} alt={name} width={32} height={32} className="object-contain w-full h-full" onError={()=>setErr(true)} />
           : <span className="text-[9px] font-black text-gray-500 text-center leading-tight px-0.5">{name.slice(0,4)}</span>
         }
       </div>
-      <span className="text-[12px] font-bold text-brand group-hover:text-lime transition-colors leading-tight">{name}</span>
+      <span className="text-[12px] font-bold text-brand leading-tight">{name}</span>
     </Link>
   );
 }
@@ -256,11 +256,11 @@ export default function ArticlePage({article}:{article:Article}) {
               <div className="space-y-0.5">
                 {TOP_STRAINS.map((s,i)=>(
                   <Link key={s.slug} href={`/strains/${s.slug}`}
-                    className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-lime/20 transition-all group border border-transparent hover:border-black">
+                    className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-lime transition-all group border border-transparent hover:border-black">
                     <span className="text-[11px] font-black text-gray-300 w-4 text-right flex-shrink-0">{i+1}</span>
                     <span className={`w-2 h-2 rounded-full flex-shrink-0 ${TYPE_DOT[s.type]||"bg-gray-400"}`}/>
-                    <span className="text-[12px] font-bold text-brand group-hover:text-lime transition-colors flex-1">{s.name}</span>
-                    <span className="text-[9px] font-bold text-gray-300 group-hover:text-lime/60 transition-colors">{s.type}</span>
+                    <span className="text-[12px] font-bold text-brand flex-1">{s.name}</span>
+                    <span className="text-[9px] font-bold text-gray-400">{s.type}</span>
                   </Link>
                 ))}
               </div>
@@ -295,7 +295,7 @@ export default function ArticlePage({article}:{article:Article}) {
                   <Link key={l.href} href={l.href}
                     className="flex items-center justify-between px-2 py-2.5 rounded-lg hover:bg-lime/10 border border-transparent hover:border-black transition-all group">
                     <span className="text-[12px] font-bold text-brand group-hover:text-lime transition-colors">{l.cat}</span>
-                    <span className="text-gray-300 text-xs group-hover:text-lime transition-colors">→</span>
+                    <span className="text-gray-300 text-xs group-hover:text-brand transition-colors">→</span>
                   </Link>
                 ))}
                 <div className="border-t border-gray-100 mt-2 pt-3">
