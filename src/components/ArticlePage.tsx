@@ -181,8 +181,7 @@ export default function ArticlePage({article}:{article:Article}) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2">
           <figure className="relative w-full rounded-2xl overflow-hidden border-2 border-black shadow-brutal bg-brand"
             style={{height:"min(56vw,480px)"}}>
-            <Image src={article.hero_image_url} alt={article.title} fill className="object-cover"
-              priority sizes="(max-width:1024px) 100vw, 1024px"/>
+            <img src={article.hero_image_url} alt={article.title} className="w-full h-full object-cover absolute inset-0"/>
           </figure>
         </div>
       )}
