@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { getArticlesMeta } from "@/lib/articles";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600; // re-generate every hour
@@ -114,9 +115,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap: failed to fetch strains", e);
   }
 
+  let articleUrls: MetadataRoute.Sitemap = [];
+  try {
+    const articlesMeta = await getArticlesMeta();
+    articleUrls = articlesMeta.map((a) => ({
+      url: `${BASE_URL}/news/${a.slug}`,
+      lastModified: new Date(a.published_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    }));
+  } catch (e) { console.error("Sitemap articles:", e); }
+
   return [
     ...STATIC_PAGES,
     ...LEARN_PAGES,
     ...strainUrls,
+    ...articleUrls,
   ];
 }
