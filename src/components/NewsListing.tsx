@@ -19,52 +19,57 @@ const GRAD: Record<string, string> = {
 };
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function CardImage({ article, tall=false }: { article: Article; tall?: boolean }) {
+function ArticleCard({ article }: { article: Article }) {
   const pill = CAT_PILL[article.category] || CAT_PILL.News;
   const grad = GRAD[article.category] || GRAD.News;
-  const h    = tall ? "h-[300px] sm:h-[360px]" : "h-[200px]";
-  return (
-    <div className={`relative w-full ${h} flex-shrink-0 overflow-hidden bg-brand`}>
-      {article.hero_image_url ? (
-        <Image src={article.hero_image_url} alt={article.title} fill
-          className="object-cover" priority={tall}
-          sizes={tall ? "100vw" : "(max-width:640px) 100vw, 420px"} />
-      ) : (
-        <div className={`absolute inset-0 bg-gradient-to-br ${grad}`} />
-      )}
-      <div className="absolute top-3 left-3 z-10">
-        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${pill}`}>
-          {article.category}
-        </span>
-      </div>
-    </div>
-  );
-}
 
-function ArticleCard({ article, featured=false }: { article: Article; featured?: boolean }) {
   return (
     <Link href={`/news/${article.slug}`} className="group block h-full">
       <article className="h-full bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all duration-200 flex flex-col">
-        {/* IMAGE + CATEGORY BADGE */}
-        <CardImage article={article} tall={featured} />
-        {/* TEXT BODY */}
-        <div className="flex flex-col flex-1 p-5 gap-3">
+
+        {/* ── IMAGE + CATEGORY BADGE ── */}
+        <div className="relative w-full h-[200px] flex-shrink-0 overflow-hidden bg-brand">
+          {article.hero_image_url ? (
+            <Image
+              src={article.hero_image_url}
+              alt={article.title}
+              fill
+              className="object-cover"
+              sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className={`absolute inset-0 bg-gradient-to-br ${grad}`} />
+          )}
+          {/* category badge */}
+          <div className="absolute top-3 left-3 z-10">
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${pill}`}>
+              {article.category}
+            </span>
+          </div>
+        </div>
+
+        {/* ── TEXT BODY ── */}
+        <div className="flex flex-col flex-1 px-4 pt-4 pb-4 gap-2.5">
+
           {/* TITLE */}
-          <h2 className={`font-black text-brand leading-tight ${featured ? "text-xl sm:text-2xl" : "text-base"} line-clamp-3`}>
+          <h2 className="font-black text-brand text-base leading-snug line-clamp-3">
             {article.title}
           </h2>
+
           {/* EXCERPT */}
           <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1">
             {article.summary}
           </p>
+
           {/* DATE + READ TIME */}
-          <div className="flex items-center justify-between pt-3 border-t-2 border-gray-100 mt-auto">
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
             <span className="text-[11px] font-bold text-gray-400">📅 {formatDate(article.published_at)}</span>
             <span className="text-[11px] font-bold text-gray-400">⏱ {article.reading_time} min read</span>
           </div>
+
         </div>
       </article>
     </Link>
@@ -80,25 +85,11 @@ export default function NewsListing({ articles }: { articles: Article[] }) {
     </div>
   );
 
-  const [first, ...rest] = articles;
   return (
-    <div className="space-y-6">
-      {/* FEATURED — full width, tall image */}
-      {first && <ArticleCard article={first} featured />}
-      {/* DIVIDER */}
-      {rest.length > 0 && (
-        <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">More Stories</span>
-          <div className="flex-1 h-px bg-gray-200" />
-        </div>
-      )}
-      {/* 3-COL GRID */}
-      {rest.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {rest.map(a => <ArticleCard key={a.slug} article={a} />)}
-        </div>
-      )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {articles.map(a => (
+        <ArticleCard key={a.slug} article={a} />
+      ))}
     </div>
   );
 }
