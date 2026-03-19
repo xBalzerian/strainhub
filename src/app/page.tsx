@@ -26,15 +26,18 @@ export const metadata: Metadata = {
 import Link from "next/link";
 import Image from "next/image";
 import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
+import { getArticles } from "@/lib/articles";
+import type { Article } from "@/lib/articles";
 import StrainCard from "@/components/StrainCard";
 import SeedbankLogoCloud from "@/components/SeedbankLogoCloud";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [topStrains, strainsMeta] = await Promise.all([
+  const [topStrains, strainsMeta, latestArticles] = await Promise.all([
     getTopStrains(20),
     getAllStrainsMeta(),
+    getArticles(3),
   ]);
 
   const counts = {
@@ -386,6 +389,61 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── LATEST NEWS ─────────────────────────────────────────── */}
+      {latestArticles.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 py-14">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-black tracking-tight">📰 Latest <span className="bg-lime px-1.5 rounded">News</span></h2>
+              <p className="text-gray-500 mt-1.5 text-sm">Cannabis news, laws, events &amp; entertainment — updated daily</p>
+            </div>
+            <Link href="/news" className="text-sm font-bold border-2 border-black px-4 py-2 rounded-xl hover:bg-lime transition-all whitespace-nowrap hidden sm:block">
+              All News →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {latestArticles.map((article: Article, i: number) => {
+              const CAT_STYLE: Record<string, string> = {
+                News: "bg-blue-100 text-blue-800 border-blue-200",
+                Laws: "bg-red-100 text-red-800 border-red-200",
+                Business: "bg-amber-100 text-amber-800 border-amber-200",
+                Events: "bg-purple-100 text-purple-800 border-purple-200",
+                Entertainment: "bg-pink-100 text-pink-800 border-pink-200",
+              };
+              const CAT_EMOJI: Record<string, string> = { News:"📰",Laws:"⚖️",Business:"💼",Events:"🎉",Entertainment:"🎬" };
+              return (
+                <Link key={article.slug} href={`/news/${article.slug}`} className="group block">
+                  <article className="h-full bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col">
+                    <div className="relative w-full aspect-video bg-brand flex-shrink-0">
+                      {article.hero_image_url ? (
+                        <Image src={article.hero_image_url} alt={article.title} fill className="object-cover" sizes="400px" priority={i === 0} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-4xl">📰</div>
+                      )}
+                      <span className={`absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black border ${CAT_STYLE[article.category] || "bg-gray-100 text-gray-700 border-gray-200"}`}>
+                        {CAT_EMOJI[article.category] || "📄"} {article.category}
+                      </span>
+                    </div>
+                    <div className="flex flex-col flex-1 p-4">
+                      <h3 className="font-black text-sm text-brand leading-tight mb-2 group-hover:text-lime transition-colors line-clamp-3 flex-1">
+                        {article.title}
+                      </h3>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                        <span className="text-[10px] font-bold text-gray-400">{article.author_name}</span>
+                        <span className="text-[10px] text-gray-400">{article.reading_time} min</span>
+                      </div>
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+          <div className="mt-5 text-center sm:hidden">
+            <Link href="/news" className="inline-flex items-center gap-2 bg-lime border-2 border-black font-black px-5 py-2.5 rounded-xl text-sm">All News →</Link>
+          </div>
+        </section>
+      )}
 
       {/* ADVERTISE CTA — inviting to brand owners */}
       <section className="max-w-7xl mx-auto px-6 py-10">
