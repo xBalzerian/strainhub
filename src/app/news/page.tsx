@@ -1,10 +1,24 @@
 "use client";
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import NewsListing from "@/components/NewsListing";
 import type { Article } from "@/lib/articles";
 
 const CATEGORIES = ["All", "News", "Laws", "Business", "Events", "Entertainment"];
+
+async function fetchArticles(category: string): Promise<Article[]> {
+  let q = supabase
+    .from("articles")
+    .select("*")
+    .eq("is_published", true)
+    .order("published_at", { ascending: false })
+    .limit(30);
+  if (category !== "All") q = q.eq("category", category);
+  const { data, error } = await q;
+  if (error) { console.error("fetchArticles:", error); return []; }
+  return (data || []) as Article[];
+}
 
 function NewsPageInner() {
   const searchParams = useSearchParams();
@@ -14,35 +28,19 @@ function NewsPageInner() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const fetchArticles = useCallback((category: string) => {
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setError(false);
-    const controller = new AbortController();
-    fetch(`/api/articles?category=${category}&limit=30`, { signal: controller.signal })
-      .then(r => {
-        if (!r.ok) throw new Error("fetch failed");
-        return r.json();
-      })
-      .then(data => {
-        setArticles(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(err => {
-        if (err.name !== "AbortError") {
-          setError(true);
-          setLoading(false);
-        }
-      });
-    return () => controller.abort();
-  }, []);
+    fetchArticles(cat).then(data => {
+      if (!cancelled) { setArticles(data); setLoading(false); }
+    }).catch(() => {
+      if (!cancelled) { setError(true); setLoading(false); }
+    });
+    return () => { cancelled = true; };
+  }, [cat]);
 
-  useEffect(() => {
-    const cleanup = fetchArticles(cat);
-    return cleanup;
-  }, [cat, fetchArticles]);
-
-  const handleTabClick = (c: string) => {
-    if (c === cat) return; // already on this tab
+  const switchTab = (c: string) => {
     const url = c === "All" ? "/news" : `/news?category=${c}`;
     router.push(url, { scroll: false });
   };
@@ -70,24 +68,16 @@ function NewsPageInner() {
             </p>
           </div>
 
-          {/* Category tabs — client-side navigation, no page reload */}
-          <div className="flex gap-0 border-t-2 border-black mt-5 overflow-x-auto scrollbar-none">
-            {CATEGORIES.map(c => {
-              const isActive = cat === c;
-              return (
-                <button
-                  key={c}
-                  onClick={() => handleTabClick(c)}
-                  className={`px-4 py-2.5 text-xs font-black uppercase tracking-wider border-r-2 border-black transition-all whitespace-nowrap flex-shrink-0 cursor-pointer ${
-                    isActive
-                      ? "bg-lime text-brand"
-                      : "bg-white text-gray-600 hover:bg-lime/40 hover:text-brand"
-                  }`}
-                >
-                  {c}
-                </button>
-              );
-            })}
+          {/* Tabs */}
+          <div className="flex gap-0 border-t-2 border-black mt-5 overflow-x-auto">
+            {CATEGORIES.map(c => (
+              <button key={c} onClick={() => switchTab(c)}
+                className={`px-4 py-2.5 text-xs font-black uppercase tracking-wider border-r-2 border-black transition-colors whitespace-nowrap flex-shrink-0 ${
+                  cat === c ? "bg-lime text-brand" : "bg-white text-gray-600 hover:bg-lime/40"
+                }`}>
+                {c}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -97,23 +87,19 @@ function NewsPageInner() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1,2,3].map(i => (
-              <div key={i} className="h-[380px] bg-white border-2 border-black rounded-2xl animate-pulse shadow-brutal">
-                <div className="h-[220px] bg-gray-200 rounded-t-2xl" />
+              <div key={i} className="h-[380px] bg-white border-2 border-black rounded-2xl shadow-brutal">
+                <div className="h-[220px] bg-gray-200 animate-pulse rounded-t-2xl" />
                 <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 rounded w-full" />
-                  <div className="h-3 bg-gray-100 rounded w-5/6" />
+                  <div className="h-4 bg-gray-200 animate-pulse rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 animate-pulse rounded w-full" />
                 </div>
               </div>
             ))}
           </div>
         ) : error ? (
           <div className="text-center py-20 bg-white border-2 border-black rounded-2xl shadow-brutal">
-            <div className="text-4xl mb-3">⚠️</div>
-            <p className="font-black text-brand">Could not load articles. Please try again.</p>
-            <button onClick={() => fetchArticles(cat)} className="mt-4 px-6 py-2 bg-lime border-2 border-black rounded-xl font-black text-brand text-sm shadow-brutal-sm hover:shadow-brutal transition-all">
-              Retry
-            </button>
+            <p className="font-black text-brand">Could not load articles.</p>
+            <button onClick={() => setLoading(true)} className="mt-4 px-6 py-2 bg-lime border-2 border-black rounded-xl font-black text-brand text-sm shadow-brutal-sm">Retry</button>
           </div>
         ) : (
           <NewsListing articles={articles} />
@@ -127,13 +113,7 @@ function NewsPageInner() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs">
             <div>
               <div className="font-black text-brand mb-2">🌿 Top Strains</div>
-              {[
-                {name:"Blue Dream",slug:"blue-dream"},
-                {name:"Sour Diesel",slug:"sour-diesel"},
-                {name:"Girl Scout Cookies",slug:"girl-scout-cookies"},
-                {name:"OG Kush",slug:"og-kush"},
-                {name:"Gelato",slug:"gelato"},
-              ].map(s => (
+              {[{name:"Blue Dream",slug:"blue-dream"},{name:"Sour Diesel",slug:"sour-diesel"},{name:"Girl Scout Cookies",slug:"girl-scout-cookies"},{name:"OG Kush",slug:"og-kush"},{name:"Gelato",slug:"gelato"}].map(s => (
                 <a key={s.slug} href={`/strains/${s.slug}`} className="block text-gray-500 hover:text-brand font-medium py-0.5">{s.name}</a>
               ))}
               <a href="/strains" className="block text-lime font-black mt-1">Browse All →</a>
@@ -141,49 +121,32 @@ function NewsPageInner() {
             <div>
               <div className="font-black text-brand mb-2">⚖️ News Topics</div>
               {["News","Laws","Business","Events","Entertainment"].map(c => (
-                <button key={c} onClick={() => handleTabClick(c)} className="block text-gray-500 hover:text-brand font-medium py-0.5 w-full text-left">{c}</button>
+                <button key={c} onClick={() => switchTab(c)} className="block text-gray-500 hover:text-brand font-medium py-0.5 text-left w-full">{c}</button>
               ))}
             </div>
             <div>
               <div className="font-black text-brand mb-2">🏦 Seed Banks</div>
-              {[
-                {name:"ILGM",slug:"ilgm"},
-                {name:"Seedsman",slug:"seedsman"},
-                {name:"Crop King Seeds",slug:"crop-king-seeds"},
-                {name:"Royal Queen Seeds",slug:"royal-queen-seeds"},
-                {name:"MSNL",slug:"msnl"},
-              ].map(s => (
+              {[{name:"ILGM",slug:"ilgm"},{name:"Seedsman",slug:"seedsman"},{name:"Crop King Seeds",slug:"crop-king-seeds"},{name:"Royal Queen Seeds",slug:"royal-queen-seeds"},{name:"MSNL",slug:"msnl"}].map(s => (
                 <a key={s.slug} href={`/seedbanks/${s.slug}`} className="block text-gray-500 hover:text-brand font-medium py-0.5">{s.name}</a>
               ))}
               <a href="/seedbanks" className="block text-lime font-black mt-1">All Seed Banks →</a>
             </div>
             <div>
               <div className="font-black text-brand mb-2">📚 Learn</div>
-              {[
-                {n:"Indica vs Sativa",h:"/learn/strains/indica-vs-sativa"},
-                {n:"Cannabinoid Profiles",h:"/learn/strains/cannabinoid-profiles"},
-                {n:"Grow Guide",h:"/learn/strains/grow-guide"},
-                {n:"Cannabis Effects",h:"/learn/strains/effects"},
-                {n:"AI Strain Diagnosis",h:"/diagnose"},
-              ].map(l => (
+              {[{n:"Indica vs Sativa",h:"/learn/strains/indica-vs-sativa"},{n:"Cannabinoid Profiles",h:"/learn/strains/cannabinoid-profiles"},{n:"Grow Guide",h:"/learn/strains/grow-guide"},{n:"Cannabis Effects",h:"/learn/strains/effects"},{n:"AI Strain Diagnosis",h:"/diagnose"}].map(l => (
                 <a key={l.h} href={l.h} className="block text-gray-500 hover:text-brand font-medium py-0.5">{l.n}</a>
               ))}
             </div>
           </div>
         </div>
       </section>
-
     </main>
   );
 }
 
 export default function NewsPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-off-white flex items-center justify-center">
-        <p className="text-gray-400 font-bold animate-pulse">Loading The Hub News...</p>
-      </div>
-    }>
+    <Suspense fallback={<div className="min-h-screen bg-off-white flex items-center justify-center"><p className="text-gray-400 font-bold">Loading...</p></div>}>
       <NewsPageInner />
     </Suspense>
   );
