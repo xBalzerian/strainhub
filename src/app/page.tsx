@@ -430,7 +430,7 @@ export default async function HomePage() {
                         {article.title}
                       </h3>
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                        <span className="text-[10px] font-bold text-gray-400">{article.author_name}</span>
+                        <span className="text-[10px] font-bold text-gray-400">{new Date(article.published_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                         <span className="text-[10px] text-gray-400">{article.reading_time} min</span>
                       </div>
                     </div>

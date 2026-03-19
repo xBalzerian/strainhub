@@ -10,7 +10,7 @@ const CAT_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   Events:        { bg:"bg-purple-600", text:"text-white", dot:"bg-purple-400" },
   Entertainment: { bg:"bg-pink-600",   text:"text-white", dot:"bg-pink-400"   },
 };
-const GRAD: Record<string,string> = {
+const GRAD: Record<string, string> = {
   News:"from-blue-950 via-blue-900 to-brand",
   Laws:"from-red-950 via-red-900 to-brand",
   Business:"from-amber-950 via-amber-900 to-brand",
@@ -19,106 +19,119 @@ const GRAD: Record<string,string> = {
 };
 
 function timeAgo(d: string) {
-  const h = Math.floor((Date.now()-new Date(d).getTime())/3600000);
-  if (h<1) return "Just now";
-  if (h<24) return `${h}h ago`;
-  const days=Math.floor(h/24);
-  return days===1?"1 day ago":`${days} days ago`;
+  const diff = Date.now() - new Date(d).getTime();
+  const h = Math.floor(diff / 3600000);
+  if (h < 1) return "Just now";
+  if (h < 24) return `${h}h ago`;
+  const days = Math.floor(h / 24);
+  return days === 1 ? "Yesterday" : `${days} days ago`;
 }
 
-/* Full-bleed hook image with text overlay */
-function HookImage({article,tall=false}:{article:Article;tall?:boolean}) {
-  const cat = CAT_COLORS[article.category]||CAT_COLORS.News;
-  const grad = GRAD[article.category]||GRAD.News;
-  const h = tall ? "h-[340px] md:h-[420px]" : "h-[240px] md:h-[280px]";
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/* ─── HOOK IMAGE ─────────────────────────────────────────────────────── */
+function HookImage({ article, size = "md" }: { article: Article; size?: "lg" | "md" | "sm" }) {
+  const cat = CAT_COLORS[article.category] || CAT_COLORS.News;
+  const grad = GRAD[article.category] || GRAD.News;
+  const heightMap = { lg: "h-[380px]", md: "h-[220px]", sm: "h-[180px]" };
+  const h = heightMap[size];
+
   return (
-    <div className={`relative w-full ${h} overflow-hidden`}>
+    <div className={`relative w-full ${h} flex-shrink-0 overflow-hidden`}>
       {article.hero_image_url ? (
         <>
-          <Image src={article.hero_image_url} alt={article.title} fill
-            className="object-cover" priority={tall}
-            sizes="(max-width:768px) 100vw, 650px"/>
-          {/* gradient overlay — bottom dark so text pops */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"/>
+          <Image
+            src={article.hero_image_url}
+            alt={article.title}
+            fill
+            className="object-cover"
+            priority={size === "lg"}
+            sizes={size === "lg" ? "100vw" : "(max-width:768px) 100vw, 400px"}
+          />
+          {/* gradient overlay: stronger at bottom for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/5 pointer-events-none" />
         </>
       ) : (
         <div className={`absolute inset-0 bg-gradient-to-br ${grad}`}>
           <div className="absolute inset-0 opacity-[0.04]"
-            style={{backgroundImage:"repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)",backgroundSize:"20px 20px"}}/>
+            style={{ backgroundImage: "repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%)", backgroundSize: "20px 20px" }} />
         </div>
       )}
-      {/* category badge */}
-      <div className="absolute top-3 left-3 z-10">
+
+      {/* top badges row */}
+      <div className="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none">
         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide ${cat.bg} ${cat.text}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`}/>{article.category}
+          <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`} />
+          {article.category}
         </span>
+        {Date.now() - new Date(article.published_at).getTime() < 10800000 && (
+          <span className="inline-flex items-center gap-1 bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full uppercase tracking-widest animate-pulse">
+            🔴 Breaking
+          </span>
+        )}
       </div>
-      {/* breaking */}
-      {Date.now()-new Date(article.published_at).getTime()<10800000 && (
-        <div className="absolute top-3 right-3 z-10">
-          <span className="inline-flex items-center gap-1 bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full uppercase tracking-widest animate-pulse">🔴 Breaking</span>
-        </div>
-      )}
-      {/* hook text overlay — bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 z-10">
-        {tall ? (
-          <h2 className="text-white font-black text-xl md:text-2xl leading-tight tracking-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.9)]">
-            {article.title}
-          </h2>
+
+      {/* bottom text overlay — strictly inside the image div */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
+        {size === "lg" ? (
+          <>
+            <h2 className="text-white font-black text-xl md:text-2xl leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,1)] mb-1.5">
+              {article.title}
+            </h2>
+            <p className="text-white/70 text-xs leading-relaxed line-clamp-2 [text-shadow:0_1px_4px_rgba(0,0,0,0.9)] hidden sm:block">
+              {article.summary}
+            </p>
+          </>
         ) : (
-          <h3 className="text-white font-black text-base md:text-lg leading-tight tracking-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.9)]">
+          <h3 className="text-white font-black text-sm md:text-base leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,1)] line-clamp-3">
             {article.title}
           </h3>
         )}
-        {tall && (
-          <p className="text-white/65 text-xs mt-1.5 line-clamp-2 leading-relaxed hidden md:block [text-shadow:0_1px_4px_rgba(0,0,0,0.8)]">
-            {article.summary}
-          </p>
-        )}
       </div>
     </div>
   );
 }
 
-function MetaStrip({article}:{article:Article}) {
+/* ─── META STRIP ─────────────────────────────────────────────────────── */
+function MetaStrip({ article }: { article: Article }) {
   return (
     <div className="px-4 py-3 flex items-center justify-between border-t-2 border-black bg-white flex-shrink-0">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-lime border-2 border-black flex items-center justify-center text-[9px] font-black text-brand flex-shrink-0">A</div>
-        <span className="text-[11px] font-black text-brand">{article.author_name}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-[10px] font-bold text-gray-500">📅 {formatDate(article.published_at)}</span>
       </div>
-      <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold">
-        <span>{timeAgo(article.published_at)}</span>
-        <span>·</span>
-        <span>{article.reading_time} min</span>
-      </div>
+      <span className="text-[10px] text-gray-400 font-bold">⏱ {article.reading_time} min</span>
     </div>
   );
 }
 
-function FeaturedCard({article}:{article:Article}) {
+/* ─── HERO CARD (full width, large) ─────────────────────────────────── */
+function HeroCard({ article }: { article: Article }) {
   return (
-    <Link href={`/news/${article.slug}`} className="group block h-full">
-      <article className="h-full bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col">
-        <HookImage article={article} tall/>
-        <MetaStrip article={article}/>
+    <Link href={`/news/${article.slug}`} className="group block">
+      <article className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col">
+        <HookImage article={article} size="lg" />
+        <MetaStrip article={article} />
       </article>
     </Link>
   );
 }
 
-function ArticleCard({article}:{article:Article}) {
+/* ─── REGULAR CARD (3-col grid) ──────────────────────────────────────── */
+function ArticleCard({ article }: { article: Article }) {
   return (
     <Link href={`/news/${article.slug}`} className="group block h-full">
       <article className="h-full bg-white border-2 border-black rounded-2xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all flex flex-col">
-        <HookImage article={article}/>
-        <MetaStrip article={article}/>
+        <HookImage article={article} size="md" />
+        <MetaStrip article={article} />
       </article>
     </Link>
   );
 }
 
-export default function NewsListing({articles}:{articles:Article[]}) {
+/* ─── MAIN EXPORT ────────────────────────────────────────────────────── */
+export default function NewsListing({ articles }: { articles: Article[] }) {
   if (!articles.length) return (
     <div className="text-center py-24 bg-white border-2 border-black rounded-2xl shadow-brutal">
       <div className="text-5xl mb-4">📰</div>
@@ -127,26 +140,30 @@ export default function NewsListing({articles}:{articles:Article[]}) {
     </div>
   );
 
-  const [first, second, third, ...rest] = articles;
+  const [first, ...rest] = articles;
+
   return (
-    <div className="space-y-6">
-      {/* 2 big featured side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {first && <FeaturedCard article={first}/>}
-        {second && <FeaturedCard article={second}/>}
-      </div>
-      {(third||rest.length>0) && (
-        <div className="flex items-center gap-4 py-1">
-          <div className="flex-1 h-px bg-gray-200"/>
+    <div className="space-y-5">
+
+      {/* ── TOP HERO: full width ── */}
+      {first && <HeroCard article={first} />}
+
+      {/* ── DIVIDER ── */}
+      {rest.length > 0 && (
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-px bg-gray-200" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">More Stories</span>
-          <div className="flex-1 h-px bg-gray-200"/>
+          <div className="flex-1 h-px bg-gray-200" />
         </div>
       )}
-      {(third||rest.length>0) && (
+
+      {/* ── 3-COLUMN GRID ── */}
+      {rest.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[third,...rest].filter(Boolean).map(a=><ArticleCard key={a!.slug} article={a!}/>)}
+          {rest.map(a => <ArticleCard key={a.slug} article={a} />)}
         </div>
       )}
+
     </div>
   );
 }
