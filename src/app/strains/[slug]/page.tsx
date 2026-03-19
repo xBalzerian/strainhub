@@ -787,6 +787,46 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           </div>
         )}
       </div>
+
+      {/* ── INTERNAL LINKS — News, Explore, Seed Banks ────────────── */}
+      <section className="bg-white border-t-2 border-black mt-8">
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs">
+            <div>
+              <div className="font-black text-brand mb-2 text-[11px] uppercase tracking-widest">📰 Cannabis News</div>
+              <a href="/news" className="block text-gray-500 hover:text-lime font-medium py-0.5">All News</a>
+              <a href="/news?category=Laws" className="block text-gray-500 hover:text-lime font-medium py-0.5">Legalization Updates</a>
+              <a href="/news?category=Business" className="block text-gray-500 hover:text-lime font-medium py-0.5">Business & Industry</a>
+              <a href="/news?category=Events" className="block text-gray-500 hover:text-lime font-medium py-0.5">Cannabis Events</a>
+              <a href="/news?category=Entertainment" className="block text-gray-500 hover:text-lime font-medium py-0.5">Entertainment</a>
+            </div>
+            <div>
+              <div className="font-black text-brand mb-2 text-[11px] uppercase tracking-widest">🌿 Browse Strains</div>
+              <a href="/strains" className="block text-gray-500 hover:text-lime font-medium py-0.5">All Strains</a>
+              <a href="/strains?type=Indica" className="block text-gray-500 hover:text-lime font-medium py-0.5">Indica Strains</a>
+              <a href="/strains?type=Sativa" className="block text-gray-500 hover:text-lime font-medium py-0.5">Sativa Strains</a>
+              <a href="/strains?type=Hybrid" className="block text-gray-500 hover:text-lime font-medium py-0.5">Hybrid Strains</a>
+              <a href="/diagnose" className="block text-gray-500 hover:text-lime font-medium py-0.5">AI Diagnosis Tool</a>
+            </div>
+            <div>
+              <div className="font-black text-brand mb-2 text-[11px] uppercase tracking-widest">🏦 Seed Banks</div>
+              <a href="/seedbanks" className="block text-gray-500 hover:text-lime font-medium py-0.5">All Seed Banks</a>
+              <a href="/seedbanks/ilgm" className="block text-gray-500 hover:text-lime font-medium py-0.5">ILGM</a>
+              <a href="/seedbanks/seedsman" className="block text-gray-500 hover:text-lime font-medium py-0.5">Seedsman</a>
+              <a href="/seedbanks/crop-king-seeds" className="block text-gray-500 hover:text-lime font-medium py-0.5">Crop King Seeds</a>
+              <a href="/seedbanks/royal-queen-seeds" className="block text-gray-500 hover:text-lime font-medium py-0.5">Royal Queen Seeds</a>
+            </div>
+            <div>
+              <div className="font-black text-brand mb-2 text-[11px] uppercase tracking-widest">📚 Learn</div>
+              <a href="/learn/strains/indica-vs-sativa" className="block text-gray-500 hover:text-lime font-medium py-0.5">Indica vs Sativa</a>
+              <a href="/learn/strains/cannabinoid-profiles" className="block text-gray-500 hover:text-lime font-medium py-0.5">Cannabinoid Profiles</a>
+              <a href="/learn/strains/grow-guide" className="block text-gray-500 hover:text-lime font-medium py-0.5">Grow Guide</a>
+              <a href="/learn/strains/effects" className="block text-gray-500 hover:text-lime font-medium py-0.5">Cannabis Effects</a>
+              <a href="/chat" className="block text-gray-500 hover:text-lime font-medium py-0.5">AI Strain Chat</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
