@@ -426,7 +426,7 @@ export default async function HomePage() {
                       </span>
                     </div>
                     <div className="flex flex-col flex-1 p-4">
-                      <h3 className="font-black text-sm text-brand leading-tight mb-2 group-hover:text-lime transition-colors line-clamp-3 flex-1">
+                      <h3 className="font-black text-sm text-brand leading-tight mb-2 group-hover:[text-shadow:0_1px_8px_rgba(170,255,0,0.35)] transition-all line-clamp-3 flex-1">
                         {article.title}
                       </h3>
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">

@@ -294,7 +294,7 @@ export default function ArticlePage({article}:{article:Article}) {
                 ].map(l=>(
                   <Link key={l.href} href={l.href}
                     className="flex items-center justify-between px-2 py-2.5 rounded-lg hover:bg-lime/10 border border-transparent hover:border-black transition-all group">
-                    <span className="text-[12px] font-bold text-brand group-hover:text-lime transition-colors">{l.cat}</span>
+                    <span className="text-[12px] font-bold text-brand transition-colors">{l.cat}</span>
                     <span className="text-gray-300 text-xs group-hover:text-brand transition-colors">→</span>
                   </Link>
                 ))}
