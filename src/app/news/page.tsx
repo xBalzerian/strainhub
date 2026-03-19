@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import NewsListing from "@/components/NewsListing";
 import type { Article } from "@/lib/articles";
 
@@ -9,22 +8,49 @@ const CATEGORIES = ["All", "News", "Laws", "Business", "Events", "Entertainment"
 
 function NewsPageInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const cat = searchParams.get("category") || "All";
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchArticles = useCallback((category: string) => {
+    setLoading(true);
+    setError(false);
+    const controller = new AbortController();
+    fetch(`/api/articles?category=${category}&limit=30`, { signal: controller.signal })
+      .then(r => {
+        if (!r.ok) throw new Error("fetch failed");
+        return r.json();
+      })
+      .then(data => {
+        setArticles(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        if (err.name !== "AbortError") {
+          setError(true);
+          setLoading(false);
+        }
+      });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/articles?category=${cat}&limit=30`)
-      .then(r => r.json())
-      .then(data => { setArticles(data); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [cat]);
+    const cleanup = fetchArticles(cat);
+    return cleanup;
+  }, [cat, fetchArticles]);
+
+  const handleTabClick = (c: string) => {
+    if (c === cat) return; // already on this tab
+    const url = c === "All" ? "/news" : `/news?category=${c}`;
+    router.push(url, { scroll: false });
+  };
 
   return (
     <main className="min-h-screen bg-off-white">
 
-      {/* ── MASTHEAD ── */}
+      {/* MASTHEAD */}
       <section className="bg-off-white border-b-4 border-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-0">
           <div className="flex items-center justify-between border-b border-gray-300 pb-3 mb-5">
@@ -43,24 +69,52 @@ function NewsPageInner() {
               <span className="font-black text-brand">Angelica M.</span> every morning.
             </p>
           </div>
-          {/* Category tabs */}
-          <div className="flex gap-0 border-t-2 border-black mt-5 overflow-x-auto">
-            {CATEGORIES.map(c => (
-              <a key={c} href={c === "All" ? "/news" : `/news?category=${c}`}
-                className={`px-4 py-2.5 text-xs font-black uppercase tracking-wider border-r-2 border-black transition-all whitespace-nowrap flex-shrink-0 ${
-                  cat === c ? "bg-lime text-brand" : "bg-white text-gray-600 hover:bg-lime/40 hover:text-brand"
-                }`}>
-                {c}
-              </a>
-            ))}
+
+          {/* Category tabs — client-side navigation, no page reload */}
+          <div className="flex gap-0 border-t-2 border-black mt-5 overflow-x-auto scrollbar-none">
+            {CATEGORIES.map(c => {
+              const isActive = cat === c;
+              return (
+                <button
+                  key={c}
+                  onClick={() => handleTabClick(c)}
+                  className={`px-4 py-2.5 text-xs font-black uppercase tracking-wider border-r-2 border-black transition-all whitespace-nowrap flex-shrink-0 cursor-pointer ${
+                    isActive
+                      ? "bg-lime text-brand"
+                      : "bg-white text-gray-600 hover:bg-lime/40 hover:text-brand"
+                  }`}
+                >
+                  {c}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── FULL-WIDTH ARTICLES — no sidebar ── */}
+      {/* ARTICLES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {loading ? (
-          <div className="text-center py-20 text-gray-400 font-bold">Loading stories...</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[1,2,3].map(i => (
+              <div key={i} className="h-[380px] bg-white border-2 border-black rounded-2xl animate-pulse shadow-brutal">
+                <div className="h-[220px] bg-gray-200 rounded-t-2xl" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div className="h-3 bg-gray-100 rounded w-5/6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-20 bg-white border-2 border-black rounded-2xl shadow-brutal">
+            <div className="text-4xl mb-3">⚠️</div>
+            <p className="font-black text-brand">Could not load articles. Please try again.</p>
+            <button onClick={() => fetchArticles(cat)} className="mt-4 px-6 py-2 bg-lime border-2 border-black rounded-xl font-black text-brand text-sm shadow-brutal-sm hover:shadow-brutal transition-all">
+              Retry
+            </button>
+          </div>
         ) : (
           <NewsListing articles={articles} />
         )}
@@ -87,7 +141,7 @@ function NewsPageInner() {
             <div>
               <div className="font-black text-brand mb-2">⚖️ News Topics</div>
               {["News","Laws","Business","Events","Entertainment"].map(c => (
-                <a key={c} href={`/news?category=${c}`} className="block text-gray-500 hover:text-brand font-medium py-0.5">{c}</a>
+                <button key={c} onClick={() => handleTabClick(c)} className="block text-gray-500 hover:text-brand font-medium py-0.5 w-full text-left">{c}</button>
               ))}
             </div>
             <div>
@@ -125,7 +179,11 @@ function NewsPageInner() {
 
 export default function NewsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-off-white flex items-center justify-center"><p className="text-gray-400 font-bold">Loading...</p></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-off-white flex items-center justify-center">
+        <p className="text-gray-400 font-bold animate-pulse">Loading The Hub News...</p>
+      </div>
+    }>
       <NewsPageInner />
     </Suspense>
   );
