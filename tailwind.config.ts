@@ -26,7 +26,6 @@ const config: Config = {
         "hybrid-border": "#FDE68A",
       },
       fontFamily: {
-        // Uses the CSS variable injected by next/font/google in layout.tsx
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
@@ -36,7 +35,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
 
 export default config;
