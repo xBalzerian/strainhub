@@ -53,7 +53,7 @@ function StrainImg({
         src={strain.image_url}
         alt={`${strain.name} cannabis strain`}
         fill
-        sizes="(max-width: 640px) 130px, (max-width: 1024px) 33vw, 25vw"
+        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 33vw, 25vw"
         className="object-contain p-1.5"
         priority={priority}
         loading={priority ? "eager" : "lazy"}
@@ -211,7 +211,7 @@ export default function StrainCard({
             DESKTOP (sm+): image top, content below
         ════════════════════════════════════════ */}
         <div className="hidden sm:flex flex-col flex-1">
-          <div className="relative w-full aspect-square border-b-2 border-black">
+          <div className="relative w-full aspect-[4/3] border-b-2 border-black">
             {strain.rank_popularity <= 10 && (
               <span className="absolute top-2.5 left-2.5 z-10">
                 <GemBadge rank={Math.round(strain.rank_popularity)} />
@@ -227,7 +227,7 @@ export default function StrainCard({
             <div>
               <h3 className="font-black text-base leading-tight">{strain.name}</h3>
               {strain.description && (
-                <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{strain.description}</p>
+                <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-snug">{strain.description}</p>
               )}
             </div>
             <div className="flex gap-1.5 flex-wrap">
