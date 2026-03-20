@@ -63,8 +63,7 @@ function NewsPageInner() {
               The <span className="bg-lime px-2 rounded-lg">Hub</span> News
             </h1>
             <p className="text-gray-500 text-sm max-w-lg mx-auto mt-2">
-              Laws, business, events &amp; entertainment — everything cannabis, written by{" "}
-              <span className="font-black text-brand">Angelica M.</span> every morning.
+              Laws, business, events &amp; entertainment — everything cannabis.
             </p>
           </div>
 
