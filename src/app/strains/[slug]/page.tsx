@@ -848,10 +848,10 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 See All →
               </Link>
             </div>
-            {/* Single responsive grid — 2 cols on mobile, 4 on desktop */}
+            {/* Single responsive grid — 2 cols on mobile (compact), 4 on desktop */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {similar.map((s) => (
-                <StrainCard key={s.id} strain={s} />
+                <StrainCard key={s.id} strain={s} compact />
               ))}
             </div>
           </div>
