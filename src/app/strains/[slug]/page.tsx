@@ -290,25 +290,107 @@ export default async function StrainPage({ params }: { params: { slug: string } 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {/* Breadcrumb + Back — single row */}
-        <div className="flex items-center justify-between mb-8 gap-4">
+        <div className="flex items-center justify-between mb-5 sm:mb-8 gap-4">
           <nav className="flex gap-2 text-xs font-semibold text-gray-400">
             <Link href="/" className="hover:text-brand">Home</Link>
             <span>/</span>
             <Link href="/strains" className="hover:text-brand">Strains</Link>
             <span>/</span>
-            <span className="text-brand truncate max-w-[140px] sm:max-w-none">{strain.name}</span>
+            <span className="text-brand truncate max-w-[120px] sm:max-w-none">{strain.name}</span>
           </nav>
-          <Link href="/strains" className="flex-shrink-0 inline-flex items-center gap-2 bg-white border-2 border-black px-4 py-2 rounded-xl text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all">
-            ← Back to Strains
+          <Link href="/strains" className="flex-shrink-0 inline-flex items-center gap-2 bg-white border-2 border-black px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-brutal-sm hover:bg-lime transition-all">
+            ← Back
           </Link>
+        </div>
+
+        {/* ── MOBILE HERO CARD (hidden on lg) ── */}
+        <div className="lg:hidden mb-6">
+          {/* Image + Name row */}
+          <div className="flex gap-4 items-start mb-4">
+            {/* Image — compact square */}
+            <div className="flex-shrink-0 w-[130px] h-[130px] relative rounded-2xl border-2 border-black shadow-brutal overflow-hidden bg-white">
+              {strain.image_url ? (
+                <Image
+                  src={strain.image_url}
+                  alt={`${strain.name} cannabis strain`}
+                  fill
+                  priority
+                  sizes="130px"
+                  className="object-contain"
+                  unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-5xl">🌿</div>
+              )}
+            </div>
+            {/* Name + type + rating */}
+            <div className="flex-1 min-w-0 pt-1">
+              <h1 className="text-2xl font-black tracking-tight leading-tight mb-2">{strain.name}</h1>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                <span className={`text-[11px] font-black px-2.5 py-1 rounded-lg border-2 border-black shadow-brutal-sm ${typeColor}`}>
+                  {strain.type === "Indica" ? "🍇" : strain.type === "Sativa" ? "☀️" : "⚡"} {strain.type}
+                </span>
+                <span className="text-[11px] font-black px-2.5 py-1 rounded-lg border-2 border-black shadow-brutal-sm bg-lime">
+                  🔥 {strain.thc_max}% THC
+                </span>
+              </div>
+              <ReviewSummary strainSlug={strain.slug} strainName={strain.name} />
+            </div>
+          </div>
+
+          {/* Description excerpt */}
+          <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
+            {strain.description}
+          </p>
+
+          {/* Key detail pills row */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="inline-flex items-center gap-1 bg-white border-2 border-black rounded-lg px-3 py-1.5 text-xs font-bold shadow-brutal-sm">
+              💙 CBD {strain.cbd_max}%
+            </span>
+            <span className="inline-flex items-center gap-1 bg-white border-2 border-black rounded-lg px-3 py-1.5 text-xs font-bold shadow-brutal-sm">
+              ⏱ {strain.flowering_weeks_min}–{strain.flowering_weeks_max}w flower
+            </span>
+            <span className={`inline-flex items-center gap-1 border-2 border-black rounded-lg px-3 py-1.5 text-xs font-bold shadow-brutal-sm ${experienceLevel.color}`}>
+              {experienceLevel.emoji} {experienceLevel.label}
+            </span>
+            <span className="inline-flex items-center gap-1 bg-white border-2 border-black rounded-lg px-3 py-1.5 text-xs font-bold shadow-brutal-sm">
+              🌱 {strain.grow_difficulty} Grow
+            </span>
+            {strain.parents?.length > 0 && (
+              <span className="inline-flex items-center gap-1 bg-lime-pale border-2 border-black rounded-lg px-3 py-1.5 text-xs font-bold shadow-brutal-sm">
+                🧬 {strain.parents.slice(0,2).join(" × ")}
+              </span>
+            )}
+          </div>
+
+          {/* THC/CBD mini bars */}
+          <div className="bg-white border-2 border-black rounded-xl p-3 shadow-brutal-sm">
+            <div className="mb-2">
+              <div className="flex justify-between text-[11px] font-bold text-gray-500 mb-1">
+                <span>⚡ THC</span><span className="text-lime-dark font-black">{strain.thc_max}%</span>
+              </div>
+              <div className="bg-gray-200 rounded h-2 border border-black overflow-hidden">
+                <div className="bg-lime h-full rounded" style={{ width: `${thcPct}%` }} />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-[11px] font-bold text-gray-500 mb-1">
+                <span>💙 CBD</span><span className="font-black">{strain.cbd_max}%</span>
+              </div>
+              <div className="bg-gray-200 rounded h-2 border border-black overflow-hidden">
+                <div className="bg-blue-400 h-full rounded" style={{ width: `${cbdPct}%` }} />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-12 mb-12">
-          {/* LEFT — Image + Quick Info */}
-          <div className="lg:sticky lg:top-24 self-start">
+          {/* LEFT — Image + Quick Info (desktop only) */}
+          <div className="hidden lg:block lg:sticky lg:top-24 self-start">
             {strain.image_url ? (
               <div className="relative w-full aspect-square rounded-2xl border-2 border-black shadow-brutal-lg overflow-hidden mb-4">
                 <Image
@@ -316,7 +398,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   alt={`${strain.name} cannabis strain`}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 380px"
+                  sizes="380px"
                   className="object-contain bg-white"
                   unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
                 />
@@ -336,7 +418,6 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               <span className="text-xs font-bold px-3 py-1.5 rounded-lg border-2 border-black shadow-brutal-sm bg-white">
                 {potency} Potency
               </span>
-              {/* GREEN #2 — Experience level badge */}
               <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border-2 shadow-brutal-sm ${experienceLevel.color}`}>
                 {experienceLevel.emoji} {experienceLevel.label}
               </span>
@@ -380,7 +461,6 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   ["Difficulty", strain.grow_difficulty],
                   ["Yield", strain.grow_yield],
                   ["Height", strain.grow_height],
-                  // breeder hidden for now
                   ...(strain.parents?.length ? [["Parents", strain.parents.slice(0, 2).join(" × ")]] : []),
                 ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between">
@@ -394,10 +474,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
 
           {/* RIGHT — Full Info */}
           <div>
-            <h1 className="text-5xl font-black tracking-tight leading-tight mb-3">{strain.name}</h1>
-
-            {/* Star rating summary inline with title */}
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
+            {/* Desktop title + rating (hidden on mobile — shown in mobile hero above) */}
+            <h1 className="hidden lg:block text-5xl font-black tracking-tight leading-tight mb-3">{strain.name}</h1>
+            <div className="hidden lg:flex items-center gap-3 mb-4 flex-wrap">
               <ReviewSummary strainSlug={strain.slug} strainName={strain.name} />
               <span className="text-xs text-gray-400 font-semibold">·</span>
               <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border-2 ${typeColor}`}>
@@ -405,11 +484,11 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </span>
             </div>
 
-
-
-            {/* GREEN #4 — Breeder / Seed Bank — hidden for now */}
-
-            <p className="text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
+            <p className="hidden lg:block text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
+              {strain.description}
+            </p>
+            {/* Mobile: full description below hero card */}
+            <p className="lg:hidden text-gray-500 text-sm leading-relaxed mb-6 pb-6 border-b-2 border-dashed border-gray-200">
               {strain.description}
             </p>
 
