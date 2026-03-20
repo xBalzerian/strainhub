@@ -97,11 +97,82 @@ function GemBadge({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) {
 export default function StrainCard({
   strain,
   priority = false,
+  compact = false,
 }: {
   strain: Strain;
   priority?: boolean;
+  compact?: boolean;
 }) {
   const t = TYPE_STYLES[strain.type as keyof typeof TYPE_STYLES] || TYPE_STYLES.Hybrid;
+
+  // compact = true → used in 2-col grids on mobile. Vertical card: image top, info below.
+  if (compact) {
+    return (
+      <Link href={`/strains/${strain.slug}`} className="group block h-full">
+        <article className="h-full flex flex-col bg-white border-2 border-black rounded-xl overflow-hidden shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all duration-150">
+          {/* Image top */}
+          <div className="relative w-full aspect-[4/3] border-b-2 border-black flex-shrink-0">
+            {strain.rank_popularity <= 10 && (
+              <span className="absolute top-1.5 left-1.5 z-10">
+                <GemBadge rank={Math.round(strain.rank_popularity)} size="sm" />
+              </span>
+            )}
+            <span className={`absolute top-1.5 right-1.5 z-10 text-[9px] font-bold px-1.5 py-0.5 rounded border ${t.bg} ${t.border} ${t.text}`}>
+              {strain.type}
+            </span>
+            <StrainImg strain={strain} priority={priority} className="w-full h-full" />
+          </div>
+          {/* Info */}
+          <div className="flex flex-col flex-1 p-2.5 gap-2">
+            <h3 className="font-black text-[13px] leading-tight">{strain.name}</h3>
+            <div className="flex gap-1 flex-wrap">
+              <div className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
+                <span className="text-[10px]">🔥</span>
+                <span className={`text-[10px] font-black ${THC_COLOR(strain.thc_max)}`}>{strain.thc_max}%</span>
+                <span className="text-[8px] text-gray-400">THC</span>
+              </div>
+              <div className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
+                <span className="text-[10px]">💧</span>
+                <span className="text-[10px] font-black">{strain.cbd_max}%</span>
+                <span className="text-[8px] text-gray-400">CBD</span>
+              </div>
+              <div className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded px-1.5 py-0.5">
+                <span className="text-[10px]">⏱</span>
+                <span className="text-[10px] font-black">{strain.flowering_weeks_max}w</span>
+              </div>
+            </div>
+            {strain.effects?.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {strain.effects.slice(0, 3).map((e) => (
+                  <span key={e} className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-lime-pale border border-lime-dark text-brand">
+                    {MOOD_EMOJI[e] || "✨"} {e}
+                  </span>
+                ))}
+              </div>
+            )}
+            {strain.helps_with?.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {strain.helps_with.slice(0, 2).map((h) => (
+                  <span key={h} className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-sativa-bg border border-sativa-border text-sativa">{h}</span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="px-2.5 py-2 bg-gray-50 border-t-2 border-black flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${DIFF_DOT[strain.grow_difficulty] || "bg-gray-400"}`} />
+              <span className={`text-[9px] font-bold ${DIFF_TEXT[strain.grow_difficulty] || "text-gray-500"}`}>{strain.grow_difficulty}</span>
+            </div>
+            <div className="flex gap-1">
+              {strain.flavors?.slice(0, 2).map((f) => (
+                <span key={f} className="text-[8px] px-1 py-0.5 bg-white border border-gray-200 rounded text-gray-500 font-medium">{f}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      </Link>
+    );
+  }
 
   return (
     <Link href={`/strains/${strain.slug}`} className="group block h-full">
