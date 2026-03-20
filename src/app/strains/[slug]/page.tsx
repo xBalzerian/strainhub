@@ -848,17 +848,8 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                 See All →
               </Link>
             </div>
-            {/* Mobile: horizontal scroll — Desktop: grid */}
-            <div className="sm:hidden -mx-4 px-4">
-              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-                {similar.map((s) => (
-                  <div key={s.id} className="flex-shrink-0 w-[280px]">
-                    <StrainCard strain={s} />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Single responsive grid — 2 cols on mobile, 4 on desktop */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {similar.map((s) => (
                 <StrainCard key={s.id} strain={s} />
               ))}
