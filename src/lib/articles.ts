@@ -1,4 +1,18 @@
-import { supabase } from "./supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://bfzcjunuuxzhqafuljlh.supabase.co";
+// Server-side: use service role (bypasses RLS, all articles visible).
+// Client-side: falls back to anon key (or placeholder — read-only public data).
+const SB_KEY =
+  typeof window === "undefined"
+    ? (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "")
+    : (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "");
+
+function getClient() {
+  return createClient(SB_URL, SB_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
 
 export type Article = {
   id: string;
@@ -27,6 +41,7 @@ export type Article = {
 };
 
 export async function getArticles(limit = 20, category?: string): Promise<Article[]> {
+  const supabase = getClient();
   let q = supabase
     .from("articles")
     .select("*")
@@ -35,11 +50,12 @@ export async function getArticles(limit = 20, category?: string): Promise<Articl
     .limit(limit);
   if (category && category !== "All") q = q.eq("category", category);
   const { data, error } = await q;
-  if (error) { console.error("getArticles:", error); return []; }
+  if (error) { console.error("getArticles:", error.message); return []; }
   return (data || []) as Article[];
 }
 
 export async function getArticle(slug: string): Promise<Article | null> {
+  const supabase = getClient();
   const { data } = await supabase
     .from("articles").select("*")
     .eq("slug", slug).eq("is_published", true).single();
@@ -47,6 +63,7 @@ export async function getArticle(slug: string): Promise<Article | null> {
 }
 
 export async function getArticlesMeta(): Promise<Pick<Article, "slug" | "published_at">[]> {
+  const supabase = getClient();
   const { data } = await supabase
     .from("articles").select("slug,published_at")
     .eq("is_published", true)
