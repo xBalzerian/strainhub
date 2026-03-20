@@ -1,23 +1,23 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import NewsListing from "@/components/NewsListing";
 import type { Article } from "@/lib/articles";
 
 const CATEGORIES = ["All", "News", "Laws", "Business", "Events", "Entertainment"];
 
 async function fetchArticles(category: string): Promise<Article[]> {
-  let q = supabase
-    .from("articles")
-    .select("*")
-    .eq("is_published", true)
-    .order("published_at", { ascending: false })
-    .limit(30);
-  if (category !== "All") q = q.eq("category", category);
-  const { data, error } = await q;
-  if (error) { console.error("fetchArticles:", error); return []; }
-  return (data || []) as Article[];
+  try {
+    const url = category !== "All"
+      ? `/api/articles?category=${encodeURIComponent(category)}&limit=30`
+      : "/api/articles?limit=30";
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return [];
+    return await res.json() as Article[];
+  } catch (e) {
+    console.error("fetchArticles:", e);
+    return [];
+  }
 }
 
 function NewsPageInner() {
