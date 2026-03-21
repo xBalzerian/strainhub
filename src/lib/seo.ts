@@ -206,6 +206,31 @@ export function strainJsonLd(strain: Strain) {
           { "@type": "ListItem", position: 3, name: strain.name, item: strainUrl },
         ],
       },
+      // SpeakableSpecification — tells Google AI Overviews which text to read/cite
+      {
+        "@type": "WebPage",
+        "@id": `${strainUrl}#webpage`,
+        url: strainUrl,
+        name: `${strain.name} Strain: Effects, Terpenes & Grow Guide`,
+        description: strain.description,
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: [
+            ".strain-speakable-description",
+            ".strain-speakable-effects",
+            ".strain-speakable-terpenes",
+            ".strain-speakable-faq",
+          ],
+        },
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+            { "@type": "ListItem", position: 2, name: "Strains", item: `${SITE_URL}/strains` },
+            { "@type": "ListItem", position: 3, name: strain.name, item: strainUrl },
+          ],
+        },
+      },
     ],
   };
 }
