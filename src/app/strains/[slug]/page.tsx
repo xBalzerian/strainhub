@@ -484,11 +484,11 @@ export default async function StrainPage({ params }: { params: { slug: string } 
               </span>
             </div>
 
-            <p className="hidden lg:block text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
+            <p className="strain-speakable-description hidden lg:block text-gray-500 text-base leading-relaxed mb-8 pb-8 border-b-2 border-dashed border-gray-200">
               {strain.description}
             </p>
             {/* Mobile: full description below hero card */}
-            <p className="lg:hidden text-gray-500 text-sm leading-relaxed mb-6 pb-6 border-b-2 border-dashed border-gray-200">
+            <p className="strain-speakable-description lg:hidden text-gray-500 text-sm leading-relaxed mb-6 pb-6 border-b-2 border-dashed border-gray-200">
               {strain.description}
             </p>
 
@@ -584,7 +584,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             </div>
 
             {/* RED #1 — Positive Effects */}
-            <div className="mb-8">
+            <div className="strain-speakable-effects mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">✨ Positive Effects</h2>
               <div className="flex flex-col gap-3">
                 {(strain.effects || []).map((effect) => (
@@ -674,7 +674,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
 
 {/* Terpenes */}
             {strain.terpenes?.length > 0 && (
-              <div className="mb-8">
+              <div className="strain-speakable-terpenes mb-8">
                 <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2">🧬 Terpene Profile</h2>
                 <p className="text-xs text-gray-400 mb-4">
                   Terpenes give {strain.name} its distinctive aroma and contribute to its effects through the entourage effect.
@@ -779,7 +779,7 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             </div>
 
             {/* FAQ */}
-            <div className="mb-8">
+            <div className="strain-speakable-faq mb-8">
               <h2 className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-4">❓ People Also Ask About {strain.name}</h2>
               <div className="flex flex-col gap-3">
                 {(strain.faq && strain.faq.length > 0
