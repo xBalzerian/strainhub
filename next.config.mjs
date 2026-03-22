@@ -33,6 +33,13 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
+  async redirects() {
+    return [
+      // Deleted/renamed strain redirects — prevents 404s from cached search results
+      { source: "/strains/do-si-dos", destination: "/strains/dosidos", permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {
