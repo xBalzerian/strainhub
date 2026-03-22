@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useProStatus } from "@/hooks/useProStatus";
+import { useAuth } from "@/context/AuthContext";
 
 interface Issue {
   name: string;
@@ -60,7 +60,7 @@ export default function DiagnosePage() {
   const [expandedIssue, setExpandedIssue] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
-  const { isPro, hydrated } = useProStatus();
+  const { isPro, loading: authLoading } = useAuth();
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) { setError("Please upload an image file."); return; }
@@ -217,7 +217,7 @@ export default function DiagnosePage() {
     }
   }
 
-  if (!hydrated) return null;
+  if (authLoading) return null;
 
   if (!isPro) {
     return (
