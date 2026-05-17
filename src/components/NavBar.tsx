@@ -388,7 +388,7 @@ export default function NavBar() {
           ) : (
             <div className="flex items-center gap-2">
               <Link href="/login" className="hidden sm:block text-sm font-semibold text-gray-600 hover:text-black px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">Log in</Link>
-              <Link href="/pro" className="text-sm font-bold bg-[#AAFF00] text-black px-4 py-2 rounded-xl hover:bg-[#99ee00] transition-all">Get Pro</Link>
+              <Link href="/auth/signup" className="text-sm font-bold bg-[#AAFF00] text-black px-4 py-2 rounded-xl hover:bg-[#99ee00] transition-all">Sign Up Free</Link>
             </div>
           )}
 
@@ -476,7 +476,7 @@ export default function NavBar() {
             ) : (
               <div className="flex gap-2">
                 <Link href="/login" className="flex-1 text-center text-sm font-semibold text-gray-700 px-4 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all">Log in</Link>
-                <Link href="/pro" className="flex-1 text-center text-sm font-bold bg-[#AAFF00] text-black px-4 py-3 rounded-xl hover:bg-[#99ee00] transition-all">Get Pro</Link>
+                <Link href="/auth/signup" className="flex-1 text-center text-sm font-bold bg-[#AAFF00] text-black px-4 py-3 rounded-xl hover:bg-[#99ee00] transition-all">Sign Up Free</Link>
               </div>
             )}
           </div>
