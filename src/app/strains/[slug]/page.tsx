@@ -318,6 +318,8 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   fill
                   priority
                   sizes="130px"
+              unoptimized
+              unoptimized
                   className="object-contain"
                   unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
                 />
@@ -399,6 +401,8 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                   fill
                   priority
                   sizes="380px"
+              unoptimized
+              unoptimized
                   className="object-contain bg-white"
                   unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
                 />
