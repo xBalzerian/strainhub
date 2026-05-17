@@ -1,4 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
+import { getArticles } from "@/lib/articles";
+import type { Article } from "@/lib/articles";
+import StrainCard from "@/components/StrainCard";
+import SeedbankLogoCloud from "@/components/SeedbankLogoCloud";
+
 
 export const metadata: Metadata = {
   title: "StrainHub | $STRAIN Token — Cannabis Backed by Real Harvests + 455 Strain Database",
@@ -22,14 +30,6 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: "https://www.strainhub.org" },
 };
-
-import Link from "next/link";
-import Image from "next/image";
-import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
-import { getArticles } from "@/lib/articles";
-import type { Article } from "@/lib/articles";
-import StrainCard from "@/components/StrainCard";
-import SeedbankLogoCloud from "@/components/SeedbankLogoCloud";
 
 export const revalidate = 60;
 
@@ -61,9 +61,9 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* --------------------------- */}
       {/* $STRAIN TOKEN HERO */}
-      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* --------------------------- */}
       <section id="strain-token" className="bg-[#0D0D0D] min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* LEFT */}
@@ -226,8 +226,7 @@ export default async function HomePage() {
               { plants: "10 plants",    seeds: "$10",      gross: "$44,600",     burn: "$17,840",   holders: "$13,380"  },
               { plants: "100 plants",   seeds: "$100",     gross: "$446,000",    burn: "$178,400",  holders: "$133,800" },
               { plants: "1,000 plants", seeds: "$1,000",   gross: "$4,460,000",  burn: "$1,784,000",holders: "$1,338,000"},
-              { plants: "7,500 plants
-(Max/year)", seeds: "$7,500", gross: "$33,450,000", burn: "$13,380,000", holders: "$10,035,000"},
+              { plants: "7,500 plants (Max/year)", seeds: "$7,500", gross: "$33,450,000", burn: "$13,380,000", holders: "$10,035,000"},
             ].map((r, i) => (
               <div key={r.plants} className={`grid grid-cols-5 p-4 gap-2 border-t border-white/10 items-center ${i === 4 ? "bg-[#AAFF00]/10 border-[#AAFF00]/30" : ""}`}>
                 <div className={`font-black text-sm whitespace-pre-line ${i === 4 ? "text-[#AAFF00]" : "text-white"}`}>{r.plants}</div>
@@ -316,7 +315,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* $50 → $50,000 PATH */}
+      {/* $50 - $50,000 PATH */}
       <section className="bg-[#F4F4F0] py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -451,9 +450,9 @@ export default async function HomePage() {
         <p className="text-[#0D0D0D]/70 font-medium">The most comprehensive cannabis strain database on the internet. Powered by $STRAIN.</p>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════ */}
-      {/* END $STRAIN TOKEN — EXISTING CONTENT BELOW UNCHANGED */}
-      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* --------------------------- */}
+      {/* END $STRAIN TOKEN - EXISTING CONTENT BELOW UNCHANGED */}
+      {/* --------------------------- */}
 
       {/* HERO */}
       <section className="bg-white border-b-2 border-black">
@@ -494,7 +493,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Hero strain cards — 3x2 compact grid with rank badges */}
+          {/* Hero strain cards - 3x2 compact grid with rank badges */}
           {(() => {
             // Diamond → Gold → Silver → Bronze → Amethyst → Sapphire
             type BadgeCfg = { gem: string; label: string; bg: string; text: string; border: string; glow: string };
@@ -524,7 +523,7 @@ export default async function HomePage() {
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-3xl">🌿</div>
                         )}
-                        {/* rank badge — gem style */}
+                        {/* rank badge - gem style */}
                         <span
                           className={`absolute top-1.5 left-1.5 inline-flex items-center gap-0.5 font-black rounded-full border text-[8px] px-1.5 py-0.5 leading-none whitespace-nowrap ${badge.text} ${badge.border} ${badge.glow}`}
                           style={{ background: badge.bg }}
@@ -596,7 +595,7 @@ export default async function HomePage() {
 
 
 
-      {/* TOP STRAINS — 20 on homepage */}
+      {/* TOP STRAINS - 20 on homepage */}
       <section className="max-w-7xl mx-auto px-6 py-14">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -620,7 +619,7 @@ export default async function HomePage() {
       </section>
 
 
-      {/* ── SEED BANKS ─────────────────────────────────────────────── */}
+      {/* --------------------------- */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 bg-[#F7FFF0]">
         <div className="max-w-6xl mx-auto">
 
@@ -784,7 +783,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── LATEST NEWS ─────────────────────────────────────────── */}
+      {/* --------------------------- */}
       {latestArticles.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 py-14">
           <div className="flex items-end justify-between mb-8">
@@ -839,14 +838,14 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ADVERTISE CTA — inviting to brand owners */}
+      {/* ADVERTISE CTA - inviting to brand owners */}
       <section className="max-w-7xl mx-auto px-6 py-10">
         <Link href="/advertise" className="group block w-full">
           <div className="relative overflow-hidden bg-brand border-2 border-brand rounded-3xl shadow-brutal hover:shadow-brutal-lg hover:-translate-y-0.5 transition-all duration-200">
             {/* dot grid bg */}
             <div className="absolute inset-0 opacity-[0.06]" style={{backgroundImage:"radial-gradient(circle, #AAFF00 1px, transparent 1px)",backgroundSize:"28px 28px"}} />
             <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6 px-8 py-8 sm:py-7">
-              {/* Left — headline */}
+              {/* Left - headline */}
               <div className="flex items-center gap-5 flex-1 min-w-0">
                 <div className="hidden sm:flex flex-shrink-0 w-14 h-14 rounded-2xl bg-lime/15 border border-lime/30 items-center justify-center text-2xl">📢</div>
                 <div>
@@ -862,7 +861,7 @@ export default async function HomePage() {
                   <p className="text-white/50 text-sm mt-1 hidden sm:block">Reach growers, patients &amp; connoisseurs actively searching for products like yours.</p>
                 </div>
               </div>
-              {/* Right — stats + CTA */}
+              {/* Right - stats + CTA */}
               <div className="flex items-center gap-4 flex-shrink-0">
                 <div className="hidden md:flex gap-4 text-center">
                   {[["100K+","Monthly Visitors"],["5:20","Avg Session"],["62","Seed Banks"]].map(([n,l])=>(
