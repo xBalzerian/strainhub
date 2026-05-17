@@ -184,41 +184,66 @@ export default async function HomePage() {
           <div className="text-center mb-14">
             <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">THE MATH</div>
             <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">The Numbers That Make People Stop Scrolling</h2>
+            <p className="text-gray-400 text-lg max-w-3xl mx-auto">Our partner grows up to 7,500 plants/year. Each seed costs $1. Harvest takes 4–6 months depending on strain and technique. Here&apos;s what that looks like at scale.</p>
           </div>
-          {/* Harvest table */}
-          <h3 className="text-white text-2xl font-bold mb-6">What One Harvested Plant Is Worth</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+
+          {/* Per-plant breakdown by grow type */}
+          <h3 className="text-white text-2xl font-bold mb-6">💡 What One Harvested Plant Is Worth</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
             {[
-              { type: "Indoor", yield: "150–600g", revenue: "$1,338 – $5,352" },
-              { type: "Outdoor", yield: "400–1,500g", revenue: "$3,568 – $13,380" },
-              { type: "Commercial", yield: "500–900g avg", revenue: "$4,460 – $8,028" },
+              { type: "🏠 Indoor", yield: "150–600g", low: "$1,338", high: "$5,352", note: "Controlled environment, premium quality" },
+              { type: "🌤️ Outdoor", yield: "400–1,500g", low: "$3,568", high: "$13,380", note: "Larger yield, natural sunlight" },
+              { type: "🏭 Commercial", yield: "500–900g avg", low: "$4,460", high: "$8,028", note: "Our partner baseline — conservative estimate" },
             ].map((r) => (
               <div key={r.type} className="bg-white/5 border border-white/10 rounded-xl p-6">
-                <div className="text-[#AAFF00] font-black text-lg mb-2">{r.type}</div>
+                <div className="text-[#AAFF00] font-black text-lg mb-1">{r.type}</div>
+                <div className="text-gray-400 text-xs mb-3">{r.note}</div>
                 <div className="text-white font-mono text-2xl font-bold mb-1">{r.yield}</div>
-                <div className="text-gray-400 text-sm">yield per plant</div>
-                <div className="border-t border-white/10 mt-4 pt-4">
-                  <div className="text-[#AAFF00] font-mono font-black text-xl">{r.revenue}</div>
-                  <div className="text-gray-400 text-xs">at $8.92/gram retail</div>
+                <div className="text-gray-400 text-sm mb-4">yield per plant</div>
+                <div className="border-t border-white/10 pt-4">
+                  <div className="text-[#AAFF00] font-mono font-black text-xl">{r.low} – {r.high}</div>
+                  <div className="text-gray-400 text-xs">revenue at $8.92/gram retail</div>
+                  <div className="text-gray-500 text-xs mt-1">seed cost: $1 only</div>
                 </div>
               </div>
             ))}
           </div>
-          {/* Token mechanic */}
-          <h3 className="text-white text-2xl font-bold mb-6">What 10,000 $STRAIN Actually Triggers</h3>
-          <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-8">
-            <div className="grid grid-cols-4 bg-[#AAFF00] text-[#0D0D0D] font-bold text-sm p-4">
-              <div>Tokens Bought</div><div>Seed Cost</div><div>Plant Revenue</div><div>Net Profit</div>
+
+          {/* Scale table: 1, 100, 1000 plants */}
+          <h3 className="text-white text-2xl font-bold mb-2">📈 Harvest Profit at Scale</h3>
+          <p className="text-gray-400 text-sm mb-6">Based on 500g/plant commercial average × $8.92/gram retail. Seed cost: $1/plant. Grow cycle: 4–6 months.</p>
+          <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-4">
+            {/* Header */}
+            <div className="grid grid-cols-5 bg-[#AAFF00] text-[#0D0D0D] font-black text-xs sm:text-sm p-4 gap-2">
+              <div>Plants</div>
+              <div>Seed Cost</div>
+              <div>Gross Revenue</div>
+              <div className="text-red-800">🔥 Burn (40%)</div>
+              <div className="text-green-900">💰 Holders (30%)</div>
             </div>
-            <div className="grid grid-cols-4 p-4 items-center">
-              <div className="text-white font-mono font-bold">10,000 $STRAIN</div>
-              <div className="text-gray-300 font-mono">$51 total</div>
-              <div className="text-gray-300 font-mono">$4,460 retail</div>
-              <div className="text-[#AAFF00] font-mono font-black text-2xl">$4,409 PROFIT</div>
-            </div>
+            {[
+              { plants: "1 plant",      seeds: "$1",       gross: "$4,460",      burn: "$1,784",    holders: "$1,338"   },
+              { plants: "10 plants",    seeds: "$10",      gross: "$44,600",     burn: "$17,840",   holders: "$13,380"  },
+              { plants: "100 plants",   seeds: "$100",     gross: "$446,000",    burn: "$178,400",  holders: "$133,800" },
+              { plants: "1,000 plants", seeds: "$1,000",   gross: "$4,460,000",  burn: "$1,784,000",holders: "$1,338,000"},
+              { plants: "7,500 plants
+(Max/year)", seeds: "$7,500", gross: "$33,450,000", burn: "$13,380,000", holders: "$10,035,000"},
+            ].map((r, i) => (
+              <div key={r.plants} className={`grid grid-cols-5 p-4 gap-2 border-t border-white/10 items-center ${i === 4 ? "bg-[#AAFF00]/10 border-[#AAFF00]/30" : ""}`}>
+                <div className={`font-black text-sm whitespace-pre-line ${i === 4 ? "text-[#AAFF00]" : "text-white"}`}>{r.plants}</div>
+                <div className="text-gray-300 font-mono text-sm">{r.seeds}</div>
+                <div className={`font-mono font-bold text-sm ${i === 4 ? "text-[#AAFF00] text-base" : "text-white"}`}>{r.gross}</div>
+                <div className="text-red-400 font-mono text-sm">{r.burn}</div>
+                <div className="text-[#AAFF00] font-mono font-bold text-sm">{r.holders}</div>
+              </div>
+            ))}
           </div>
-          <div className="bg-[#AAFF00]/10 border border-[#AAFF00]/30 rounded-xl p-6 text-center">
-            <p className="text-[#AAFF00] font-bold text-lg">🤯 That means $1 buys the seed. $50 covers the grow. And $4,409 in profit gets split between buybacks and holders. Every. Single. Harvest.</p>
+          <p className="text-gray-500 text-xs mb-14">* Remaining 30% funds new grow cycles. 10% covers operations & team. Revenue split: 40% burn / 30% holders / 20% replant / 10% ops.</p>
+
+          {/* Mindblown callout */}
+          <div className="bg-[#AAFF00]/10 border border-[#AAFF00]/30 rounded-xl p-8 text-center">
+            <p className="text-[#AAFF00] font-black text-xl mb-2">🤯 At full capacity: 7,500 plants × $4,460 = <span className="text-white">$33.45 MILLION</span> in annual revenue.</p>
+            <p className="text-gray-400 text-base">That&apos;s <span className="text-[#AAFF00] font-bold">$10M+ paid to $STRAIN holders</span> every year — from real harvests, real grams, real USD. And it starts with a $1 seed.</p>
           </div>
         </div>
       </section>
