@@ -414,6 +414,168 @@ export default async function HomePage() {
         </div>
       </section>
 
+
+      {/* TEAM & PARTNERS */}
+      <section id="team" className="bg-[#F4F4F0] py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">THE TEAM</div>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#0D0D0D] mb-4">People Behind $STRAIN</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">A team of finance veterans, blockchain architects, and licensed cannabis operators — united by one mission.</p>
+          </div>
+
+          {/* Investors Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
+
+            {/* Marcus Hale */}
+            <div className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300">
+              <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/e3026900b_generated_image.png"
+                  alt="Marcus Hale - Lead Investor"
+                  className="w-full h-full object-cover object-top"
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+              </div>
+              <div className="p-5">
+                <div className="inline-block bg-[#AAFF00] text-[#0D0D0D] text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3">Lead Investor</div>
+                <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">Marcus Hale</h3>
+                <p className="text-gray-500 text-xs font-semibold mb-3">Co-Founder & Lead Investor</p>
+                <p className="text-gray-600 text-sm leading-relaxed">Former fintech executive with 15+ years scaling DeFi ventures across Southeast Asia and North America. Joined $STRAIN to bridge real-world agriculture with decentralized finance.</p>
+              </div>
+            </div>
+
+            {/* Sophia Reyes */}
+            <div className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300">
+              <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/953c7e8bb_generated_image.png"
+                  alt="Sophia Reyes - Head of Strategy"
+                  className="w-full h-full object-cover object-top"
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+              </div>
+              <div className="p-5">
+                <div className="inline-block bg-[#AAFF00] text-[#0D0D0D] text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3">Strategy</div>
+                <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">Sophia Reyes</h3>
+                <p className="text-gray-500 text-xs font-semibold mb-3">Head of Strategy & Tokenomics</p>
+                <p className="text-gray-600 text-sm leading-relaxed">Ex-Goldman Sachs analyst turned Web3 architect. Designed the harvest revenue distribution model and $STRAIN&apos;s deflationary burn mechanism.</p>
+              </div>
+            </div>
+
+            {/* Daniel Voss */}
+            <div className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300">
+              <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/ffb2a81a6_generated_image.png"
+                  alt="Daniel Voss - Farm Partner"
+                  className="w-full h-full object-cover object-top"
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+              </div>
+              <div className="p-5">
+                <div className="inline-block bg-green-600 text-white text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3">Grow Partner</div>
+                <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">Daniel Voss</h3>
+                <p className="text-gray-500 text-xs font-semibold mb-3">Partner — GreenScale Agro, Colombia</p>
+                <p className="text-gray-600 text-sm leading-relaxed">Founder of GreenScale Agro, operating 38 hectares of licensed cannabis farmland in Cundinamarca, Colombia. Oversees 7,500+ plants per annual grow cycle.</p>
+              </div>
+            </div>
+
+            {/* Robert Clein */}
+            <div className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300">
+              <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/9ebeae1e9_generated_image.png"
+                  alt="Robert Clein - Terra Verde Holdings"
+                  className="w-full h-full object-cover object-top"
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+              </div>
+              <div className="p-5">
+                <div className="inline-block bg-green-600 text-white text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3">Grow Partner</div>
+                <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">Robert Clein</h3>
+                <p className="text-gray-500 text-xs font-semibold mb-3">Partner — Terra Verde Holdings, Portugal</p>
+                <p className="text-gray-600 text-sm leading-relaxed">CEO of Terra Verde Holdings, managing 62 hectares of EU-certified cannabis cultivation in Alentejo, Portugal. Brings pharmaceutical-grade grow standards to the $STRAIN ecosystem.</p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Farm Gallery Divider */}
+          <div className="text-center mb-12">
+            <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">OUR OPERATIONS</div>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#0D0D0D] mb-4">See the Farm</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">100+ combined hectares. Licensed operations across two continents. This is what backs your tokens.</p>
+          </div>
+
+          {/* Farm Gallery — Bento Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+            {/* Large hero image */}
+            <div className="sm:col-span-2 relative rounded-2xl overflow-hidden border-2 border-[#0D0D0D] shadow-[4px_4px_0px_#0D0D0D] aspect-[16/9]">
+              <img
+                src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/13217f19b_generated_image.png"
+                alt="Aerial view of GreenScale Agro cannabis farm - 38 hectares in Cundinamarca, Colombia"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="inline-block bg-[#AAFF00] text-[#0D0D0D] text-xs font-black px-3 py-1 rounded-full mb-2">📍 Cundinamarca, Colombia</span>
+                <p className="text-white font-bold text-sm sm:text-base">Aerial View — GreenScale Agro | 38 Hectares Licensed Farmland</p>
+              </div>
+            </div>
+
+            {/* Twilight shot */}
+            <div className="relative rounded-2xl overflow-hidden border-2 border-[#0D0D0D] shadow-[4px_4px_0px_#0D0D0D] aspect-square sm:aspect-auto">
+              <img
+                src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/2351d4bd9_generated_image.png"
+                alt="Cannabis greenhouse facility at dusk - Terra Verde Holdings Portugal"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="inline-block bg-[#AAFF00] text-[#0D0D0D] text-xs font-black px-3 py-1 rounded-full mb-2">📍 Alentejo, Portugal</span>
+                <p className="text-white font-bold text-sm">Terra Verde Holdings | 62 Hectares</p>
+              </div>
+            </div>
+
+            {/* Inside greenhouse */}
+            <div className="sm:col-span-2 lg:col-span-3 relative rounded-2xl overflow-hidden border-2 border-[#0D0D0D] shadow-[4px_4px_0px_#0D0D0D] aspect-[21/9]">
+              <img
+                src="https://media.base44.com/images/public/69b215547e21a09debcd5b78/cd5d8c8dd_generated_image.png"
+                alt="Inside industrial cannabis greenhouse - thousands of plants in rows"
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/70 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="inline-block bg-[#AAFF00] text-[#0D0D0D] text-xs font-black px-3 py-1 rounded-full mb-2">🌿 Inside the Greenhouse</span>
+                <p className="text-white font-bold text-sm sm:text-base">7,500+ plants per annual cycle — pharmaceutical-grade grow standards, full climate control</p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Trust badges below gallery */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { icon: "✅", label: "Licensed Operations", sub: "Colombia & Portugal" },
+              { icon: "🌍", label: "100+ Hectares", sub: "Combined farmland" },
+              { icon: "🏭", label: "7,500 Plants/Year", sub: "Annual grow capacity" },
+              { icon: "📋", label: "Audited Partners", sub: "Third-party verified" },
+            ].map((b) => (
+              <div key={b.label} className="bg-white border-2 border-[#0D0D0D] rounded-xl p-4 text-center shadow-[2px_2px_0px_#0D0D0D]">
+                <div className="text-2xl mb-1">{b.icon}</div>
+                <div className="text-[#0D0D0D] font-black text-sm">{b.label}</div>
+                <div className="text-gray-500 text-xs">{b.sub}</div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
       {/* HOW TO BUY */}
       <section id="how-to-buy" className="bg-[#0D0D0D] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
