@@ -58,7 +58,7 @@ function StrainImg({
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         onError={() => setErr(true)}
-        unoptimized={strain.image_url.includes("tempfile.aiquickdraw.com")}
+        unoptimized={true}
       />
     </div>
   );
