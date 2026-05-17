@@ -495,7 +495,7 @@ export default async function HomePage() {
                       {/* image */}
                       <div className="relative w-full bg-off-white" style={{aspectRatio:"1/1"}}>
                         {s.image_url ? (
-                          <Image src={s.image_url} alt={s.name} fill sizes="180px" className="object-contain p-2" priority={i < 3} />
+                          <Image src={s.image_url} alt={s.name} fill sizes="180px" className="object-contain p-2" priority={i < 3} unoptimized />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-3xl">🌿</div>
                         )}
