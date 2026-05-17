@@ -71,7 +71,7 @@ export default async function HomePage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-[#AAFF00]/10 border border-[#AAFF00] text-[#AAFF00] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-8">
               <span className="w-2 h-2 rounded-full bg-[#AAFF00] animate-pulse inline-block" />
-              🌱 LAUNCHING ON BNB CHAIN — JULY 2026
+              🌱 LAUNCHING TOMORROW ON BNB CHAIN
             </div>
             <h1 className="text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6">
               <span className="text-white">You Didn&apos;t Just</span><br />
@@ -87,7 +87,7 @@ export default async function HomePage() {
               {[
                 { num: "🌿 1 PLANT", label: "per 10K tokens" },
                 { num: "$4,460", label: "per plant (retail)" },
-                { num: "5,000x", label: "target return" },
+                { num: "🔥 Deflationary", label: "burn every harvest" },
               ].map((s) => (
                 <div key={s.label} className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-center">
                   <div className="text-[#AAFF00] font-mono font-bold text-lg">{s.num}</div>
@@ -115,7 +115,7 @@ export default async function HomePage() {
             <div className="bg-white/5 border-2 border-[#AAFF00]/30 rounded-2xl p-10 text-center w-full max-w-sm">
               <div className="text-8xl mb-4">🌿</div>
               <div className="text-[#AAFF00] font-mono font-black text-4xl mb-2">$STRAIN</div>
-              <div className="text-gray-500 text-xs font-mono">CA: [Available at launch — July 2026]</div>
+              <div className="text-gray-500 text-xs font-mono">CA: [Dropping at launch — follow @strainhuborg on X]</div>
             </div>
             <div className="grid grid-cols-3 gap-3 w-full max-w-sm">
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
@@ -144,13 +144,13 @@ export default async function HomePage() {
           <p className="text-[#AAFF00] text-xs font-black uppercase tracking-widest mb-5">🚀 Token Launch Countdown</p>
           <CountdownTimer />
           <a
-            href="https://x.com/StrainHubToken"
+            href="https://x.com/strainhuborg"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-xl transition-all text-sm mt-2"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Follow @StrainHubToken — CA Drops at Launch
+            Follow @strainhuborg — CA Drops at Launch
           </a>
           <p className="text-gray-600 text-xs mt-3">Contract address drops exclusively on our X. Follow so you don&apos;t miss it.</p>
         </div>
@@ -161,7 +161,7 @@ export default async function HomePage() {
         <div className="inline-flex animate-[ticker_30s_linear_infinite]" style={{animation:"ticker 30s linear infinite"}}>
           {[...Array(2)].map((_, ri) => (
             <span key={ri} className="inline-flex items-center">
-              {["🌿 455+ STRAINS IN DATABASE","🌱 EVERY 10,000 $STRAIN = 1 REAL PLANT PLANTED","💰 HOLDERS EARN 30% OF EVERY HARVEST","🔥 40% BURNED ON EVERY SALE — FOREVER","📈 TARGET: 5,000x FROM LAUNCH","💎 REAL USD FROM REAL CANNABIS HARVESTS","🚀 LAUNCHING BNB CHAIN — JULY 2026"].map((item, i) => (
+              {["🌿 455+ STRAINS IN DATABASE","🌱 EVERY 10,000 $STRAIN = 1 REAL PLANT PLANTED","💰 HOLDERS EARN 30% OF EVERY HARVEST","🔥 40% BURNED ON EVERY SALE — FOREVER","📈 REAL CANNABIS. REAL REVENUE. REAL HOLDERS.","💎 REAL USD FROM REAL CANNABIS HARVESTS","🚀 LAUNCHING BNB CHAIN — TOMORROW"].map((item, i) => (
                 <span key={i} className="inline-flex items-center gap-3 text-[#0D0D0D] font-black text-sm tracking-wide uppercase px-6">
                   {item}
                   <span className="w-2 h-2 bg-[#0D0D0D] rounded-full" />
@@ -175,60 +175,6 @@ export default async function HomePage() {
       {/* TEAM & PARTNERS */}
       <section id="team" className="bg-[#F4F4F0] py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">THE TEAM</div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#0D0D0D] mb-4">People Behind $STRAIN</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">A team of finance veterans, blockchain architects, and licensed cannabis operators — united by one mission.</p>
-          </div>
-
-          {/* Investors Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
-            {[
-              {
-                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/e3026900b_generated_image.png",
-                alt: "Marcus Hale - Lead Investor",
-                badge: "Lead Investor", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
-                name: "Marcus Hale", title: "Co-Founder & Lead Investor",
-                bio: "Former fintech executive with 15+ years scaling DeFi ventures across Southeast Asia and North America. Joined $STRAIN to bridge real-world agriculture with decentralized finance."
-              },
-              {
-                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/953c7e8bb_generated_image.png",
-                alt: "Sophia Reyes - Head of Strategy",
-                badge: "Strategy", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
-                name: "Sophia Reyes", title: "Head of Strategy & Tokenomics",
-                bio: "Ex-Goldman Sachs analyst turned Web3 architect. Designed the harvest revenue distribution model and $STRAIN deflationary burn mechanism."
-              },
-              {
-                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/ffb2a81a6_generated_image.png",
-                alt: "Daniel Voss - GreenScale Agro",
-                badge: "Grow Partner", badgeColor: "bg-green-600 text-white",
-                name: "Daniel Voss", title: "Partner — GreenScale Agro, Colombia",
-                bio: "Founder of GreenScale Agro, operating 38 hectares of licensed cannabis farmland in Cundinamarca, Colombia. Oversees 7,500+ plants per annual grow cycle."
-              },
-              {
-                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/9ebeae1e9_generated_image.png",
-                alt: "Robert Clein - Terra Verde Holdings",
-                badge: "Grow Partner", badgeColor: "bg-green-600 text-white",
-                name: "Robert Clein", title: "Partner — Terra Verde Holdings, Portugal",
-                bio: "CEO of Terra Verde Holdings, managing 62 hectares of EU-certified cannabis cultivation in Alentejo, Portugal. Brings pharmaceutical-grade grow standards to the $STRAIN ecosystem."
-              },
-            ].map((p) => (
-              <div key={p.name} className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
-                  <img src={p.img} alt={p.alt} className="w-full h-full object-cover object-top" />
-                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
-                </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <div className={`inline-block ${p.badgeColor} text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3 self-start`}>{p.badge}</div>
-                  <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">{p.name}</h3>
-                  <p className="text-gray-500 text-xs font-semibold mb-3">{p.title}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed flex-1">{p.bio}</p>
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* Farm Gallery Header */}
           <div className="text-center mb-12">
@@ -351,6 +297,62 @@ export default async function HomePage() {
 
 
 
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">THE TEAM</div>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#0D0D0D] mb-4">People Behind $STRAIN</h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">A team of finance veterans, blockchain architects, and licensed cannabis operators — united by one mission.</p>
+          </div>
+
+          {/* Investors Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
+            {[
+              {
+                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/e3026900b_generated_image.png",
+                alt: "Marcus Hale - Lead Investor",
+                badge: "Lead Investor", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
+                name: "Marcus Hale", title: "Co-Founder & Lead Investor",
+                bio: "Former fintech executive with 15+ years scaling DeFi ventures across Southeast Asia and North America. Joined $STRAIN to bridge real-world agriculture with decentralized finance."
+              },
+              {
+                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/953c7e8bb_generated_image.png",
+                alt: "Sophia Reyes - Head of Strategy",
+                badge: "Strategy", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
+                name: "Sophia Reyes", title: "Head of Strategy & Tokenomics",
+                bio: "Ex-Goldman Sachs analyst turned Web3 architect. Designed the harvest revenue distribution model and $STRAIN deflationary burn mechanism."
+              },
+              {
+                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/ffb2a81a6_generated_image.png",
+                alt: "Daniel Voss - GreenScale Agro",
+                badge: "Grow Partner", badgeColor: "bg-green-600 text-white",
+                name: "Daniel Voss", title: "Partner — GreenScale Agro, Colombia",
+                bio: "Founder of GreenScale Agro, operating 38 hectares of licensed cannabis farmland in Cundinamarca, Colombia. Oversees 7,500+ plants per annual grow cycle."
+              },
+              {
+                img: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/9ebeae1e9_generated_image.png",
+                alt: "Robert Clein - Terra Verde Holdings",
+                badge: "Grow Partner", badgeColor: "bg-green-600 text-white",
+                name: "Robert Clein", title: "Partner — Terra Verde Holdings, Portugal",
+                bio: "CEO of Terra Verde Holdings, managing 62 hectares of EU-certified cannabis cultivation in Alentejo, Portugal. Brings pharmaceutical-grade grow standards to the $STRAIN ecosystem."
+              },
+            ].map((p) => (
+              <div key={p.name} className="bg-white border-2 border-[#0D0D0D] rounded-2xl overflow-hidden shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                  <img src={p.img} alt={p.alt} className="w-full h-full object-cover object-top" />
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0D0D0D] to-transparent" />
+                </div>
+                <div className="p-5 flex flex-col flex-1">
+                  <div className={`inline-block ${p.badgeColor} text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full mb-3 self-start`}>{p.badge}</div>
+                  <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-1">{p.name}</h3>
+                  <p className="text-gray-500 text-xs font-semibold mb-3">{p.title}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed flex-1">{p.bio}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+
+
       {/* WHAT IS $STRAIN */}
       <section className="bg-[#F4F4F0] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -407,11 +409,12 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Scale table: 1, 100, 1000 plants */}
+          {/* Scale table — mobile-first card layout */}
           <h3 className="text-white text-2xl font-bold mb-2">📈 Harvest Profit at Scale</h3>
-          <p className="text-gray-400 text-sm mb-6">Based on 500g/plant commercial average × $8.92/gram retail. Seed cost: $1/plant. Grow cycle: 4–6 months.</p>
-          <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-4">
-            {/* Header */}
+          <p className="text-gray-400 text-sm mb-6">Based on 500g/plant × $8.92/g retail. Seed cost: $1/plant. Grow cycle: 4–6 months.</p>
+
+          {/* Desktop table — hidden on mobile */}
+          <div className="hidden sm:block bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-4">
             <div className="grid grid-cols-5 bg-[#AAFF00] text-[#0D0D0D] font-black text-xs sm:text-sm p-4 gap-2">
               <div>Plants</div>
               <div>Seed Cost</div>
@@ -420,21 +423,55 @@ export default async function HomePage() {
               <div className="text-green-900">💰 Holders (30%)</div>
             </div>
             {[
-              { plants: "1 plant",      seeds: "$1",       gross: "$4,460",      burn: "$1,784",    holders: "$1,338"   },
-              { plants: "10 plants",    seeds: "$10",      gross: "$44,600",     burn: "$17,840",   holders: "$13,380"  },
-              { plants: "100 plants",   seeds: "$100",     gross: "$446,000",    burn: "$178,400",  holders: "$133,800" },
-              { plants: "1,000 plants", seeds: "$1,000",   gross: "$4,460,000",  burn: "$1,784,000",holders: "$1,338,000"},
-              { plants: "7,500 plants (Max/year)", seeds: "$7,500", gross: "$33,450,000", burn: "$13,380,000", holders: "$10,035,000"},
+              { plants: "1 plant",             seeds: "$1",     gross: "$4,460",       burn: "$1,784",      holders: "$1,338"      },
+              { plants: "10 plants",           seeds: "$10",    gross: "$44,600",      burn: "$17,840",     holders: "$13,380"     },
+              { plants: "100 plants",          seeds: "$100",   gross: "$446,000",     burn: "$178,400",    holders: "$133,800"    },
+              { plants: "1,000 plants",        seeds: "$1,000", gross: "$4,460,000",   burn: "$1,784,000",  holders: "$1,338,000"  },
+              { plants: "7,500 plants (Max/yr)",seeds: "$7,500",gross: "$33,450,000",  burn: "$13,380,000", holders: "$10,035,000" },
             ].map((r, i) => (
               <div key={r.plants} className={`grid grid-cols-5 p-4 gap-2 border-t border-white/10 items-center ${i === 4 ? "bg-[#AAFF00]/10 border-[#AAFF00]/30" : ""}`}>
-                <div className={`font-black text-sm whitespace-pre-line ${i === 4 ? "text-[#AAFF00]" : "text-white"}`}>{r.plants}</div>
+                <div className={`font-black text-sm ${i === 4 ? "text-[#AAFF00]" : "text-white"}`}>{r.plants}</div>
                 <div className="text-gray-300 font-mono text-sm">{r.seeds}</div>
-                <div className={`font-mono font-bold text-sm ${i === 4 ? "text-[#AAFF00] text-base" : "text-white"}`}>{r.gross}</div>
+                <div className={`font-mono font-bold text-sm ${i === 4 ? "text-[#AAFF00]" : "text-white"}`}>{r.gross}</div>
                 <div className="text-red-400 font-mono text-sm">{r.burn}</div>
                 <div className="text-[#AAFF00] font-mono font-bold text-sm">{r.holders}</div>
               </div>
             ))}
           </div>
+
+          {/* Mobile cards — shown only on small screens */}
+          <div className="sm:hidden space-y-3 mb-4">
+            {[
+              { plants: "1 Plant",              seeds: "$1",     gross: "$4,460",       burn: "$1,784",      holders: "$1,338",     highlight: false },
+              { plants: "10 Plants",            seeds: "$10",    gross: "$44,600",      burn: "$17,840",     holders: "$13,380",    highlight: false },
+              { plants: "100 Plants",           seeds: "$100",   gross: "$446,000",     burn: "$178,400",    holders: "$133,800",   highlight: false },
+              { plants: "1,000 Plants",         seeds: "$1,000", gross: "$4,460,000",   burn: "$1,784,000",  holders: "$1,338,000", highlight: false },
+              { plants: "7,500 Plants (Max/yr)",seeds: "$7,500", gross: "$33,450,000",  burn: "$13,380,000", holders: "$10,035,000",highlight: true  },
+            ].map((r) => (
+              <div key={r.plants} className={`rounded-xl border p-4 ${r.highlight ? "bg-[#AAFF00]/10 border-[#AAFF00]/40" : "bg-white/5 border-white/10"}`}>
+                <div className={`font-black text-base mb-3 ${r.highlight ? "text-[#AAFF00]" : "text-white"}`}>{r.plants}</div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <div className="text-gray-500 text-xs mb-0.5">Seed Cost</div>
+                    <div className="text-gray-300 font-mono font-semibold">{r.seeds}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-0.5">Gross Revenue</div>
+                    <div className={`font-mono font-bold ${r.highlight ? "text-[#AAFF00]" : "text-white"}`}>{r.gross}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-0.5">🔥 Burn (40%)</div>
+                    <div className="text-red-400 font-mono font-semibold">{r.burn}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-0.5">💰 Holders (30%)</div>
+                    <div className="text-[#AAFF00] font-mono font-bold">{r.holders}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           <p className="text-gray-500 text-xs mb-14">* Remaining 30% funds new grow cycles. 10% covers operations & team. Revenue split: 40% burn / 30% holders / 20% replant / 10% ops.</p>
 
           {/* Mindblown callout */}
@@ -454,11 +491,11 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { num: "01", icon: "📈", title: "Early Entry Price Gains", body: "Launched at $0.000001 per token. As burns reduce supply and the narrative spreads, price climbs. Target: 5,000x from launch.", stat: "5,000x Target" },
+              { num: "01", icon: "📈", title: "Early Entry Price Gains", body: "Launched at micro-cap price on BNB Chain. Every harvest buyback burns supply — early holders benefit most. DYOR.", stat: "Early Entry Advantage" },
               { num: "02", icon: "💰", title: "Quarterly Harvest Distributions", body: "30% of every harvest sale distributed to ALL $STRAIN holders proportionally. 100 plants harvested = $35,700 paid out. In USDT or BNB.", stat: "30% of all revenue" },
               { num: "03", icon: "🔥", title: "Buyback & Burn (Price Pump)", body: "40% of every harvest revenue buys $STRAIN from the open market and burns it permanently. Less supply = higher price for your tokens.", stat: "40% burned forever" },
-              { num: "04", icon: "🤝", title: "Referral Rewards (2% Auto)", body: "Every time someone buys $STRAIN through your referral link, you earn 2% of their purchase automatically via smart contract. No middleman.", stat: "2% auto referral" },
-              { num: "05", icon: "🏦", title: "Staking Yields (15–75% APY)", body: "Lock your $STRAIN for 30, 90, or 180 days and earn passive yield from the operations wallet. Longer stake = higher APY.", stat: "Up to 75% APY" },
+              { num: "04", icon: "🤝", title: "Referral Rewards (2% Auto)", body: "Share your referral link and earn a percentage of referred purchases. Referral rewards distributed via smart contract at launch.", stat: "2% auto referral" },
+              { num: "05", icon: "🏦", title: "Staking Yields (15–75% APY)", body: "Lock your $STRAIN to earn a share of ongoing operations rewards. Rates announced post-launch based on ecosystem performance.", stat: "Staking Rewards" },
               { num: "06", icon: "🎰", title: "Strain Drop Lottery", body: "Every new strain added to StrainHub triggers a lottery. Random holders win exclusive NFTs, merch, and bonus tokens. Free by just holding.", stat: "Random winner each drop" },
             ].map((c) => (
               <div key={c.num} className="bg-white border-2 border-[#0D0D0D] rounded-xl shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all p-8">
@@ -526,7 +563,7 @@ export default async function HomePage() {
               <div>Stage</div><div>What Happens</div><div>Your $50 Becomes</div>
             </div>
             {[
-              { stage: "Launch — July", event: "Buy at $0.000001 = 50M $STRAIN", val: "$50", highlight: false },
+              { stage: "Launch", event: "Buy at launch price — CA posted on @strainhuborg", val: "—", highlight: false },
               { stage: "August", event: "100 plants harvested, $35K burned, price 10x", val: "$500", highlight: false },
               { stage: "September", event: "PancakeSwap listing, volume surge, 50x", val: "$2,500", highlight: false },
               { stage: "October", event: "Viral narrative: 'Real cannabis farm backs BNB token'", val: "$10,000", highlight: false },
@@ -540,7 +577,7 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="bg-[#0D0D0D] text-white rounded-xl p-8 text-center">
-            <p className="text-lg font-bold italic">🚀 Hit 5,000x and your $50 becomes $250,000. The first news headline that says &ldquo;BNB meme coin backed by REAL cannabis farm&rdquo; goes live — and that headline WILL be written. It&apos;s too good a story not to write.</p>
+            <p className="text-lg font-bold italic">🚀 Early entry during launch gives you the most upside — every harvest buyback pushes price up. A token backed by real licensed farms — transparent harvest reports, real revenue, real distributions.</p>
           </div>
         </div>
       </section>
@@ -584,14 +621,14 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">ROADMAP</div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight">The Path to 5,000x</h2>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight">The Growth Roadmap</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { phase: "Phase 1", period: "July–Aug 2026", status: "LAUNCHING", statusBg: "bg-[#AAFF00] text-[#0D0D0D]", title: "🚀 Genesis", target: "$500K market cap", items: ["Smart contract on BNB Chain","StrainHub token page live","First grow cycle initiated","PancakeSwap listing","100 holders milestone","First harvest cycle begins"], active: true },
+              { phase: "Phase 1", period: "May–Jun 2026", status: "LAUNCHING", statusBg: "bg-[#AAFF00] text-[#0D0D0D]", title: "🚀 Genesis", target: "Strong launch momentum", items: ["Smart contract on BNB Chain","StrainHub token page live","First grow cycle initiated","PancakeSwap listing","100 holders milestone","First harvest cycle begins"], active: true },
               { phase: "Phase 2", period: "September 2026", status: "INCOMING", statusBg: "bg-yellow-400 text-[#0D0D0D]", title: "🌿 First Harvest", target: "$5M market cap", items: ["First harvest documented","First buyback & burn on-chain","First holder distribution paid","Harvest report published","1,000 holders milestone","KOL outreach begins"], active: false },
               { phase: "Phase 3", period: "Oct–Nov 2026", status: "PLANNED", statusBg: "bg-gray-600 text-white", title: "📈 Viral Moment", target: "$50M market cap", items: ["Major KOL features $STRAIN","News media coverage goes live","CEX listing applications","Staking platform launched","10,000 holders milestone","Second grow cycle underway"], active: false },
-              { phase: "Phase 4", period: "December 2026", status: "VISION", statusBg: "bg-purple-600 text-white", title: "🔥 Bull Run Peak", target: "$500M market cap", items: ["First CEX listing (Tier 2)","5,000x from launch price","Third grow cycle: 10x plants","$STRAIN + StrainHub Pro integration","NFT strain collection drops","50,000 holders milestone"], active: false },
+              { phase: "Phase 4", period: "December 2026", status: "VISION", statusBg: "bg-purple-600 text-white", title: "🔥 Bull Run Peak", target: "Long-term ecosystem growth", items: ["First CEX listing (Tier 2)","Price appreciation goal","Third grow cycle: 10x plants","$STRAIN + StrainHub Pro integration","NFT strain collection drops","50,000 holders milestone"], active: false },
             ].map((p) => (
               <div key={p.phase} className={`bg-white border-2 rounded-xl p-8 ${p.active ? "border-[#AAFF00] shadow-[4px_4px_0px_#AAFF00]" : "border-[#0D0D0D] shadow-[4px_4px_0px_#0D0D0D]"}`}>
                 <div className={`text-xs font-black px-3 py-1 rounded-full inline-block mb-3 ${p.statusBg}`}>{p.status}</div>
