@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CountdownTimer from "@/components/CountdownTimer";
 import Link from "next/link";
 import Image from "next/image";
 import { getTopStrains, getAllStrainsMeta } from "@/lib/strains";
@@ -539,7 +540,7 @@ export default async function HomePage() {
             <div className="space-y-6">
               {[
                 { week: "Day 1", icon: "🌱", title: "You Buy $STRAIN", body: "Every 10,000 tokens triggers 1 feminized seed purchased ($1) and planted in our licensed grow facility.", highlight: false },
-                { week: "Week 2", icon: "🌿", title: "Seedling Emerges", body: "The seed germinates. Photos posted to Telegram and X: 'Your tokens are growing. 💚'", highlight: false },
+                { week: "Week 2", icon: "🌿", title: "Seedling Emerges", body: "The seed germinates. Photos posted to X: 'Your tokens are growing. 💚'", highlight: false },
                 { week: "Week 6", icon: "🌿", title: "Vegetation Stage", body: "Plant enters rapid growth. Community updates showing height, health, terpene readings.", highlight: false },
                 { week: "Week 10", icon: "🌸", title: "Flowering Begins", body: "Buds forming. Terpene profiles developing. 'She's flowering. Terpenes are insane. 🌸'", highlight: false },
                 { week: "HARVEST", icon: "✂️", title: "Harvest Day", body: "Wet weight posted publicly. Sold to licensed US distributor. Revenue generated and logged on-chain.", highlight: true },
@@ -616,10 +617,22 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-          <div className="bg-yellow-500/10 border-2 border-yellow-400/50 rounded-xl p-6 max-w-2xl mx-auto text-center">
-            <p className="text-yellow-400 font-bold text-sm">⚠️ Always verify the contract address from our official channels only.</p>
-            <p className="text-yellow-400/70 text-xs mt-2">Official: strainhub.org | Telegram: @StrainHubToken | Twitter: @StrainHubToken</p>
-            <p className="text-[#AAFF00] font-mono font-bold mt-3 text-sm">Contract Address: [Available at July 2026 Launch]</p>
+          {/* Countdown + X only CTA */}
+          <div className="max-w-2xl mx-auto text-center mt-4">
+            <div className="bg-white/5 border-2 border-[#AAFF00]/40 rounded-2xl p-8">
+              <p className="text-[#AAFF00] text-xs font-black uppercase tracking-widest mb-3">🚀 Token Launch Countdown</p>
+              <CountdownTimer />
+              <a
+                href="https://x.com/StrainHubToken"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-8 py-4 rounded-xl transition-all text-base"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                Follow @StrainHubToken — CA Drops at Launch
+              </a>
+              <p className="text-gray-600 text-xs mt-4">Contract address will be posted exclusively on our X account at launch. Follow now so you don&apos;t miss it.</p>
+            </div>
           </div>
         </div>
       </section>
