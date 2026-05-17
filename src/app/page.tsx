@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "StrainHub — Cannabis Strain Database | Effects, Genetics & Terpenes",
-  description: "The complete cannabis strain database. Search every strain with full terpene profiles, THC/CBD levels, effects, genetics, grow guides and learn more deeper about marijuana with us.",
+  title: "StrainHub | $STRAIN Token — Cannabis Backed by Real Harvests + 455 Strain Database",
+  description: "The world's first cannabis token backed by real plants. Every 10,000 $STRAIN = 1 plant planted. Holders earn from every harvest. Plus the most complete cannabis strain database — 455+ strains free.",
   keywords: [
     "cannabis strain database", "marijuana strains", "weed strains",
     "cannabis effects", "terpene profiles", "THC CBD levels",
@@ -61,6 +61,375 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* $STRAIN TOKEN HERO */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      <section id="strain-token" className="bg-[#0D0D0D] min-h-screen flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* LEFT */}
+          <div>
+            <div className="inline-flex items-center gap-2 bg-[#AAFF00]/10 border border-[#AAFF00] text-[#AAFF00] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-8">
+              <span className="w-2 h-2 rounded-full bg-[#AAFF00] animate-pulse inline-block" />
+              🌱 LAUNCHING ON BNB CHAIN — JULY 2026
+            </div>
+            <h1 className="text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6">
+              <span className="text-white">You Didn&apos;t Just</span><br />
+              <span className="text-white">Buy a Token.</span><br />
+              <span className="text-[#AAFF00] italic">You Planted</span><br />
+              <span className="text-[#AAFF00] italic">a Seed. 🌱</span>
+            </h1>
+            <p className="text-gray-400 text-lg md:text-xl font-medium max-w-lg leading-relaxed mb-8">
+              $STRAIN is the world&apos;s first cannabis token backed by REAL plants, REAL harvests, and REAL USD revenue. Every 10,000 $STRAIN bought = 1 plant planted. Every harvest pays you back.
+            </p>
+            {/* Stat pills */}
+            <div className="flex gap-4 flex-wrap mb-8">
+              {[
+                { num: "🌿 1 PLANT", label: "per 10K tokens" },
+                { num: "$4,460", label: "per plant (retail)" },
+                { num: "5,000x", label: "target return" },
+              ].map((s) => (
+                <div key={s.label} className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-center">
+                  <div className="text-[#AAFF00] font-mono font-bold text-lg">{s.num}</div>
+                  <div className="text-gray-400 text-xs">{s.label}</div>
+                </div>
+              ))}
+            </div>
+            {/* CTAs */}
+            <div className="flex gap-3 flex-wrap mb-6">
+              <a href="#how-to-buy" className="bg-[#AAFF00] text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-lg transition-all inline-block">
+                Buy $STRAIN 🚀
+              </a>
+              <a href="#roadmap" className="bg-transparent text-white font-bold border-2 border-white/30 px-6 py-3 rounded-lg hover:border-[#AAFF00] hover:text-[#AAFF00] transition-all inline-block">
+                View Roadmap 📄
+              </a>
+            </div>
+            <div className="flex items-center gap-4 flex-wrap text-gray-500 text-xs">
+              {["✅ BNB Chain", "✅ Real Harvests", "✅ Holder Rewards", "✅ Transparent Reports"].map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </div>
+          </div>
+          {/* RIGHT */}
+          <div className="relative flex flex-col items-center gap-4">
+            <div className="bg-white/5 border-2 border-[#AAFF00]/30 rounded-2xl p-10 text-center w-full max-w-sm">
+              <div className="text-8xl mb-4">🌿</div>
+              <div className="text-[#AAFF00] font-mono font-black text-4xl mb-2">$STRAIN</div>
+              <div className="text-gray-500 text-xs font-mono">CA: [Available at launch — July 2026]</div>
+            </div>
+            <div className="grid grid-cols-3 gap-3 w-full max-w-sm">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
+                <div className="text-xl mb-1">🔥</div>
+                <div className="text-red-400 font-black text-xs">BURNS</div>
+                <div className="text-gray-400 text-[10px]">40% of revenue</div>
+              </div>
+              <div className="bg-[#AAFF00]/10 border border-[#AAFF00]/30 rounded-xl p-4 text-center">
+                <div className="text-xl mb-1">💰</div>
+                <div className="text-[#AAFF00] font-black text-xs">EARN</div>
+                <div className="text-gray-400 text-[10px]">30% of revenue</div>
+              </div>
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
+                <div className="text-xl mb-1">🌱</div>
+                <div className="text-green-400 font-black text-xs">PLANTS</div>
+                <div className="text-gray-400 text-[10px]">Growing daily</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* $STRAIN TICKER */}
+      <div className="bg-[#AAFF00] border-y-2 border-black py-3 overflow-hidden whitespace-nowrap">
+        <div className="inline-flex animate-[ticker_30s_linear_infinite]" style={{animation:"ticker 30s linear infinite"}}>
+          {[...Array(2)].map((_, ri) => (
+            <span key={ri} className="inline-flex items-center">
+              {["🌿 455+ STRAINS IN DATABASE","🌱 EVERY 10,000 $STRAIN = 1 REAL PLANT PLANTED","💰 HOLDERS EARN 30% OF EVERY HARVEST","🔥 40% BURNED ON EVERY SALE — FOREVER","📈 TARGET: 5,000x FROM LAUNCH","💎 REAL USD FROM REAL CANNABIS HARVESTS","🚀 LAUNCHING BNB CHAIN — JULY 2026"].map((item, i) => (
+                <span key={i} className="inline-flex items-center gap-3 text-[#0D0D0D] font-black text-sm tracking-wide uppercase px-6">
+                  {item}
+                  <span className="w-2 h-2 bg-[#0D0D0D] rounded-full" />
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* WHAT IS $STRAIN */}
+      <section className="bg-[#F4F4F0] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">THE CONCEPT</div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">The World&apos;s First Cannabis Token<br />Backed by Real Plants</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">We didn&apos;t build another meme coin. We built a system where buying a token plants a real seed — and that seed grows into real dollars that flow back to you.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { icon: "🌱", title: "Every Token = Real Agriculture", body: "When you buy $STRAIN, every 10,000 tokens triggers the planting of one real, feminized cannabis seed in a licensed grow operation.", stat: "1 Plant per 10,000 $STRAIN" },
+              { icon: "💵", title: "Real USD from Real Harvests", body: "Each plant produces an average of 500 grams of dried cannabis at $8.92/gram retail. That's $4,460 per plant — real American dollars, not promises.", stat: "$4,460 revenue per plant" },
+              { icon: "🔥", title: "Revenue Flows Back to Holders", body: "30% of every harvest sale is distributed directly to $STRAIN holders. 40% buys back tokens and burns them forever — making your remaining tokens more valuable.", stat: "70% goes back to holders" },
+            ].map((c) => (
+              <div key={c.title} className="bg-white border-2 border-[#0D0D0D] rounded-xl shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all p-8">
+                <div className="bg-[#AAFF00]/20 rounded-full w-16 h-16 flex items-center justify-center text-3xl mb-6">{c.icon}</div>
+                <h3 className="font-black text-xl mb-3">{c.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">{c.body}</p>
+                <div className="bg-[#AAFF00] border-2 border-[#0D0D0D] px-3 py-1 rounded-full text-xs font-black inline-block">{c.stat}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* THE REAL NUMBERS */}
+      <section className="bg-[#0D0D0D] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">THE MATH</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">The Numbers That Make People Stop Scrolling</h2>
+          </div>
+          {/* Harvest table */}
+          <h3 className="text-white text-2xl font-bold mb-6">What One Harvested Plant Is Worth</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            {[
+              { type: "Indoor", yield: "150–600g", revenue: "$1,338 – $5,352" },
+              { type: "Outdoor", yield: "400–1,500g", revenue: "$3,568 – $13,380" },
+              { type: "Commercial", yield: "500–900g avg", revenue: "$4,460 – $8,028" },
+            ].map((r) => (
+              <div key={r.type} className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="text-[#AAFF00] font-black text-lg mb-2">{r.type}</div>
+                <div className="text-white font-mono text-2xl font-bold mb-1">{r.yield}</div>
+                <div className="text-gray-400 text-sm">yield per plant</div>
+                <div className="border-t border-white/10 mt-4 pt-4">
+                  <div className="text-[#AAFF00] font-mono font-black text-xl">{r.revenue}</div>
+                  <div className="text-gray-400 text-xs">at $8.92/gram retail</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Token mechanic */}
+          <h3 className="text-white text-2xl font-bold mb-6">What 10,000 $STRAIN Actually Triggers</h3>
+          <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-8">
+            <div className="grid grid-cols-4 bg-[#AAFF00] text-[#0D0D0D] font-bold text-sm p-4">
+              <div>Tokens Bought</div><div>Seed Cost</div><div>Plant Revenue</div><div>Net Profit</div>
+            </div>
+            <div className="grid grid-cols-4 p-4 items-center">
+              <div className="text-white font-mono font-bold">10,000 $STRAIN</div>
+              <div className="text-gray-300 font-mono">$51 total</div>
+              <div className="text-gray-300 font-mono">$4,460 retail</div>
+              <div className="text-[#AAFF00] font-mono font-black text-2xl">$4,409 PROFIT</div>
+            </div>
+          </div>
+          <div className="bg-[#AAFF00]/10 border border-[#AAFF00]/30 rounded-xl p-6 text-center">
+            <p className="text-[#AAFF00] font-bold text-lg">🤯 That means $1 buys the seed. $50 covers the grow. And $4,409 in profit gets split between buybacks and holders. Every. Single. Harvest.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW HOLDERS EARN */}
+      <section className="bg-[#F4F4F0] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">YOUR EARNINGS</div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight">5 Ways You Make Money Holding $STRAIN</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { num: "01", icon: "📈", title: "Early Entry Price Gains", body: "Launched at $0.000001 per token. As burns reduce supply and the narrative spreads, price climbs. Target: 5,000x from launch.", stat: "5,000x Target" },
+              { num: "02", icon: "💰", title: "Quarterly Harvest Distributions", body: "30% of every harvest sale distributed to ALL $STRAIN holders proportionally. 100 plants harvested = $35,700 paid out. In USDT or BNB.", stat: "30% of all revenue" },
+              { num: "03", icon: "🔥", title: "Buyback & Burn (Price Pump)", body: "40% of every harvest revenue buys $STRAIN from the open market and burns it permanently. Less supply = higher price for your tokens.", stat: "40% burned forever" },
+              { num: "04", icon: "🤝", title: "Referral Rewards (2% Auto)", body: "Every time someone buys $STRAIN through your referral link, you earn 2% of their purchase automatically via smart contract. No middleman.", stat: "2% auto referral" },
+              { num: "05", icon: "🏦", title: "Staking Yields (15–75% APY)", body: "Lock your $STRAIN for 30, 90, or 180 days and earn passive yield from the operations wallet. Longer stake = higher APY.", stat: "Up to 75% APY" },
+              { num: "06", icon: "🎰", title: "Strain Drop Lottery", body: "Every new strain added to StrainHub triggers a lottery. Random holders win exclusive NFTs, merch, and bonus tokens. Free by just holding.", stat: "Random winner each drop" },
+            ].map((c) => (
+              <div key={c.num} className="bg-white border-2 border-[#0D0D0D] rounded-xl shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all p-8">
+                <div className="text-[#AAFF00] font-black text-5xl font-mono mb-4 opacity-30">{c.num}</div>
+                <div className="text-3xl mb-4">{c.icon}</div>
+                <h3 className="font-black text-lg mb-3">{c.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">{c.body}</p>
+                <div className="bg-[#0D0D0D] text-[#AAFF00] px-3 py-1 rounded-full text-xs font-black inline-block">{c.stat}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* REVENUE SPLIT */}
+      <section className="bg-[#0D0D0D] py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">TOKENOMICS</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Where Every Dollar Goes</h2>
+          </div>
+          <div className="space-y-6 mb-14">
+            {[
+              { pct: 40, label: "🔥 Buyback & Burn", color: "bg-[#AAFF00]" },
+              { pct: 30, label: "💰 Holder Rewards", color: "bg-amber-400" },
+              { pct: 20, label: "🌱 Plant More Seeds", color: "bg-green-500" },
+              { pct: 10, label: "⚙️ Operations & Team", color: "bg-gray-500" },
+            ].map((b) => (
+              <div key={b.label} className="flex items-center gap-4">
+                <div className="text-white font-bold w-48 flex-shrink-0">{b.label}</div>
+                <div className="flex-1 bg-white/10 rounded-full h-6 overflow-hidden">
+                  <div className={`${b.color} h-full rounded-full`} style={{width:`${b.pct}%`}} />
+                </div>
+                <div className="text-[#AAFF00] font-mono font-black text-2xl w-16 text-right">{b.pct}%</div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <h3 className="text-white font-black text-xl mb-2">The 10% Transaction Tax</h3>
+            <p className="text-gray-400 text-sm mb-6">Every buy and sell of $STRAIN carries a 10% tax, automatically distributed:</p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { label: "4% → 🔥 Burn", bg: "bg-red-500/20 border-red-500/30 text-red-400" },
+                { label: "3% → 💰 Staking Rewards", bg: "bg-[#AAFF00]/20 border-[#AAFF00]/30 text-[#AAFF00]" },
+                { label: "2% → 📢 Marketing", bg: "bg-blue-500/20 border-blue-500/30 text-blue-400" },
+                { label: "1% → 💧 Liquidity Pool", bg: "bg-purple-500/20 border-purple-500/30 text-purple-400" },
+              ].map((p) => (
+                <span key={p.label} className={`border px-4 py-2 rounded-full text-sm font-bold ${p.bg}`}>{p.label}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* $50 → $50,000 PATH */}
+      <section className="bg-[#F4F4F0] py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">THE PATH</div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">How $50 Becomes $50,000</h2>
+            <p className="text-lg text-gray-600">The conservative path. The numbers are real. The math works.</p>
+          </div>
+          <div className="bg-white border-2 border-[#0D0D0D] rounded-xl shadow-[4px_4px_0px_#0D0D0D] overflow-hidden mb-8">
+            <div className="grid grid-cols-3 bg-[#0D0D0D] text-white font-bold text-sm p-4">
+              <div>Stage</div><div>What Happens</div><div>Your $50 Becomes</div>
+            </div>
+            {[
+              { stage: "Launch — July", event: "Buy at $0.000001 = 50M $STRAIN", val: "$50", highlight: false },
+              { stage: "August", event: "100 plants harvested, $35K burned, price 10x", val: "$500", highlight: false },
+              { stage: "September", event: "PancakeSwap listing, volume surge, 50x", val: "$2,500", highlight: false },
+              { stage: "October", event: "Viral narrative: 'Real cannabis farm backs BNB token'", val: "$10,000", highlight: false },
+              { stage: "Nov–Dec", event: "Q4 bull run + CEX listing, 1,000x from launch", val: "$50,000 🚀", highlight: true },
+            ].map((r) => (
+              <div key={r.stage} className={`grid grid-cols-3 p-4 border-t border-gray-100 ${r.highlight ? "bg-[#AAFF00]/20 border-2 border-[#AAFF00]" : ""}`}>
+                <div className="font-bold text-sm text-gray-800">{r.stage}</div>
+                <div className="text-gray-600 text-sm">{r.event}</div>
+                <div className={`font-mono font-black text-xl ${r.highlight ? "text-[#0D0D0D]" : "text-[#AAFF00]"}`}>{r.val}</div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-[#0D0D0D] text-white rounded-xl p-8 text-center">
+            <p className="text-lg font-bold italic">🚀 Hit 5,000x and your $50 becomes $250,000. The first news headline that says &ldquo;BNB meme coin backed by REAL cannabis farm&rdquo; goes live — and that headline WILL be written. It&apos;s too good a story not to write.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* SEED TO WALLET TIMELINE */}
+      <section className="bg-[#0D0D0D] py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">THE JOURNEY</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">From Seed to Your Wallet</h2>
+            <p className="text-gray-400 text-lg">Not promises — a real documented process.</p>
+          </div>
+          <div className="relative">
+            <div className="absolute left-8 top-0 bottom-0 border-l-2 border-dashed border-[#AAFF00]/30" />
+            <div className="space-y-6">
+              {[
+                { week: "Day 1", icon: "🌱", title: "You Buy $STRAIN", body: "Every 10,000 tokens triggers 1 feminized seed purchased ($1) and planted in our licensed grow facility.", highlight: false },
+                { week: "Week 2", icon: "🌿", title: "Seedling Emerges", body: "The seed germinates. Photos posted to Telegram and X: 'Your tokens are growing. 💚'", highlight: false },
+                { week: "Week 6", icon: "🌿", title: "Vegetation Stage", body: "Plant enters rapid growth. Community updates showing height, health, terpene readings.", highlight: false },
+                { week: "Week 10", icon: "🌸", title: "Flowering Begins", body: "Buds forming. Terpene profiles developing. 'She's flowering. Terpenes are insane. 🌸'", highlight: false },
+                { week: "HARVEST", icon: "✂️", title: "Harvest Day", body: "Wet weight posted publicly. Sold to licensed US distributor. Revenue generated and logged on-chain.", highlight: true },
+                { week: "BURN 🔥", icon: "🔥", title: "Buyback Executed", body: "40% of revenue buys $STRAIN from PancakeSwap and burns it permanently. On-chain proof posted.", highlight: false },
+                { week: "PAY DAY 💰", icon: "💰", title: "You Get Paid", body: "30% of revenue distributed proportionally to ALL $STRAIN holders. Snapshot taken. Rewards sent.", highlight: true },
+              ].map((s) => (
+                <div key={s.title} className={`relative pl-20 ${s.highlight ? "bg-[#AAFF00]/10 border border-[#AAFF00]/30 rounded-xl p-6 ml-4" : ""}`}>
+                  <div className="absolute left-4 top-4 w-9 h-9 rounded-full bg-[#0D0D0D] border-2 border-[#AAFF00] flex items-center justify-center text-lg z-10">
+                    {s.icon}
+                  </div>
+                  <div className="bg-[#AAFF00] text-[#0D0D0D] text-xs font-black px-2 py-0.5 rounded-full inline-block mb-2">{s.week}</div>
+                  <h4 className={`font-black text-lg mb-1 ${s.highlight ? "text-[#AAFF00]" : "text-white"}`}>{s.title}</h4>
+                  <p className="text-gray-400 text-sm leading-relaxed">{s.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ROADMAP */}
+      <section id="roadmap" className="bg-[#F4F4F0] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#AAFF00] text-xs font-bold tracking-widest uppercase bg-[#0D0D0D] px-4 py-2 rounded-full mb-4">ROADMAP</div>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight">The Path to 5,000x</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { phase: "Phase 1", period: "July–Aug 2026", status: "LAUNCHING", statusBg: "bg-[#AAFF00] text-[#0D0D0D]", title: "🚀 Genesis", target: "$500K market cap", items: ["Smart contract on BNB Chain","StrainHub token page live","First grow cycle initiated","PancakeSwap listing","100 holders milestone","First harvest cycle begins"], active: true },
+              { phase: "Phase 2", period: "September 2026", status: "INCOMING", statusBg: "bg-yellow-400 text-[#0D0D0D]", title: "🌿 First Harvest", target: "$5M market cap", items: ["First harvest documented","First buyback & burn on-chain","First holder distribution paid","Harvest report published","1,000 holders milestone","KOL outreach begins"], active: false },
+              { phase: "Phase 3", period: "Oct–Nov 2026", status: "PLANNED", statusBg: "bg-gray-600 text-white", title: "📈 Viral Moment", target: "$50M market cap", items: ["Major KOL features $STRAIN","News media coverage goes live","CEX listing applications","Staking platform launched","10,000 holders milestone","Second grow cycle underway"], active: false },
+              { phase: "Phase 4", period: "December 2026", status: "VISION", statusBg: "bg-purple-600 text-white", title: "🔥 Bull Run Peak", target: "$500M market cap", items: ["First CEX listing (Tier 2)","5,000x from launch price","Third grow cycle: 10x plants","$STRAIN + StrainHub Pro integration","NFT strain collection drops","50,000 holders milestone"], active: false },
+            ].map((p) => (
+              <div key={p.phase} className={`bg-white border-2 rounded-xl p-8 ${p.active ? "border-[#AAFF00] shadow-[4px_4px_0px_#AAFF00]" : "border-[#0D0D0D] shadow-[4px_4px_0px_#0D0D0D]"}`}>
+                <div className={`text-xs font-black px-3 py-1 rounded-full inline-block mb-3 ${p.statusBg}`}>{p.status}</div>
+                <div className="text-gray-400 text-xs font-bold mb-2">{p.period}</div>
+                <h3 className="font-black text-xl mb-1">{p.title}</h3>
+                <div className="text-[#AAFF00] font-mono font-bold text-sm mb-4 bg-[#0D0D0D] px-3 py-1 rounded-full inline-block">{p.target}</div>
+                <ul className="space-y-2">
+                  {p.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                      <span className={`mt-0.5 flex-shrink-0 ${p.active ? "text-[#AAFF00]" : "text-gray-300"}`}>{p.active ? "✅" : "☐"}</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW TO BUY */}
+      <section id="how-to-buy" className="bg-[#0D0D0D] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-block text-[#0D0D0D] text-xs font-bold tracking-widest uppercase bg-[#AAFF00] px-4 py-2 rounded-full mb-4">GET STARTED</div>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">How to Buy $STRAIN in 4 Steps</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            {[
+              { num: "01", icon: "📱", title: "Get a Wallet", body: "Download Trust Wallet (mobile) or MetaMask (browser). Create your wallet and save your seed phrase somewhere safe offline." },
+              { num: "02", icon: "💵", title: "Buy BNB", body: "Purchase BNB (Binance Coin) from Binance, Coinbase, or Kraken. Transfer it to your Trust Wallet or MetaMask." },
+              { num: "03", icon: "🔄", title: "Open PancakeSwap", body: "Go to pancakeswap.finance, connect your wallet, and switch your network to BNB Chain (BSC)." },
+              { num: "04", icon: "🌿", title: "Buy $STRAIN", body: "Paste the $STRAIN contract address, set slippage to 12%, and swap your BNB for $STRAIN. You're in." },
+            ].map((s) => (
+              <div key={s.num} className="bg-white/5 border border-white/10 rounded-xl p-8 hover:border-[#AAFF00]/30 transition-all">
+                <div className="text-[#AAFF00] font-mono font-black text-4xl opacity-40 mb-4">{s.num}</div>
+                <div className="text-4xl mb-4">{s.icon}</div>
+                <h3 className="text-white font-black text-lg mb-3">{s.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="bg-yellow-500/10 border-2 border-yellow-400/50 rounded-xl p-6 max-w-2xl mx-auto text-center">
+            <p className="text-yellow-400 font-bold text-sm">⚠️ Always verify the contract address from our official channels only.</p>
+            <p className="text-yellow-400/70 text-xs mt-2">Official: strainhub.org | Telegram: @StrainHubToken | Twitter: @StrainHubToken</p>
+            <p className="text-[#AAFF00] font-mono font-bold mt-3 text-sm">Contract Address: [Available at July 2026 Launch]</p>
+          </div>
+        </div>
+      </section>
+
+      {/* DIVIDER INTO STRAIN DB */}
+      <div className="bg-[#AAFF00] border-y-2 border-black py-8 text-center">
+        <p className="text-[#0D0D0D] font-black text-2xl mb-1">🌿 While You Wait for Launch — Explore Our Database</p>
+        <p className="text-[#0D0D0D]/70 font-medium">The most comprehensive cannabis strain database on the internet. Powered by $STRAIN.</p>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* END $STRAIN TOKEN — EXISTING CONTENT BELOW UNCHANGED */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+
       {/* HERO */}
       <section className="bg-white border-b-2 border-black">
         <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
