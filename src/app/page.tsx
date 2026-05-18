@@ -139,21 +139,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* LAUNCH COUNTDOWN BAR */}
+      {/* FOLLOW ON X BAR */}
       <div className="bg-[#0D0D0D] border-b-2 border-[#AAFF00]/20 py-8">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <p className="text-[#AAFF00] text-xs font-black uppercase tracking-widest mb-5">🚀 Token Launch Countdown</p>
-          <CountdownTimer />
           <a
             href="https://x.com/strainhuborg"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-xl transition-all text-sm mt-2"
+            className="inline-flex items-center gap-2 bg-white text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-xl transition-all text-sm"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Follow @strainhuborg — CA Drops at Launch
+            Follow us on X @strainhuborg
           </a>
-          <p className="text-gray-600 text-xs mt-3">Contract address drops exclusively on our X. Follow so you don&apos;t miss it.</p>
         </div>
       </div>
 
