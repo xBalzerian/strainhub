@@ -304,75 +304,88 @@ export default async function HomePage() {
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">A team of finance veterans, blockchain architects, and licensed cannabis operators — united by one mission.</p>
           </div>
 
-          {/* Investors Grid — avatar-initial style, no AI faces */}
+          {/* Investors Grid — textured bg + monogram, no AI faces */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
             {[
               {
                 initials: "MH",
-                avatarBg: "bg-[#0D0D0D]",
-                avatarText: "text-[#AAFF00]",
-                icon: "💼",
+                bgImg: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/dcc14feea_generated_image.png",
+                ringColor: "ring-[#AAFF00]",
+                initialsColor: "text-[#AAFF00]",
                 badge: "Lead Investor", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
                 name: "Marcus Hale", title: "Co-Founder & Lead Investor",
                 location: "📍 Singapore / New York",
                 bio: "15+ years in fintech and DeFi. Previously scaled liquidity protocols across Southeast Asia and North America. Leads $STRAIN's capital strategy and exchange partnerships.",
-                links: ["DeFi", "Fintech", "BNB Chain"],
+                tags: ["DeFi", "Fintech", "BNB Chain"],
               },
               {
                 initials: "SR",
-                avatarBg: "bg-[#AAFF00]",
-                avatarText: "text-[#0D0D0D]",
-                icon: "📊",
+                bgImg: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/dcc14feea_generated_image.png",
+                ringColor: "ring-[#AAFF00]",
+                initialsColor: "text-[#AAFF00]",
                 badge: "Strategy", badgeColor: "bg-[#AAFF00] text-[#0D0D0D]",
                 name: "Sophia Reyes", title: "Head of Strategy & Tokenomics",
                 location: "📍 London / Remote",
                 bio: "Former quantitative analyst. Designed the $STRAIN harvest revenue distribution model and deflationary burn mechanism. Oversees all tokenomics and holder reporting.",
-                links: ["Tokenomics", "Web3", "Analytics"],
+                tags: ["Tokenomics", "Web3", "Analytics"],
               },
               {
                 initials: "DV",
-                avatarBg: "bg-green-900",
-                avatarText: "text-[#AAFF00]",
-                icon: "🌿",
+                bgImg: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/5247fb9f7_generated_image.png",
+                ringColor: "ring-green-500",
+                initialsColor: "text-[#AAFF00]",
                 badge: "Grow Partner", badgeColor: "bg-green-700 text-white",
                 name: "Daniel Voss", title: "Partner — GreenScale Agro",
                 location: "📍 Cundinamarca, Colombia",
                 bio: "Founder of GreenScale Agro. Licensed cannabis operator with 38 hectares of active farmland. Manages 7,500+ plants per annual grow cycle with full regulatory compliance.",
-                links: ["38 Hectares", "Licensed", "Colombia"],
+                tags: ["38 Hectares", "Licensed", "Colombia"],
               },
               {
                 initials: "RK",
-                avatarBg: "bg-green-900",
-                avatarText: "text-[#AAFF00]",
-                icon: "🏭",
+                bgImg: "https://media.base44.com/images/public/69b215547e21a09debcd5b78/5247fb9f7_generated_image.png",
+                ringColor: "ring-green-500",
+                initialsColor: "text-[#AAFF00]",
                 badge: "Grow Partner", badgeColor: "bg-green-700 text-white",
                 name: "Robert Klein", title: "Partner — Terra Verde Holdings",
                 location: "📍 Alentejo, Portugal",
                 bio: "CEO of Terra Verde Holdings. Operates 62 hectares of EU-certified cannabis cultivation in Portugal. Brings pharmaceutical-grade grow standards and export infrastructure to $STRAIN.",
-                links: ["62 Hectares", "EU-Certified", "Portugal"],
+                tags: ["62 Hectares", "EU-Certified", "Portugal"],
               },
             ].map((p) => (
               <div key={p.name} className="bg-white border-2 border-[#0D0D0D] rounded-2xl shadow-[4px_4px_0px_#0D0D0D] hover:shadow-[6px_6px_0px_#AAFF00] hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
-                {/* Avatar Header */}
-                <div className={`${p.avatarBg} px-6 pt-8 pb-6 flex flex-col items-center text-center`}>
-                  <div className={`w-20 h-20 rounded-full border-4 border-white/20 flex items-center justify-center mb-4 ${p.avatarBg}`}>
-                    <span className={`font-black text-3xl tracking-tight ${p.avatarText}`}>{p.initials}</span>
+
+                {/* Textured photo-like header — no face, just atmosphere */}
+                <div className="relative h-40 w-full overflow-hidden">
+                  <img
+                    src={p.bgImg}
+                    alt=""
+                    className="w-full h-full object-cover object-center scale-110"
+                    style={{ filter: "brightness(0.55) saturate(0.8)" }}
+                  />
+                  {/* Gradient fade into white card below */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/70" />
+                  {/* Monogram circle — centered, floating over the photo */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <div className={`w-16 h-16 rounded-full bg-black/60 backdrop-blur-sm ring-2 ${p.ringColor} flex items-center justify-center`}>
+                      <span className={`font-black text-2xl tracking-tight ${p.initialsColor}`}>{p.initials}</span>
+                    </div>
+                    <span className={`inline-block ${p.badgeColor} text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg`}>{p.badge}</span>
                   </div>
-                  <div className={`inline-block ${p.badgeColor} text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full`}>{p.badge}</div>
                 </div>
-                {/* Info */}
+
+                {/* Info body */}
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="text-[#0D0D0D] font-black text-lg leading-tight mb-0.5">{p.name}</h3>
                   <p className="text-gray-500 text-xs font-semibold mb-1">{p.title}</p>
                   <p className="text-gray-400 text-xs mb-3">{p.location}</p>
                   <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-4">{p.bio}</p>
-                  {/* Tag pills */}
                   <div className="flex flex-wrap gap-1.5">
-                    {p.links.map((tag) => (
+                    {p.tags.map((tag) => (
                       <span key={tag} className="text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200 px-2 py-0.5 rounded-full">{tag}</span>
                     ))}
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
