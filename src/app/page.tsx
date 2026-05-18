@@ -71,7 +71,7 @@ export default async function HomePage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-[#AAFF00]/10 border border-[#AAFF00] text-[#AAFF00] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-8">
               <span className="w-2 h-2 rounded-full bg-[#AAFF00] animate-pulse inline-block" />
-              🌱 LAUNCHING TOMORROW ON BNB CHAIN
+              🟢 $STRAIN IS LIVE ON BNB CHAIN — BUY NOW
             </div>
             <h1 className="text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6">
               <span className="text-white">You Didn&apos;t Just</span><br />
@@ -97,9 +97,10 @@ export default async function HomePage() {
             </div>
             {/* CTAs */}
             <div className="flex gap-3 flex-wrap mb-6">
-              <a href="#how-to-buy" className="bg-[#AAFF00] text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-lg transition-all inline-block">
-                Buy $STRAIN 🚀
+              <a href="https://four.meme/token/0x6bb4843e34703930cfaf48c356d28394fee34444?code=2MF2F2F5GV28" target="_blank" rel="noopener noreferrer" className="bg-[#AAFF00] text-[#0D0D0D] font-black border-2 border-[#0D0D0D] shadow-[3px_3px_0px_#AAFF00] hover:shadow-[5px_5px_0px_#AAFF00] hover:-translate-y-0.5 px-6 py-3 rounded-lg transition-all inline-block">
+                🟢 Buy $STRAIN NOW on Four.meme
               </a>
+              <p className="text-[11px] text-gray-400 mt-2 font-mono break-all max-w-xs">CA: 0x6bb4843e34703930cfaf48c356d28394fee34444</p>
               <a href="#roadmap" className="bg-transparent text-white font-bold border-2 border-white/30 px-6 py-3 rounded-lg hover:border-[#AAFF00] hover:text-[#AAFF00] transition-all inline-block">
                 View Roadmap 📄
               </a>
@@ -161,7 +162,7 @@ export default async function HomePage() {
         <div className="inline-flex animate-[ticker_30s_linear_infinite]" style={{animation:"ticker 30s linear infinite"}}>
           {[...Array(2)].map((_, ri) => (
             <span key={ri} className="inline-flex items-center">
-              {["🌿 455+ STRAINS IN DATABASE","🌱 EVERY 10,000 $STRAIN = 1 REAL PLANT PLANTED","💰 HOLDERS EARN 30% OF EVERY HARVEST","🔥 40% BURNED ON EVERY SALE — FOREVER","📈 REAL CANNABIS. REAL REVENUE. REAL HOLDERS.","💎 REAL USD FROM REAL CANNABIS HARVESTS","🚀 LAUNCHING BNB CHAIN — TOMORROW"].map((item, i) => (
+              {["🌿 455+ STRAINS IN DATABASE","🌱 EVERY 10,000 $STRAIN = 1 REAL PLANT PLANTED","💰 HOLDERS EARN 30% OF EVERY HARVEST","🔥 40% BURNED ON EVERY SALE — FOREVER","📈 REAL CANNABIS. REAL REVENUE. REAL HOLDERS.","💎 REAL USD FROM REAL CANNABIS HARVESTS","🟢 $STRAIN IS LIVE — BUY ON FOUR.MEME NOW"].map((item, i) => (
                 <span key={i} className="inline-flex items-center gap-3 text-[#0D0D0D] font-black text-sm tracking-wide uppercase px-6">
                   {item}
                   <span className="w-2 h-2 bg-[#0D0D0D] rounded-full" />
@@ -701,7 +702,7 @@ export default async function HomePage() {
               { num: "01", icon: "📱", title: "Get a Wallet", body: "Download Trust Wallet (mobile) or MetaMask (browser). Create your wallet and save your seed phrase somewhere safe offline." },
               { num: "02", icon: "💵", title: "Buy BNB", body: "Purchase BNB (Binance Coin) from Binance, Coinbase, or Kraken. Transfer it to your Trust Wallet or MetaMask." },
               { num: "03", icon: "🔄", title: "Open PancakeSwap", body: "Go to pancakeswap.finance, connect your wallet, and switch your network to BNB Chain (BSC)." },
-              { num: "04", icon: "🌿", title: "Buy $STRAIN", body: "Paste the $STRAIN contract address, set slippage to 12%, and swap your BNB for $STRAIN. You're in." },
+              { num: "04", icon: "🌿", title: "Buy $STRAIN", body: "Go to four.meme, paste CA: 0x6bb4843e34703930cfaf48c356d28394fee34444 — set slippage to 12% and swap BNB for $STRAIN. You're in." },
             ].map((s) => (
               <div key={s.num} className="bg-white/5 border border-white/10 rounded-xl p-8 hover:border-[#AAFF00]/30 transition-all">
                 <div className="text-[#AAFF00] font-mono font-black text-4xl opacity-40 mb-4">{s.num}</div>
