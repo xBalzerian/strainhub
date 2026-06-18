@@ -101,7 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "width": 1200,
           "height": 630
         },
-        "sameAs": []
+        "sameAs": ["https://x.com/strainhuborg", "https://www.strainhub.org"]
       }
     ]
   };

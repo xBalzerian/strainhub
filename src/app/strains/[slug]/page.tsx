@@ -764,7 +764,17 @@ export default async function StrainPage({ params }: { params: { slug: string } 
                       Find feminized, autoflowering, and regular {strain.name} seeds from trusted seed banks.
                       {strain.grow_difficulty === "Easy" ? " Great pick for first-time growers." : strain.grow_difficulty === "Moderate" ? " Solid choice for intermediate growers." : " Best for experienced cultivators."}
                     </p>
-                    {/* breeder hidden for now */}
+                    {strain.breeder && (
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-600">Bred by: </span>
+                        <a
+                          href={`/seedbanks/${strain.breeder.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
+                          className="text-xs font-bold text-brand hover:text-lime underline"
+                        >
+                          {strain.breeder}
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <a
                     href={`https://www.seedsman.com/en/cannabis-seeds?search=${encodeURIComponent(strain.name)}`}
@@ -881,6 +891,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
             <div>
               <div className="font-black text-brand mb-2 text-[11px] uppercase tracking-widest">🏦 Seed Banks</div>
               <a href="/seedbanks" className="block text-gray-500 hover:text-lime font-medium py-0.5">All Seed Banks</a>
+              {strain.breeder && (
+                <a href={`/seedbanks/${strain.breeder.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} className="block text-gray-500 hover:text-lime font-medium py-0.5">{strain.breeder}</a>
+              )}
               <a href="/seedbanks/ilgm" className="block text-gray-500 hover:text-lime font-medium py-0.5">ILGM</a>
               <a href="/seedbanks/seedsman" className="block text-gray-500 hover:text-lime font-medium py-0.5">Seedsman</a>
               <a href="/seedbanks/crop-king-seeds" className="block text-gray-500 hover:text-lime font-medium py-0.5">Crop King Seeds</a>

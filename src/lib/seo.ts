@@ -158,9 +158,18 @@ export function strainJsonLd(strain: Strain) {
       : []),
   ];
 
+  const breadcrumb = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}` },
+      { "@type": "ListItem", "position": 2, "name": "Strains", "item": `${SITE_URL}/strains` },
+      { "@type": "ListItem", "position": 3, "name": strain.name, "item": `${SITE_URL}/strains/${strain.slug}` },
+    ],
+  };
+
   return {
     "@context": "https://schema.org",
-    "@graph": [
+    "@graph": [breadcrumb,
       {
         "@type": "Thing",
         "@id": strainUrl,
