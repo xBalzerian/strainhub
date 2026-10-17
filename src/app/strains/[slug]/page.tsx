@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import TrustedSeedBanner from "@/components/TrustedSeedBanner";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllStrainSlugs, getStrainBySlug, getSimilarStrains, getParentSlugs } from "@/lib/strains";
@@ -867,6 +868,9 @@ export default async function StrainPage({ params }: { params: { slug: string } 
           </div>
         )}
       </div>
+
+      {/* ── TRUSTED SEED RETAILERS BANNER ────────────── */}
+      <TrustedSeedBanner variant="inline" contextLabel={strain.name} />
 
       {/* ── INTERNAL LINKS — News, Explore, Seed Banks ────────────── */}
       <section className="bg-white border-t-2 border-black mt-8">

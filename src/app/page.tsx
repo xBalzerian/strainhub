@@ -6,6 +6,7 @@ import { getArticles } from "@/lib/articles";
 import type { Article } from "@/lib/articles";
 import StrainCard from "@/components/StrainCard";
 import SeedbankLogoCloud from "@/components/SeedbankLogoCloud";
+import TrustedSeedBanner from "@/components/TrustedSeedBanner";
 
 
 export const metadata: Metadata = {
@@ -161,6 +162,9 @@ export default async function HomePage() {
           })()}
         </div>
       </section>
+
+      {/* TRUSTED SEED RETAILERS BANNER */}
+      <TrustedSeedBanner />
 
       {/* TICKER */}
       <div className="bg-lime border-y-2 border-black py-2.5 overflow-hidden whitespace-nowrap">
